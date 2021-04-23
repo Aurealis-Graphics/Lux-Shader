@@ -96,8 +96,6 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol){
 #include "/lib/atmospherics/aurora.glsl"
 #endif
 
-#define SHOOTING_STARS
-
 //Program//
 void main(){
 	#ifdef OVERWORLD

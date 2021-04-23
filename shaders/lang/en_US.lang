@@ -558,3 +558,20 @@ option.DISTANT_FADE.comment=Fades far chunk borders. Spherical works like vanill
 value.DISTANT_FADE.0=OFF
 value.DISTANT_FADE.1=Spherical
 value.DISTANT_FADE.2=Cylindrical
+
+screen.SHOOTING_STARS=Shooting Stars
+
+option.SHOOTING_STARS=Shooting Stars
+option.SHOOTING_STARS.comment=Enables Shooting Stars.
+
+option.SHOOTING_STARS_SCALE=Scale
+option.SHOOTING_STARS_SCALE.comment=Changes the scale of the shooting stars, higher values = smaller.
+
+option.SHOOTING_STARS_SPEED=Speed
+option.SHOOTING_STARS_SPEED.comment=Changes the speed of the shooting stars.
+
+option.SHOOTING_STARS_AMOUNT=Amount
+option.SHOOTING_STARS_AMOUNT.comment=Changes the amount of the shooting stars.
+
+option.SHOOTING_STARS_ROTATION_ITERATIONS=Rotation Iterations
+option.SHOOTING_STARS_ROTATION_ITERATIONS.comment=Defines the amount of rotations of the shooting stars, higher values are slower.

@@ -37,13 +37,9 @@ mat2 Rot(float _angle) {
 
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
 
-#define SCALE 0.3
-#define SPEED 18.2
-#define AMOUNT 0.0001
 #define PI 3.14159265359
-#define ROTATION_ITERATIONS 3
 
-vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle) 
+vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle)
 {
     float cosT = dot(normalize(viewPos), upVec);
 
@@ -53,21 +49,21 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
         vec2 coord = wpos.xz + cameraPosition.xz * 0.01 / (wpos.y + length(wpos.xz));
         coord = Rot(rotationAngle) * coord;
 
-        float speedMultiplier = 0.8 + hash12(vec2(floor((coord.x + coord.y) * SCALE + 0.5))) * 0.5;
-        time *= speedMultiplier * SPEED;
+        float speedMultiplier = 0.8 + hash12(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
+        time *= speedMultiplier * SHOOTING_STARS_SPEED;
         
         coord += vec2(-time, time);
 
         vec3 result = vec3(0.0);
 
         // Trail
-        vec2 trailGridId = floor(coord * SCALE);
+        vec2 trailGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE);
         float trailIdHash = hash12(trailGridId);
-        float trailBrightness = step(trailIdHash, AMOUNT / float(ROTATION_ITERATIONS));
+        float trailBrightness = step(trailIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
         if(trailBrightness != 0.0) 
         {
-            vec2 trailGridUv = fract(coord * SCALE);
+            vec2 trailGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE);
 
             float trailLength = sqrt(distance(trailGridUv.x, 0.0) * distance(trailGridUv.y, 1.0));
             float density = distance(trailGridUv.x + trailGridUv.y, 1.0) / trailLength;
@@ -77,13 +73,13 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
         }
 
         // Glare
-        vec2 glareGridId = floor(coord * SCALE + vec2(-0.5, 0.5));
+        vec2 glareGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE + vec2(-0.5, 0.5));
         float glareIdHash = hash12(glareGridId);
-        float glareBrightness = step(glareIdHash, AMOUNT / float(ROTATION_ITERATIONS));
+        float glareBrightness = step(glareIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
         if(glareBrightness != 0.0) 
         {
-            vec2 glareGridUv = fract(coord * SCALE + 0.5) - 0.5;
+            vec2 glareGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE + 0.5) - 0.5;
             float glare = pow(saturate(0.012 / length(glareGridUv) * smoothstep(0.5, 0.0, length(glareGridUv))), 2.0);
             glare *= cosT * (glareIdHash * 0.75 + 0.25);
 
@@ -101,9 +97,9 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
 {
     vec3 result;
 
-    for (int i = 0; i < ROTATION_ITERATIONS; i++)
+    for (int i = 0; i < SHOOTING_STARS_ROTATION_ITERATIONS; i++)
     {
-        float rotation = float(i) / float(ROTATION_ITERATIONS) * PI;
+        float rotation = float(i) / float(SHOOTING_STARS_ROTATION_ITERATIONS) * PI;
         float n = hash12(vec2(rotation));
         result += GetShootingStarLayer(viewPos, time + n * 320.0, rotation + n);
     }
