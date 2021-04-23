@@ -1,5 +1,0 @@
-
-This shader is based on the amazing work of Capt Tatsu (https://bitslablab.com/).
-He is the developer of BSL so obviously, most of the things in this shader are his work.
-
-Redistributing this shader not containing "CREDITS.txt" is NOT ALLOWED!
