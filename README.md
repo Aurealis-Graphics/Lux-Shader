@@ -22,7 +22,6 @@ A minecraft shader heavily based on the [BSL Shaders by Capt Tatsu](https://bits
 ![Screen 2](screenshots/2.png)
 ![Screen 3](screenshots/3.png)
 ![Screen 4](screenshots/4.png)
-![Screen 5](screenshots/5.png)
 
 #
 
