@@ -1,11 +1,10 @@
 float CloudNoise(vec2 coord, vec2 wind){
-	float noise = texture2D(noisetex, coord * 0.5      + wind * 0.55).x;
-		  noise+= texture2D(noisetex, coord * 0.25     + wind * 0.45).x * 2.0;
-		  noise+= texture2D(noisetex, coord * 0.125    + wind * 0.35).x * 3.0;
-		  noise+= texture2D(noisetex, coord * 0.0625   + wind * 0.25).x * 4.0;
-		  noise+= texture2D(noisetex, coord * 0.03125  + wind * 0.15).x * 5.0;
-		  noise+= texture2D(noisetex, coord * 0.016125 + wind * 0.05).x * 6.0;
-	return noise;
+	float noise = texture2D(noisetex, coord * 0.5      + wind * 0.055).x * 6.0;
+		  noise += texture2D(noisetex, coord           + wind * 0.285).x * 3.0;
+		  noise += texture2D(noisetex, coord * 2.0     - wind * 0.345).x * 1.5;
+		  noise += texture2D(noisetex, coord * 4.0     - wind * 0.405).x * 0.75;
+		  noise += texture2D(noisetex, coord * 8.0     - wind * 0.505).x * 0.375;
+	return noise * 1.6;
 }
 
 float CloudCoverage(float noise, float cosT, float coverage){
@@ -47,7 +46,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 			vec2 coord = cameraPosition.xz * 0.00025 + planeCoord.xz;
 			float coverage = float(i - 3.0 + dither) * 0.667;
 
-			float noise = CloudNoise(coord, wind);
+			float noise = CloudNoise(coord * 0.1, wind * 0.6);
 				  noise = CloudCoverage(noise, cosT, coverage) * noiseMultiplier;
 				  noise = noise / pow(pow(noise, 2.5) + 1.0, 0.4);
 
