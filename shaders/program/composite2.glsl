@@ -63,7 +63,6 @@ vec3 MotionBlur(vec3 color, float z, float dither){
 	else return color;
 }
 
-
 //Includes//
 #include "/lib/util/dither.glsl"
 

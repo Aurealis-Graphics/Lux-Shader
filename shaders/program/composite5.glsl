@@ -23,6 +23,7 @@ uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
+uniform float centerDepthSmooth;
 
 uniform ivec2 eyeBrightnessSmooth;
 
@@ -191,12 +192,38 @@ vec2 GetLightPos(){
 #include "/lib/util/dither.glsl"
 #endif
 
+vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z, float centerDepthSmooth) 
+{
+	float fovScale = gbufferProjection[1][1] / 1.37;
+	float coc = max(abs(z - centerDepthSmooth) * DOF_STRENGTH - 0.01, 0.0);
+	coc = sqrt(abs(coc)) * 0.006 * fovScale;
+
+	float handMask = float(z > 0.56);
+
+	vec2 offsets[3] = vec2[3](
+		vec2(-1.0, -1.0) * coc / vec2(aspectRatio, 1.0) * handMask,
+		vec2(0.0, 0.0) * coc / vec2(aspectRatio, 1.0) * handMask,
+		vec2(1.0, 1.0) * coc / vec2(aspectRatio, 1.0) * handMask
+	);
+
+	return vec3(
+		texture2D(texSampler, texcoord + offsets[0]).r,
+		texture2D(texSampler, texcoord + offsets[1]).g,
+		texture2D(texSampler, texcoord + offsets[2]).b
+	);
+}
+
 //Program//
 void main(){
     vec2 newTexCoord = texCoord;
 	if (isEyeInWater == 1.0) UnderwaterDistort(newTexCoord);
 
+	#ifdef CHROMATIC_ABBERATION
+	float z = texture2D(depthtex1, newTexCoord).r;
+	vec3 color = ChromaticAbberation(colortex0, newTexCoord, z, centerDepthSmooth);
+	#else	
 	vec3 color = texture2D(colortex0, newTexCoord).rgb;
+	#endif
 
 	#ifdef AUTO_EXPOSURE
 	float tempExposure = texture2D(colortex2, vec2(pw, ph)).r;

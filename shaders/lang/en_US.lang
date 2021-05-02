@@ -575,3 +575,6 @@ option.SHOOTING_STARS_AMOUNT.comment=Changes the amount of the shooting stars.
 
 option.SHOOTING_STARS_ROTATION_ITERATIONS=Rotation Iterations
 option.SHOOTING_STARS_ROTATION_ITERATIONS.comment=Defines the amount of rotations of the shooting stars, higher values are slower.
+
+option.CHROMATIC_ABBERATION=Chromatic Abberation
+option.CHROMATIC_ABBERATION.comment=Enables Chromatic Abberation.
