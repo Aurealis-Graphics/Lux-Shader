@@ -39,6 +39,9 @@ uniform sampler2D depthtex2;
 
 #ifdef LENS_FLARE
 uniform vec3 sunPosition;
+#endif
+
+#if defined(LENS_FLARE) || defined(CHROMATIC_ABBERATION)
 uniform mat4 gbufferProjection;
 #endif
 
