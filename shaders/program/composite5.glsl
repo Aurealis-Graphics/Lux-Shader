@@ -41,9 +41,7 @@ uniform sampler2D depthtex2;
 uniform vec3 sunPosition;
 #endif
 
-#if defined(LENS_FLARE) || defined(CHROMATIC_ABBERATION)
 uniform mat4 gbufferProjection;
-#endif
 
 //Optifine Constants//
 const bool colortex2Clear = false;
@@ -198,7 +196,7 @@ vec2 GetLightPos(){
 vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z, float centerDepthSmooth) 
 {
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = max(abs(z - centerDepthSmooth) * DOF_STRENGTH - 0.01, 0.0);
+	float coc = max(abs(z - centerDepthSmooth) * 16.0 - 0.01, 0.0);
 	coc = sqrt(abs(coc)) * 0.006 * fovScale;
 
 	float handMask = float(z > 0.56);
