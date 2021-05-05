@@ -77,8 +77,10 @@ vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset){
     return shadow * 0.25;
 }
 
-vec3 GetShadow(vec3 shadowPos, float bias, float offset){
+vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage){
     shadowPos.z -= bias;
+
+    if(foliage > 0.5) offset *= 4.0;
 
     #ifdef SHADOW_FILTER
     #if AA == 2

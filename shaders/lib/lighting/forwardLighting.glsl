@@ -44,7 +44,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
                 offset = 0.0007;
             }
             
-            shadow = GetShadow(shadowPos, bias, offset);
+            shadow = GetShadow(shadowPos, bias, offset, foliage);
 
         } else shadow = vec3(lightmap.y);
     }
