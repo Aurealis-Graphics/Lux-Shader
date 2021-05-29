@@ -18,11 +18,11 @@ A minecraft shader heavily based on the [BSL Shaders by Capt Tatsu](https://bits
 #
 
 ## Screenshots
-![Screen 1](img/1.png)
-![Screen 2](img/2.png)
-![Screen 3](img/3.png)
-![Screen 4](img/4.png)
-![Screen 5](img/5.png)
+![Imgur](https://i.imgur.com/Xx4KuMl.jpg)
+![Imgur](https://i.imgur.com/rJJf68s.jpg)
+![Imgur](https://i.imgur.com/85Ff9p8.jpg)
+![Imgur](https://i.imgur.com/V9rtzmK.jpg)
+![Imgur](https://i.imgur.com/ADrGwdB.jpg)
 
 #
 
