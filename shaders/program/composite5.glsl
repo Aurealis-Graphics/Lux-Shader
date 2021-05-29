@@ -257,7 +257,7 @@ void main(){
 	ColorGrading(color);
 	#endif
 
-	color = Burgess_Modified(color);
+	color = Burgess_Modified(color * 0.9);
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();

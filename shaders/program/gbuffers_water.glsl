@@ -434,9 +434,9 @@ void main(){
 				#ifdef OVERWORLD
 				skyReflection += GetSkyColor(skyRefPos, lightCol);
 
-				float specular = GGX(mix(normal, newNormal, 2.0), normalize(viewPos), lightVec,
-				                	 0.95, 0.02, 0.025 * sunVisibility + 0.05);
-				specular *= (1.0 - sqrt(rainStrength)) * shadowFade / 18.5;
+				float specular = GGX(newNormal, normalize(viewPos), lightVec,
+				                	 0.98, 0.02, 0.025 * pow(sunVisibility, 0.28) + 0.05);
+				specular *= (1.0 - sqrt(rainStrength)) * shadowFade / 4.5;
 				float specularDiv = (4.0 - 3.0 * eBS) * fresnel * albedo.a;
 
 				skyReflection += (specular / specularDiv) * specularColor * shadow;
