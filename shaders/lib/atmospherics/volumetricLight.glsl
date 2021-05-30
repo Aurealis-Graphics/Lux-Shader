@@ -86,7 +86,7 @@ vec3 getVolumetricRays(float pixeldepth0, float pixeldepth1, vec3 color, float d
 					float testsample = shadow2D(shadowtex1, worldposition.xyz).z;
 					if (testsample > 0.9){
 						colsample = texture2D(shadowcolor0, worldposition.xy).rgb;
-						colsample *= colsample;
+						colsample = pow(colsample / max(colsample.r, max(colsample.g, colsample.b)), vec3(2.0));
 						sample = colsample * (1.0 - sample) + sample;
 					}
 				}
