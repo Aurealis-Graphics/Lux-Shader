@@ -77,7 +77,7 @@ void main(){
 	SharpenFilter(color);
 	#endif
 
-	color = pow(color * 1.1, vec3(1.1));
+	color = pow(color, vec3(1.1));
 
 	gl_FragColor = vec4(color, 1.0);
 }
