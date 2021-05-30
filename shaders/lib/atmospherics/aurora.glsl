@@ -79,7 +79,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol, int 
 	for(int i = 0; i < iterations; i++)
 	{
 		if (aurora > 0.99) break;
-		vec3 planeCoord = wpos * (((CLOUD_HEIGHT - 2.5) + (i * 11.0 / float(iterations) + dither * 11.0 / float(iterations))) / wpos.y) * 0.0005;
+		vec3 planeCoord = wpos * ((AURORA_HEIGHT + (i * 11.0 / float(iterations) + dither * 11.0 / float(iterations))) / wpos.y) * 0.0005;
 		vec2 coord = (cameraPosition.xz + 1000002.0) * 0.00015 + planeCoord.xz;
 
 		float localYPos = (float(i) + dither) / float(iterations);

@@ -422,8 +422,16 @@ option.AURORA_SAMPLES_SKY.comment=A higher sample count improves quality, but de
 option.AURORA_SAMPLES_REFLECTION=Reflection Samples
 option.AURORA_SAMPLES_REFLECTION.comment=A higher sample count improves quality, but decreases performance.
 
-option.AURORA_BRIGHTNESS=Aurora Brightness
+option.AURORA_BRIGHTNESS=Brightness
 option.AURORA_BRIGHTNESS.comment=Changes the Aurora Brightness
+
+option.AURORA_HEIGHT=Height
+option.AURORA_HEIGHT.comment=Changes the height of the Auroras.
+value.AURORA_HEIGHT.2.5 =Very Low
+value.AURORA_HEIGHT.7.5=Low
+value.AURORA_HEIGHT.12.5=Medium
+value.AURORA_HEIGHT.17.5=High
+value.AURORA_HEIGHT.22.5=Very High
 
 option.ROUND_SUN_MOON=Round Sun & Moon
 option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§rDisable vanilla sun & moon in Video Settings > Details > Sun & Moon
