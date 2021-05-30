@@ -238,6 +238,7 @@ https://bitslablab.com
   #define AURORA_SAMPLES_REFLECTION 6 // [4 6 8 10 12 14 16 18 20 22 24 26]
   #define AURORA_BRIGHTNESS 3.0 // [0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0 3.25 3.5 3.75 4.0 4.25 4.5 4.75 5.0 5.25 5.5 6.0 6.5 7.0 7.5 8.0]
   #define AURORA_HEIGHT 12.5 // [2.5 7.5 12.5 17.5 22.5]
+  // #define AURORA_PERBIOME
 //#define ROUND_SUN_MOON
   #define SKY_DESATURATION
   #define HORIZON_DISTANCE 2.0 //[1.0 1.5 2.0 2.5 3.0]

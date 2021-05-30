@@ -61,9 +61,15 @@ float GetAuroraNoiseSharpness(in float cosT) {
 
 vec4 DrawAurora(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol, int iterations)
 {
+	if(1.0 - sunVisibility <= 0.0) return vec4(0.0);
+
+	#ifdef AURORA_PERBIOME
+	if(isCold < 0.005) return vec4(0.0);
+	#endif
+
 	float cosT = dot(normalize(viewPos), upVec);
 
-	if(1.0 - sunVisibility <= 0.0 || cosT < 0.0) return vec4(0.0);
+	if(cosT < 0.0) return vec4(0.0);
 	
 	#if AA == 2
 		dither = fract(16.0 * frameTimeCounter + dither);
@@ -90,5 +96,11 @@ vec4 DrawAurora(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol, int 
 	}
 	aurora *= clamp(1. - exp2(-cosT * 20.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
 
-	return vec4(colorAlbedo * AURORA_BRIGHTNESS, aurora * aurora * 0.05 * pow((1. - rainStrength) * (1. - sunVisibility), 2.0));
+	float alpha = aurora * aurora * 0.05 * pow((1. - rainStrength) * (1. - sunVisibility), 2.0);
+
+	#ifdef AURORA_PERBIOME
+	alpha *= smoothstep(0.0, 1.0, isCold);
+	#endif
+
+	return vec4(colorAlbedo * AURORA_BRIGHTNESS, alpha);
 }

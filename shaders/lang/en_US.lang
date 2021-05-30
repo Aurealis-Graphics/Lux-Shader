@@ -433,6 +433,8 @@ value.AURORA_HEIGHT.12.5=Medium
 value.AURORA_HEIGHT.17.5=High
 value.AURORA_HEIGHT.22.5=Very High
 
+option.AURORA_PERBIOME=Biome Check
+
 option.ROUND_SUN_MOON=Round Sun & Moon
 option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§rDisable vanilla sun & moon in Video Settings > Details > Sun & Moon
 
