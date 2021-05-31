@@ -447,7 +447,7 @@ void main(){
 				#endif
 
 				#ifdef AURORA
-				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, dither, vec3(1.0), vec3(1.0), AURORA_SAMPLES_REFLECTION);
+				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, dither, AURORA_SAMPLES_REFLECTION);
 				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 				#endif
 
@@ -505,7 +505,7 @@ void main(){
 					#endif
 
 					#ifdef AURORA
-					vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, vec3(1.0), vec3(1.0), AURORA_SAMPLES_REFLECTION);
+					vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, AURORA_SAMPLES_REFLECTION);
 					skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 					#endif
 

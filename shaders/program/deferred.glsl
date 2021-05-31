@@ -159,14 +159,14 @@ void main()
 				float cloudMixRate = 1.0;
 				#endif
 
-				#ifdef AURORA
-				vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, vec3(1.0), vec3(1.0), 6);
-				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
-				#endif
-
 				#ifdef CLOUDS
 				vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, ambientCol);
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a * cloudMixRate);
+				#endif
+
+				#ifdef AURORA
+				vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, AURORA_SAMPLES_REFLECTION);
+				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 				#endif
 
 				float quarterNdotU = clamp(0.25 * dot(normal, upVec) + 0.75, 0.5, 1.0);

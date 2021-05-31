@@ -59,7 +59,7 @@ float GetAuroraNoiseSharpness(in float cosT) {
 	return 12.0 * (1. - exp(-cosT * 3.0) + 0.05);
 }
 
-vec4 DrawAurora(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol, int iterations)
+vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 {
 	if(1.0 - sunVisibility <= 0.0) return vec4(0.0);
 

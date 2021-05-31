@@ -130,7 +130,7 @@ void main(){
 	#endif
 
 	#ifdef AURORA
-		vec4 aurora = DrawAurora(viewPos.xyz, dither, lightCol, ambientCol, AURORA_SAMPLES_SKY);
+		vec4 aurora = DrawAurora(viewPos.xyz, dither, AURORA_SAMPLES_SKY);
 		albedo.rgb = mix(albedo.rgb, aurora.rgb, aurora.a);
 	#endif
 
