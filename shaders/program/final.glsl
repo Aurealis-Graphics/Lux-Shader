@@ -16,6 +16,7 @@ varying vec2 texCoord;
 uniform sampler2D colortex1;
 
 uniform float viewWidth, viewHeight;
+uniform float rainStrength;
 
 uniform int isEyeInWater;
 
@@ -70,7 +71,7 @@ void main(){
 		gradedColor.b += abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
 		gradedColor.r *= 1. - abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
 		gradedColor *= 0.8;
-		color = mix(color, gradedColor, 0.5);
+		color = mix(color, gradedColor, 0.5 * (1. - rainStrength));
 	}
 
 	#if SHARPEN > 0

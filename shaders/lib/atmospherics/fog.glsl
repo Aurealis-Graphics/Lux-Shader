@@ -15,7 +15,7 @@ vec3 GetFogColor(vec3 viewPos){
 	float top = exp(-1.4 * halfNdotU * halfNdotU * (1.0 + sunVisibility) * (1.0 - rainStrength));
 
 	float mult = (0.5 * sunVisibility + 0.3) * (1.0 - 0.75 * rainStrength) * top +
-				 0.1 * (1.0 + rainStrength);
+				 0.1 * (1.0 + rainStrength * 1.6 * float(isEyeInWater == 1));
 
 	fogCol *= 1.0 - sqrt(lightmix);
 	fogCol = mix(fogCol, lightCol * sqrt(lightCol), lightmix) * sunVisibility;
