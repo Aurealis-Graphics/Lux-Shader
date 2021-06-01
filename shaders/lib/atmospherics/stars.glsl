@@ -18,7 +18,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 		star *= pow(texture2D(noisetex, coord.xy * 100.0).r, 2.0);
 	}
 	star = clamp(star - 0.8125, 0.0, 1.0) * multiplier;
-    star *= sin(frameTimeCounter * 0.5 + (coord.x + coord.y * 1000.0)) * 0.5 + 0.5;
+    star *= GetNoise(coord);
 
 	color += pow(star * 1.25, 3.0) * pow(lightNight, vec3(0.8));
 }

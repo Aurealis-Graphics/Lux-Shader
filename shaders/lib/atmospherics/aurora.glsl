@@ -41,18 +41,16 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 vec3 GetAuroraColor(in vec2 coord, float scale)
 {
 	float n1 = simplex(coord * scale - frameTimeCounter * 0.01) * 0.5 + 0.5;
-	float n2 = simplex(coord.yx * scale + frameTimeCounter * 0.01) * 0.5 + 0.5;
 
+	#if AURORA_COLORING_TYPE == 0
 	vec3 colorOne = vec3(0.1, 0.2, 1.0);
-	vec3 colorTwo = vec3(1.0, 0.1, 0.4);
-	vec3 colorThree = vec3(0.1, 1.0, 0.2);
+	vec3 colorTwo = vec3(0.1, 1.0, 0.2);
+	#elif AURORA_COLORING_TYPE == 1
+	vec3 colorOne = vec3(AURORA_COLOR_ONE_R, AURORA_COLOR_ONE_G, AURORA_COLOR_ONE_B);
+	vec3 colorTwo = vec3(AURORA_COLOR_TWO_R, AURORA_COLOR_TWO_G, AURORA_COLOR_TWO_B);
+	#endif
 
-	vec3 finalColor = mix(
-        mix(colorOne, colorThree, n1),
-        mix(colorTwo, colorOne, n2),
-        smoothstep(0.4, 0.6, simplex(coord * scale * 0.04 + frameTimeCounter * 0.01) * 0.5 + 0.5)
-    );
-	return pow(finalColor, vec3(1.1));
+	return pow(mix(colorOne, colorTwo, n1), vec3(1.1));
 }
 
 float GetAuroraNoiseSharpness(in float cosT) {

@@ -435,6 +435,17 @@ value.AURORA_HEIGHT.22.5=Very High
 
 option.AURORA_PERBIOME=Biome Check
 
+option.AURORA_COLORING_TYPE=Coloring Type
+value.AURORA_COLORING_TYPE.0=Default
+value.AURORA_COLORING_TYPE.1=Custom
+
+option.AURORA_COLOR_ONE_R=Color One Red
+option.AURORA_COLOR_TWO_R=Color Two Red
+option.AURORA_COLOR_ONE_G=Color One Green
+option.AURORA_COLOR_TWO_G=Color Two Green
+option.AURORA_COLOR_ONE_B=Color One Blue
+option.AURORA_COLOR_TWO_B=Color Two Blue
+
 option.ROUND_SUN_MOON=Round Sun & Moon
 option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§rDisable vanilla sun & moon in Video Settings > Details > Sun & Moon
 
