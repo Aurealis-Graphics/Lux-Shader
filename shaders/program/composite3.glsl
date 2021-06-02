@@ -123,7 +123,7 @@ vec3 DepthOfField(vec3 color, float z){
 	noise = fract(noise + frameTimeCounter * 8.3333);
 	#endif
 
-	mat2 rotation = rotate(noise);
+	mat2 rotation = rotate(noise * 3.1415 * 2.0);
 
 	for (int i = 0; i < 60; i++)
 	{
