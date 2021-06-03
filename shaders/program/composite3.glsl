@@ -103,7 +103,7 @@ vec3 DepthOfField(vec3 color, float z){
 	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
 	
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = pow(abs(z - centerDepthSmooth) / 1.6 * DOF_STRENGTH, 0.75);
+	float coc = pow(abs(z - centerDepthSmooth) / 1.6 * DOF_STRENGTH, 0.7);
 	coc = coc / (1 + coc);
 	
 	vec3 dof = vec3(0.0);
