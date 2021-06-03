@@ -89,8 +89,8 @@ vec2 samples[60] = vec2[60](
 );
 
 vec3 magic = vec3(0.06711056, 0.00583715, 52.9829189);
-vec2 InterleavedGradientNoise2D(vec2 p) {
-    vec2 x = vec2(dot(p, magic.xy), dot(p.yx + 0.11, magic.xy - 0.04));
+float InterleavedGradientNoise(vec2 p) {
+    float x = dot(p, magic.xy);
 	return fract(magic.z * fract(x));
 }
 
@@ -98,37 +98,32 @@ mat2 rotate(float angle){
 	return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
-float Bayer2(vec2 a) {
-    a = floor(a);
-    return fract(a.x / 2. + a.y * a.y * .75);
-}
-
-#define Bayer4(a)   (Bayer2 (.5 *(a)) * .25 + Bayer2(a))
-#define Bayer8(a)   (Bayer4 (.5 *(a)) * .25 + Bayer2(a))
-#define Bayer16(a)  (Bayer8 (.5 *(a)) * .25 + Bayer2(a))
-#define Bayer32(a)  (Bayer16(.5 *(a)) * .25 + Bayer2(a))
-#define Bayer64(a)  (Bayer32(.5 *(a)) * .25 + Bayer2(a))
-
 //Common Functions//
 vec3 DepthOfField(vec3 color, float z){
 	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
 	
 	float fovScale = gbufferProjection[1][1] / 1.37;
 	float coc = pow(abs(z - centerDepthSmooth) / 1.6 * DOF_STRENGTH, 0.75);
+	coc = coc / (1 + coc);
 	
 	vec3 dof = vec3(0.0);
-	float noise = InterleavedGradientNoise2D(gl_FragCoord.xy).x;
+	float noise = InterleavedGradientNoise(gl_FragCoord.xy);
 
 	#if AA == 2
-	noise = fract(noise + frameTimeCounter * 8.3333);
-	#endif
+	noise = fract(noise + frameTimeCounter * 33.333);
 
-	mat2 rotation = rotate(noise * 3.1415 * 2.0);
+	mat2 rotation = rotate(noise * 3.1415);
+	#endif
 
 	for (int i = 0; i < 60; i++)
 	{
-		vec2 offset = rotation * samples[i] * coc * fovScale * 0.05 / vec2(aspectRatio, 1.0);
-		dof += texture2D(colortex0, texCoord + offset).rgb;
+		vec2 offset = samples[i] * coc * fovScale * 0.1;
+
+		#if AA == 2
+		offset = rotation * offset;
+		#endif
+
+		dof += texture2D(colortex0, texCoord + offset / vec2(aspectRatio, 1.0)).rgb;
 	}
 	
 	return dof / 60.0;
