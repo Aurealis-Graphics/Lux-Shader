@@ -50,6 +50,8 @@ const bool colortex2Clear = false;
 const bool colortex0MipmapEnabled = true;
 #endif
 
+#include "/lib/util/circleOfConfusion.glsl"
+
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp(dot( sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
@@ -196,8 +198,7 @@ vec2 GetLightPos(){
 vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z, float centerDepthSmooth) 
 {
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = max(abs(z - centerDepthSmooth) * 16.0 - 0.01, 0.0);
-	coc = sqrt(abs(coc)) * 0.006 * fovScale;
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth) * 0.04;
 
 	float handMask = float(z > 0.56);
 

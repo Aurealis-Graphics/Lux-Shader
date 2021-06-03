@@ -25,6 +25,8 @@ uniform sampler2D depthtex1;
 //Optifine Constants//
 const bool colortex0MipmapEnabled = true;
 
+#include "/lib/util/circleOfConfusion.glsl"
+
 vec2 samples[60] = vec2[60](
 	vec2(0.09128709291752769, 0.0),
 	vec2(-0.11658822152703764, 0.10680443156144032),
@@ -94,7 +96,7 @@ float InterleavedGradientNoise(vec2 p) {
 	return fract(magic.z * fract(x));
 }
 
-mat2 rotate(float angle){
+mat2 rotate(float angle) {
 	return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
@@ -103,8 +105,7 @@ vec3 DepthOfField(vec3 color, float z){
 	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
 	
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = pow(abs(z - centerDepthSmooth) / 1.6 * DOF_STRENGTH, 0.7);
-	coc = coc / (1 + coc);
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth);
 	
 	vec3 dof = vec3(0.0);
 	float noise = InterleavedGradientNoise(gl_FragCoord.xy);
