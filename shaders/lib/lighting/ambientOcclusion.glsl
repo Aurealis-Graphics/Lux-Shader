@@ -41,5 +41,5 @@ float AmbientOcclusion(sampler2D depth, float dither){
 	}
 	ao /= samples;
 	
-	return pow(ao, AO_STRENGTH / 2.0);
+	return pow(ao, AO_STRENGTH);
 }

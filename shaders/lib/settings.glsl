@@ -9,7 +9,7 @@ https://bitslablab.com
 
 //Visual//
   #define AO
-  #define AO_STRENGTH 1.50 //[0.50 0.75 1.00 1.25 1.50 1.75 2.00]
+  #define AO_STRENGTH 1.00 //[0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define LIGHT_SHAFT
   #define LIGHT_SHAFT_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define DESATURATION
