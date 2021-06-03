@@ -108,7 +108,7 @@ void Bloom(inout vec3 color, vec2 coord){
 	vec3 blur3 = GetBloomTile(4.0, coord, vec2(0.135    , 0.26  ));
 	vec3 blur4 = GetBloomTile(5.0, coord, vec2(0.2075   , 0.26  ));
 	vec3 blur5 = GetBloomTile(6.0, coord, vec2(0.135    , 0.3325));
-	
+	vec3 blur6 = GetBloomTile(7.0, coord, vec2(0.2075	, 0.3325));
 
 	#ifdef DIRTY_LENS
 	float newAspectRatio = 1.777777777777778 / aspectRatio;
@@ -117,12 +117,12 @@ void Bloom(inout vec3 color, vec2 coord){
 	blur3 *= dirt *  1.0 + 1.0;
 	blur4 *= dirt *  2.0 + 1.0;
 	blur5 *= dirt *  4.0 + 1.0;
+	blur6 *= dirt *  6.0 + 1.0;
 	#endif
 
-	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5) * 0.14;
+	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5 + blur6) * 0.125;
 
-	// color = mix(color, blur, 0.18 * BLOOM_STRENGTH);
-	color = mix(color, blur, saturate(Luma(blur) * 0.7 * BLOOM_STRENGTH));
+	color += blur * Luma(blur) * BLOOM_STRENGTH;
 }
 
 void AutoExposure(inout vec3 color, inout float exposure, float tempExposure){
