@@ -48,7 +48,7 @@ https://bitslablab.com
   #define LENS_FLARE
   #define LENS_FLARE_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define AA 2 //[0 1 2]
-  #define SHARPEN 0 //[0 1 2 3 4 5]
+  #define SHARPEN 5 //[0 1 2 3 4 5]
 //#define AUTO_EXPOSURE
   #define VIGNETTE
 //#define DIRTY_LENS
@@ -290,7 +290,7 @@ https://bitslablab.com
   #define WEATHER
   #define WEATHER_OPACITY 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define FOG
-  #define FOG_DENSITY 1.50 //[0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
+  #define FOG_DENSITY 1.00 //[0.25 0.50 0.75 1.00 1.50 2.00 2.50 3.00 3.50 4.00]
 //#define WORLD_CURVATURE
   #define WORLD_CURVATURE_SIZE 256 //[-256 -512 -1024 -2048 -4096 4096 2048 1024 512 256 128 64 32 16]
 //#define WORLD_TIME_ANIMATION

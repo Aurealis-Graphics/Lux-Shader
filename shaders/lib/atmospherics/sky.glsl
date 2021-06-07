@@ -34,5 +34,5 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol){
     weatherSky *= GetLuminance(ambientCol / (weatherSky)) * 1.4;
     sky = mix(sky, weatherSky, rainStrength) * mult;
 
-    return pow(sky, vec3(1.08));
+    return pow(sky, vec3(1.1));
 }
