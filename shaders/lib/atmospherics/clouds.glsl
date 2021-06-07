@@ -1,10 +1,20 @@
-float CloudNoise(vec2 coord, vec2 wind){
-	float noise = texture2D(noisetex, coord * 0.5      + wind * 0.055).x * 6.0;
-		  noise += texture2D(noisetex, coord           + wind * 0.285).x * 3.0;
-		  noise += texture2D(noisetex, coord * 2.0     - wind * 0.345).x * 1.5;
-		  noise += texture2D(noisetex, coord * 4.0     - wind * 0.405).x * 0.75;
-		  noise += texture2D(noisetex, coord * 8.0     - wind * 0.505).x * 0.375;
-	return noise * 1.6;
+const float persistance = 0.65;
+const float lacunarity = 1.5;
+float CloudNoise(vec2 coord, vec2 wind)
+{
+	float retValue = 0.0;
+
+	float amplitude = 1.0;
+	float frequency = 0.5;
+
+	for (int i = 0; i < 7; i++)
+	{
+		retValue += texture2D(noisetex, coord * frequency).r * amplitude;
+		frequency *= lacunarity;
+		amplitude *= persistance;
+	}
+
+	return retValue * 10.0;
 }
 
 float CloudCoverage(float noise, float cosT, float coverage){
@@ -29,7 +39,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 	float gradientMix = dither * 0.1667;
 	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength));
 	float noiseMultiplier = CLOUD_THICKNESS * 0.2;
-	float scattering = pow(cosS * 0.5 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
+	float scattering = pow(cosS * 0.6 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
 
 	vec2 wind = vec2(
 		frametime * CLOUD_SPEED * 0.001,
@@ -42,13 +52,13 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 		vec3 wpos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 		for(int i = 0; i < 6; i++) {
 			if (cloud > 0.99) break;
-			vec3 planeCoord = wpos * ((CLOUD_HEIGHT + (i + dither) * 0.75) / wpos.y) * 0.004;
+			vec3 planeCoord = wpos * ((CLOUD_HEIGHT + (i + dither) * 0.9) / wpos.y) * 0.004;
 			vec2 coord = cameraPosition.xz * 0.00025 + planeCoord.xz;
 			float coverage = float(i - 3.0 + dither) * 0.667;
 
 			float noise = CloudNoise(coord * 0.1, wind * 0.6);
 				  noise = CloudCoverage(noise, cosT, coverage) * noiseMultiplier;
-				  noise = noise / pow(pow(noise, 2.5) + 1.0, 0.4);
+				  noise /= 8.0 + noise;
 
 			cloudGradient = mix(
 				cloudGradient,
