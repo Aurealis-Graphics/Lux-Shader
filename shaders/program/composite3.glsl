@@ -111,9 +111,9 @@ vec3 DepthOfField(vec3 color, float z){
 	float noise = InterleavedGradientNoise(gl_FragCoord.xy);
 
 	#if AA == 2
-	noise = fract(noise + frameTimeCounter * 33.333);
+	noise = fract(noise + frameTimeCounter * 11.333);
 
-	mat2 rotation = rotate(noise * 3.1415);
+	mat2 rotation = rotate(noise * 2.0 * 3.1415);
 	#endif
 
 	for (int i = 0; i < 60; i++)

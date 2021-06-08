@@ -1,5 +1,5 @@
-const float persistance = 0.65;
-const float lacunarity = 1.5;
+const float persistance = 0.7;
+const float lacunarity = 1.45;
 float CloudNoise(vec2 coord, vec2 wind)
 {
 	float retValue = 0.0;
@@ -14,7 +14,7 @@ float CloudNoise(vec2 coord, vec2 wind)
 		amplitude *= persistance;
 	}
 
-	return retValue * 10.0;
+	return retValue * 8.5;
 }
 
 float CloudCoverage(float noise, float cosT, float coverage){

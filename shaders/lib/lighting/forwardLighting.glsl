@@ -64,8 +64,8 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
 
     if (foliage > 0.5){
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
-        float subsurface = pow(VdotL, 25.0) * (1.0 - rainStrength);
-        sceneLighting *= 3.0 * fullShadow * subsurface + 1.0;
+        float subsurface = (pow(VdotL, 15.0) + pow(VdotL, 220.0)) * 2.0 * (1.0 - rainStrength);
+        sceneLighting *= smoothstep(0.0, 1.0, fullShadow) * subsurface + 1.0;
     }
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
