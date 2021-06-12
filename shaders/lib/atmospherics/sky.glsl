@@ -22,7 +22,7 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol){
     float groundFactor = 0.5 * (11.0 * rainStrength * rainStrength + 1.0) * 
                          (-5.0 * sunVisibility + 6.0);
     float ground = 1.0 - exp(-(groundFactor * FOG_DENSITY) / (invNdotU * 8.0));
-    float mult = (0.1 * (1.0 + rainStrength) + horizon) * ground;
+    float mult = (0.2 * (1.0 + rainStrength) + horizon) * ground;
 
     sky = mix(
         sky * pow(max(1.0 - lightmix, 0.0), 2.0 * sunVisibility),

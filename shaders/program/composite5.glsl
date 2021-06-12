@@ -124,7 +124,7 @@ void Bloom(inout vec3 color, vec2 coord){
 
 	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5 + blur6) * 0.125;
 
-	color += blur * Luma(blur) * BLOOM_STRENGTH;
+	color += blur * pow(Luma(blur), 2.0) * BLOOM_STRENGTH;
 }
 
 void AutoExposure(inout vec3 color, inout float exposure, float tempExposure){
@@ -258,7 +258,7 @@ void main(){
 	ColorGrading(color);
 	#endif
 
-	color = Burgess_Modified(color);
+	color = Burgess_Modified(pow(color * 1.2, vec3(1.08)));
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();

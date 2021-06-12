@@ -1,20 +1,20 @@
 const float persistance = 0.7;
-const float lacunarity = 1.45;
+const float lacunarity = 1.5;
 float CloudNoise(vec2 coord, vec2 wind)
 {
 	float retValue = 0.0;
 
 	float amplitude = 1.0;
-	float frequency = 0.5;
+	float frequency = 0.45;
 
 	for (int i = 0; i < 7; i++)
 	{
-		retValue += texture2D(noisetex, coord * frequency).r * amplitude;
+		retValue += texture2D(noisetex, (coord + wind * 0.4 * pow(frequency, 0.3)) * frequency).r * amplitude;
 		frequency *= lacunarity;
 		amplitude *= persistance;
 	}
 
-	return retValue * 8.5;
+	return retValue * 9.0;
 }
 
 float CloudCoverage(float noise, float cosT, float coverage){
@@ -39,7 +39,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 	float gradientMix = dither * 0.1667;
 	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength));
 	float noiseMultiplier = CLOUD_THICKNESS * 0.2;
-	float scattering = pow(cosS * 0.6 * (2.0 * sunVisibility - 1.0) + 0.5, 6.0);
+	float scattering = pow(cosS * 0.6 * (2.0 * sunVisibility - 1.0) + 0.5, 4.0);
 
 	vec2 wind = vec2(
 		frametime * CLOUD_SPEED * 0.001,
@@ -58,7 +58,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 
 			float noise = CloudNoise(coord * 0.1, wind * 0.6);
 				  noise = CloudCoverage(noise, cosT, coverage) * noiseMultiplier;
-				  noise /= 8.0 + noise;
+				  noise /= 10.0 + noise;
 
 			cloudGradient = mix(
 				cloudGradient,
@@ -69,7 +69,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol){
 			gradientMix += 0.1667;
 		}
 		cloudcolor = mix(
-			ambientCol * (0.5 * sunVisibility + 0.5),
+			ambientCol * 0.5 * (0.5 * sunVisibility + 0.5),
 			lightCol * (1.0 + scattering),
 			cloudGradient * cloud
 		);

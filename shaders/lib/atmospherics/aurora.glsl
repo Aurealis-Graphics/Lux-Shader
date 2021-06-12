@@ -33,7 +33,8 @@ float GetWarpedRidgedMultifractalNoise(in vec2 coord, float scale, float time, f
 float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, float localY)
 {
 	float noise = GetWarpedRidgedMultifractalNoise(coord, scale, time, sharpness);
-	noise *= mix(texture2D(noisetex, coord * 2.1 + time * 8.0).r, 1.0, 0.55);
+	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 3.0).r, 1.0, 0.7);
+	noise *= mix(texture2D(noisetex, coord * 2.5 - time * 3.0).r, 1.0, 0.7);
 
 	return smoothstep(0.0, 1.0, noise);
 }
@@ -84,10 +85,10 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	{
 		if (aurora > 0.99) break;
 		vec3 planeCoord = wpos * ((AURORA_HEIGHT + (i * 11.0 / float(iterations) + dither * 11.0 / float(iterations))) / wpos.y) * 0.0005;
-		vec2 coord = (cameraPosition.xz + 1000002.0) * 0.00015 + planeCoord.xz;
+		vec2 coord = (cameraPosition.xz + 1000002.0) * 0.00005 + planeCoord.xz;
 
 		float localYPos = (float(i) + dither) / float(iterations);
-		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0002, noiseSharpness, localYPos);
+		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0003, noiseSharpness, localYPos);
 
 		noise *= 1. - localYPos;
 		aurora = mix(aurora, 1.0, noise);

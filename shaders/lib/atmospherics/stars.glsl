@@ -47,6 +47,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
     {
         vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
         vec2 coord = wpos.xz + cameraPosition.xz * 0.01 / (wpos.y + length(wpos.xz));
+        coord *= 0.8;
         coord = Rot(rotationAngle) * coord;
 
         float speedMultiplier = 0.8 + hash12(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
@@ -101,7 +102,7 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
     {
         float rotation = float(i) / float(SHOOTING_STARS_ROTATION_ITERATIONS) * PI;
         float n = hash12(vec2(rotation));
-        result += GetShootingStarLayer(viewPos, time + n * 320.0, rotation + n);
+        result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
     }
 
     return result;
