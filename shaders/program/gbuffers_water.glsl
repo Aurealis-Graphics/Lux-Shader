@@ -134,7 +134,7 @@ float GetWaterHeightMap(vec3 worldPos, vec3 viewPos) {
 		noise += texture2D(noisetex, (worldPos.xz + frameTimeCounter) * 0.005).r * 0.5;
 		noise += texture2D(noisetex, (worldPos.xz - frameTimeCounter * 0.5) * 0.007).r * 0.4;
 
-		noise *= mult * mult * 0.8;
+		noise *= mult * mult;
 
 		#elif WATER_NORMALS == 2
         float lacunarity = 1.0 / WATER_SIZE, persistance = 1.0, weight = 0.0;
