@@ -68,10 +68,10 @@ void main(){
 	if(isEyeInWater == 1) 
 	{
 		vec3 gradedColor = color * vec3(0.7, 0.95, 1.0);
-		gradedColor.b += abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
-		gradedColor.r *= 1. - abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
+		gradedColor.b *= 0.8 + abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
+		gradedColor.r *= 1. - abs(gradedColor.b - sqrt(gradedColor.r));
 		gradedColor *= 0.8;
-		color = mix(color, gradedColor, 0.5 * (1. - rainStrength));
+		color = mix(color, gradedColor, 0.3 * (1. - rainStrength));
 	}
 
 	#if SHARPEN > 0

@@ -91,7 +91,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     #ifdef DESATURATION
     #ifdef OVERWORLD
     float desatAmount = sqrt(max(sqrt(length(fullShadow / 3.0)) * lightmap.y, lightmap.y)) *
-                        sunVisibility * (1.0 - rainStrength * 0.4) + sqrt(lightmap.x + emissive);
+                        sunVisibility * (1.0 - rainStrength * 0.4) + smoothstep(0.0, 1.0, lightmap.x + emissive);
 
     vec3 desatNight   = lightNight / LIGHT_NI;
     vec3 desatWeather = weatherCol.rgb / weatherCol.a * 0.5;

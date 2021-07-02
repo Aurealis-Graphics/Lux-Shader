@@ -62,6 +62,8 @@ void main(){
     vec3 color = texture2DLod(colortex1, floor(texCoord * view) / view, 0).rgb;
     #endif
 
+    color = mix(color, smoothstep(0.0, 1.0, color), 0.36);
+
     /*DRAWBUFFERS:1*/
 	gl_FragData[0] = vec4(color, 1.0);
 	#if AA == 2 && !defined RETRO_FILTER
