@@ -88,7 +88,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
             result += glare;
         }
 
-        return result * pow(distance(cosT, 0.3), 2.0);
+        return result * (1. - rainStrength) * pow(distance(cosT, 0.3), 2.0);
     }
     
     return vec3(0.0);

@@ -69,7 +69,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	float cosT = dot(normalize(viewPos), upVec);
 
 	if(cosT < 0.0) return vec4(0.0);
-	
+
 	#if AA == 2
 		dither = fract(16.0 * frameTimeCounter + dither);
 	#endif
