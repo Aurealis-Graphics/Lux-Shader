@@ -190,13 +190,7 @@ value.AA.1=FXAA
 value.AA.2=TAA
 
 option.SHARPEN=Image Sharpening
-option.SHARPEN.comment=Adds sharpening filter. §a[+]§rGreat for those who dislike softened image due to antialiasing. §c[-]§rSharper image causes dithering artifact and some aliasing to reappear.
-value.SHARPEN.0=0.00
-value.SHARPEN.1=0.10
-value.SHARPEN.2=0.20
-value.SHARPEN.3=0.30
-value.SHARPEN.4=0.40
-value.SHARPEN.5=0.50
+option.SHARPEN.comment=Adds sharpening filter. §a[+]§rGreat for those who dislike softened image due to antialiasing. §c[-]§rToo much sharpening causes dithering artifact and some aliasing to reappear.
 
 option.AUTO_EXPOSURE=Auto Exposure
 option.AUTO_EXPOSURE.comment=Enables automatic adjustment to overall brightness.

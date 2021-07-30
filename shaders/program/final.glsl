@@ -49,15 +49,15 @@ vec2 sharpenOffsets[4] = vec2[4](
 );
 
 void SharpenFilter(inout vec3 color){
-	float mult = SHARPEN * 0.025;
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
-
-	color *= SHARPEN * 0.1 + 1.0;
+	vec3 pixelBlur = vec3(0.0);
 
 	for(int i = 0; i < 4; i++){
 		vec2 offset = sharpenOffsets[i] * view;
-		color -= texture2D(colortex1, texCoord + offset).rgb * mult;
-	} 
+		pixelBlur += texture2D(colortex1, texCoord + offset).rgb / 4.0;
+	}
+
+	color += (color - pixelBlur) * SHARPEN * 0.25;
 }
 #endif
 
