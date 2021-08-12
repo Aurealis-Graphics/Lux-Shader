@@ -48,7 +48,7 @@ https://bitslablab.com
   #define LENS_FLARE
   #define LENS_FLARE_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define AA 2 //[0 1 2]
-  #define SHARPEN 5 //[0 1 2 3 4 5 6 7 8 9 10]
+  #define SHARPEN 3 //[0 1 2 3 4 5 6 7 8 9 10]
 //#define AUTO_EXPOSURE
   #define VIGNETTE
 //#define DIRTY_LENS
