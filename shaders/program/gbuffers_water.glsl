@@ -435,7 +435,7 @@ void main(){
 				skyReflection += GetSkyColor(skyRefPos, lightCol);
 
 				float specular = GGX(newNormal, normalize(viewPos), lightVec,
-				                	 0.98, 0.02, 0.025 * pow(sunVisibility, 0.28) + 0.05);
+				                	 0.98, 0.02, 0.028 * sunVisibility + 0.05);
 				specular *= (1.0 - sqrt(rainStrength)) * shadowFade / 4.5;
 				float specularDiv = (4.0 - 3.0 * eBS) * fresnel * albedo.a;
 
