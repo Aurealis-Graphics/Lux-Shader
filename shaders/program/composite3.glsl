@@ -24,7 +24,6 @@ uniform sampler2D colortex0;
 uniform sampler2D depthtex1;
 
 //Optifine Constants//
-const bool colortex0MipmapEnabled = true;
 
 #include "/lib/util/circleOfConfusion.glsl"
 
