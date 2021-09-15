@@ -1,8 +1,8 @@
 
-vec2 hash( vec2 p )
+vec2 hash(vec2 p)
 {
-	p = vec2( dot(p,vec2(127.1,311.7)), dot(p,vec2(269.5,183.3)) );
-	return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+	p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+	return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
 // Simplex Noise 2D by Inigo Quillez
@@ -34,7 +34,6 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 {
 	float noise = GetWarpedRidgedMultifractalNoise(coord, scale, time, sharpness);
 	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 3.0).r, 1.0, 0.6);
-	
 	return smoothstep(0.0, 1.0, noise);
 }
 
@@ -53,7 +52,8 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 	return pow(mix(colorOne, colorTwo, n1), vec3(1.1));
 }
 
-float GetAuroraNoiseSharpness(in float cosT) {
+float GetAuroraNoiseSharpness(in float cosT) 
+{
 	return 12.0 * (1. - exp(-cosT * 3.0) + 0.05);
 }
 

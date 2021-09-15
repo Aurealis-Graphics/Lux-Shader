@@ -122,7 +122,7 @@ void main(){
 		}
 	#endif
 
-	float dither = Bayer64(gl_FragCoord.xy);
+	float dither = InterleavedGradientNoise(gl_FragCoord.xy);
 
 	#ifdef CLOUDS
 	vec4 cloud = DrawCloud(viewPos.xyz, dither, lightCol, ambientCol);

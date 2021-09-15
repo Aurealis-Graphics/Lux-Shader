@@ -81,11 +81,6 @@ float GetLuminance(vec3 color){
 	return dot(color,vec3(0.299, 0.587, 0.114));
 }
 
-float InterleavedGradientNoise(){
-	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-	return fract(n + frameCounter / 8.0);
-}
-
 float GetHandItem(int id){
 	return float((heldItemId == id && isMainHand > 0.5) || (heldItemId2 == id && isMainHand < 0.5));
 }
@@ -94,6 +89,7 @@ float GetHandItem(int id){
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/color/dimensionColor.glsl"
 #include "/lib/util/spaceConversion.glsl"
+#include "/lib/util/dither.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
 
 #if AA == 2

@@ -11,3 +11,9 @@ float Bayer2(vec2 a){
 #define Bayer64(a)  (Bayer32( 0.5 * (a)) * 0.25 + Bayer2(a))
 #define Bayer128(a) (Bayer64( 0.5 * (a)) * 0.25 + Bayer2(a))
 #define Bayer256(a) (Bayer128(0.5 * (a)) * 0.25 + Bayer2(a))
+
+vec3 magic = vec3(0.06711056, 0.00583715, 52.9829189);
+float InterleavedGradientNoise(vec2 p) {
+    float x = dot(p, magic.xy);
+	return fract(magic.z * fract(x));
+}

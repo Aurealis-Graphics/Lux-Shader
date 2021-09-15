@@ -26,6 +26,7 @@ uniform sampler2D depthtex1;
 //Optifine Constants//
 
 #include "/lib/util/circleOfConfusion.glsl"
+#include "/lib/util/dither.glsl"
 
 vec2 samples[60] = vec2[60](
 	vec2(0.09128709291752769, 0.0),
@@ -89,12 +90,6 @@ vec2 samples[60] = vec2[60](
 	vec2(0.5600045850686216, 0.81326186723719),
 	vec2(-0.9704701858428567, -0.22328073149467595)
 );
-
-vec3 magic = vec3(0.06711056, 0.00583715, 52.9829189);
-float InterleavedGradientNoise(vec2 p) {
-    float x = dot(p, magic.xy);
-	return fract(magic.z * fract(x));
-}
 
 mat2 rotate(float angle) {
 	return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));

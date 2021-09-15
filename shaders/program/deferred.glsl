@@ -72,11 +72,6 @@ float GetLinearDepth(float depth) {
    return (2.0 * near) / (far + near - depth * (far - near));
 }
 
-float InterleavedGradientNoise(){
-	float n = 52.9829189 * fract(0.06711056 * gl_FragCoord.x + 0.00583715 * gl_FragCoord.y);
-	return fract(n + frameCounter / 8.0);
-}
-
 //Includes//
 #include "/lib/color/dimensionColor.glsl"
 #include "/lib/color/skyColor.glsl"

@@ -441,13 +441,15 @@ void main(){
 
 				skyReflection += (specular / specularDiv) * specularColor * shadow;
 
+				float volumetricsDither = InterleavedGradientNoise(gl_FragCoord.xy);
+
 				#ifdef CLOUDS
-				vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, ambientCol);
+				vec4 cloud = DrawCloud(skyRefPos * 100.0, volumetricsDither, lightCol, ambientCol);
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
 				#endif
 
 				#ifdef AURORA
-				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, dither, AURORA_SAMPLES_REFLECTION);
+				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, volumetricsDither, AURORA_SAMPLES_REFLECTION);
 				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 				#endif
 

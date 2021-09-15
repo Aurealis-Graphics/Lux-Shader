@@ -95,7 +95,7 @@ void main(){
 	viewPos /= viewPos.w;
 
 	#if defined AO || defined LIGHT_SHAFT
-	float dither = Bayer64(gl_FragCoord.xy);
+	float dither = InterleavedGradientNoise(gl_FragCoord.xy);
 	#endif
 
 	#ifdef AO
