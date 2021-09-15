@@ -43,7 +43,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
 {
     float cosT = dot(normalize(viewPos), upVec);
 
-    if(cosT > 0.3) 
+    if(cosT > 0.2) 
     {
         vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
         vec2 coord = wpos.xz + cameraPosition.xz * 0.01 / (wpos.y + length(wpos.xz));
@@ -51,7 +51,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
         coord = Rot(rotationAngle) * coord;
 
         float speedMultiplier = 0.8 + hash12(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
-        time *= speedMultiplier * SHOOTING_STARS_SPEED;
+        time *= speedMultiplier * SHOOTING_STARS_SPEED * SHOOTING_STARS_SCALE;
         
         coord += vec2(-time, time);
 
@@ -88,7 +88,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
             result += glare;
         }
 
-        return result * (1. - rainStrength) * pow(distance(cosT, 0.3), 2.0);
+        return result * (1. - rainStrength) * smoothstep(0.2, 1.0, cosT);
     }
     
     return vec3(0.0);
