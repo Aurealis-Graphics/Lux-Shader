@@ -154,18 +154,12 @@ vec3 Burgess_Modified(vec3 color)
     return retColor;
 }
 
-/*vec3 TechTonemap(vec3 color)
+vec3 TechTonemap(vec3 color)
 {
     vec3 a = color * min(vec3(1.0), 1.0 - exp(-1.0 / 0.035 * color));
     vec3 b = a / (a + 0.7);
     return b;
 }
-
-void BSLTonemap(inout vec3 color){
-	color = TONEMAP_EXPOSURE * color;
-	color = color / pow(pow(color, vec3(TONEMAP_WHITE_CURVE)) + 1.0, vec3(1.0 / TONEMAP_WHITE_CURVE));
-	color = pow(color, mix(vec3(TONEMAP_LOWER_CURVE), vec3(TONEMAP_UPPER_CURVE), sqrt(color)));
-}*/
 
 void ColorSaturation(inout vec3 color){
 	float grayVibrance = (color.r + color.g + color.b) / 3.0;
@@ -267,7 +261,7 @@ void main(){
 
 	// color = BSLTonemap(color);
 	// color = TechTonemap(color * 3.5);
-	color = Burgess_Modified(pow(color * 1.2, vec3(1.08)));
+	color = Burgess_Modified(pow(color * 1.2, vec3(1.08)) * TONEMAP_EXPOSURE);
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();

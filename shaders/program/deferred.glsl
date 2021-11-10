@@ -33,7 +33,6 @@ uniform mat4 gbufferModelView, gbufferPreviousModelView, gbufferModelViewInverse
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex0;
-uniform sampler2D depthtex2;
 
 #if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
 uniform vec3 cameraPosition, previousCameraPosition;
@@ -154,13 +153,17 @@ void main()
 				float cloudMixRate = 1.0;
 				#endif
 
+				#if defined CLOUDS || defined AURORA
+				float volumetricsDither = InterleavedGradientNoise(gl_FragCoord.xy);
+				#endif
+
 				#ifdef CLOUDS
-				vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, ambientCol);
+				vec4 cloud = DrawCloud(skyRefPos * 100.0, volumetricsDither, lightCol, ambientCol);
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a * cloudMixRate);
 				#endif
 
 				#ifdef AURORA
-				vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, AURORA_SAMPLES_REFLECTION);
+				vec4 aurora = DrawAurora(skyRefPos * 100.0, volumetricsDither, AURORA_SAMPLES_REFLECTION);
 				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 				#endif
 
@@ -222,7 +225,7 @@ void main()
 	float wFogMult = 1.0 + eBS;
 	BlackOutline(color.rgb, depthtex0, wFogMult);
 	#endif
-    
+
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
 	#ifndef REFLECTION_PREVIOUS
