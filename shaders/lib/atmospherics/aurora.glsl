@@ -70,7 +70,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	if(cosT < 0.0) return vec4(0.0);
 
 	#if AA == 2
-		dither = fract(16.0 * frameTimeCounter + dither);
+		dither = fract(dither + frameTimeCounter * 32.333);
 	#endif
 
 	float aurora = 0.0;
@@ -87,7 +87,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 		vec2 coord = (cameraPosition.xz + 1000002.0) * 0.00005 + planeCoord.xz;
 
 		float localYPos = (float(i) + dither) / float(iterations);
-		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0005, noiseSharpness, localYPos);
+		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0005, noiseSharpness, pow(localYPos, float(iterations)));
 
 		noise *= 1. - localYPos;
 		aurora = mix(aurora, 1.0, noise);

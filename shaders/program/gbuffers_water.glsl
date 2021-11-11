@@ -100,11 +100,60 @@ float InterleavedGradientNoise(){
 #define PI 3.14159265359
 #define TWO_PI 6.283184
 
-float GetWaveLayer(vec2 coord, float wavelength, float steepness, vec2 direction) 
+float GetWaveLayer(vec2 coord, float wavelength, float steepness, vec2 direction, float speed) 
 {
     float k = (TWO_PI / wavelength);
-	float x = k * dot(normalize(direction), coord.xy) - frameTimeCounter * 3.0;
+	float x = k * dot(normalize(direction), coord.xy) - frameTimeCounter * 3.0 * speed;
     return steepness / k * sin(x + cos(x) * 0.8);
+}
+
+float Hash2D(vec2 p)
+{
+	vec3 p3  = fract(vec3(p.xyx) * .1031);
+	p3 += dot(p3, p3.yzx + 33.33);
+	return fract((p3.x + p3.y) * p3.z);
+}
+
+float ComputeWaterWaves(
+	in vec2 planeCoord,
+	in float mult,
+	in float waveSpeed,
+	in float gWaveLength,
+	in float gWaveLacunarity,
+	in float gWavePersistance,
+	in float gWaveAmplitude,
+	in float gWaveDirSpread,
+	in int gWaveIterations,
+	in float noiseScale,
+	in float noiseLacunarity,
+	in float noiseAmplitude,
+	in float noisePersistance,
+	in int noiseIterations
+	) 
+{
+	float noise;
+	vec2 waterWorldPos = planeCoord * 8.4;
+
+	for (int i = 0; i < gWaveIterations; i++) 
+	{
+		vec2 direction = vec2(Hash2D(vec2(float(i))), Hash2D(-vec2(float(i)))) * 2.0 - 1.0;
+		direction = mix(vec2(1.0), direction, gWaveDirSpread);
+
+		noise += GetWaveLayer(waterWorldPos, gWaveLength, 1.0, direction, waveSpeed) * gWaveAmplitude;
+		gWaveLength *= gWaveLacunarity;
+		gWaveAmplitude *= gWavePersistance;
+	}
+	noise *= gWaveAmplitude;
+
+	for (int i = 0; i < noiseIterations; i++) 
+	{
+		float wind = frameTimeCounter * waveSpeed * 0.7 * (float(fract(i / 2.0) == 0.0) * 2.0 - 1.0);
+		noise += texture2D(noisetex, (planeCoord + wind) * noiseScale).r * noiseAmplitude;
+		noiseScale *= noiseLacunarity;
+		noiseAmplitude *= noisePersistance;
+	}
+
+	return noise * mult * mult;
 }
 
 float GetWaterHeightMap(vec3 worldPos, vec3 viewPos) {
@@ -116,43 +165,46 @@ float GetWaterHeightMap(vec3 worldPos, vec3 viewPos) {
     vec2 wind = vec2(frametime) * 0.35;
     float verticalOffset = worldPos.y * 0.2;
 
-    if (mult > 0.01){
+    if (mult > 0.01)
+	{
         #if WATER_NORMALS == 1
 
-		vec3 waterWorldPos = worldPos * 8.4;
-
-		noise += GetWaveLayer(waterWorldPos.xz, 60.0, 1.0, vec2(1, 1));
-		noise += GetWaveLayer(waterWorldPos.xz, 31.0, 1.0, vec2(0.86, 1.9));
-		noise += GetWaveLayer(waterWorldPos.xz, 18.0, 1.0, vec2(1, 1.3));
-		noise += GetWaveLayer(waterWorldPos.xz, 26.0, 1.0, vec2(0.7, 1.0));
-		noise += GetWaveLayer(waterWorldPos.xz, 22.0, 1.0, vec2(0.8, 0.6));
-	
-		noise *= 0.08;
-
-		noise += texture2D(noisetex, (worldPos.xz + frameTimeCounter) * 0.002).r * 0.8;
-		noise += texture2D(noisetex, (worldPos.xz - frameTimeCounter) * 0.0035).r * 0.6;
-		noise += texture2D(noisetex, (worldPos.xz + frameTimeCounter) * 0.005).r * 0.5;
-		noise += texture2D(noisetex, (worldPos.xz - frameTimeCounter * 0.5) * 0.007).r * 0.4;
-
-		noise *= mult * mult * 0.8;
+		noise += ComputeWaterWaves(
+			worldPos.xz,
+			mult,
+			1.0,		// WAVE_SPEED
+			16.0,		// GERSTNER_WAVE_LENGTH
+			1.4,		// GERSTNER_WAVE_LACUNARITY
+			0.9,		// GERSTNER_WAVE_PERSISTANCE
+			0.36,		// GERSTNER_WAVE_AMPLITUDE
+			0.42,		// GERSTNER_WAVE_DIR_SPREAD
+			5,			// GERSTNER_WAVE_ITERATIONS
+			0.007,		// NOISE_WAVE_SCALE
+			0.7,		// NOISE_WAVE_LACUNARITY
+			0.4,		// NOISE_WAVE_AMPLITUDE
+			0.75,		// NOISE_WAVE_PERSISTANCE
+			4			// NOISE_WAVE_ITERATIONS
+		);
 
 		#elif WATER_NORMALS == 2
-        float lacunarity = 1.0 / WATER_SIZE, persistance = 1.0, weight = 0.0;
 
-        mult *= WATER_BUMP * WATER_SIZE / 450.0;
-        wind *= WATER_SPEED;
+		noise += ComputeWaterWaves(
+			worldPos.xz,
+			mult,
+			WAVE_SPEED,
+			GERSTNER_WAVE_LENGTH,
+			GERSTNER_WAVE_LACUNARITY,
+			GERSTNER_WAVE_PERSISTANCE,
+			GERSTNER_WAVE_AMPLITUDE,
+			GERSTNER_WAVE_DIR_SPREAD,
+			GERSTNER_WAVE_ITERATIONS,
+			NOISE_WAVE_SCALE,
+			NOISE_WAVE_LACUNARITY,
+			NOISE_WAVE_AMPLITUDE,
+			NOISE_WAVE_PERSISTANCE,
+			NOISE_WAVE_ITERATIONS
+		);
 
-        for(int i = 0; i < WATER_OCTAVE; i++){
-            float windSign = mod(i,2) * 2.0 - 1.0;
-			vec2 noiseCoord = worldPos.xz + wind * windSign - verticalOffset;
-            noise += texture2D(noisetex, noiseCoord * lacunarity).r * persistance;
-            if (i == 0) noise = -noise;
-
-            weight += persistance;
-            lacunarity *= WATER_LACUNARITY;
-            persistance *= WATER_PERSISTANCE;
-        }
-        noise *= mult / weight;
 		#endif
     }
 
@@ -175,20 +227,14 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector){
 	waterPos = GetParallaxWaves(waterPos, viewPos, viewVector);
 	#endif
 
-	#if WATER_NORMALS == 2
-	float normalOffset = WATER_SHARPNESS;
-	#else
-	float normalOffset = 0.1;
-	#endif
-
 	float h0 = GetWaterHeightMap(waterPos, viewPos);
-	float h1 = GetWaterHeightMap(waterPos + vec3( normalOffset, 0.0, 0.0), viewPos);
-	float h2 = GetWaterHeightMap(waterPos + vec3(-normalOffset, 0.0, 0.0), viewPos);
-	float h3 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0,  normalOffset), viewPos);
-	float h4 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0, -normalOffset), viewPos);
+	float h1 = GetWaterHeightMap(waterPos + vec3( 0.1, 0.0, 0.0), viewPos);
+	float h2 = GetWaterHeightMap(waterPos + vec3(-0.1, 0.0, 0.0), viewPos);
+	float h3 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0,  0.1), viewPos);
+	float h4 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0, -0.1), viewPos);
 
-	float xDelta = (h1 - h2) / normalOffset;
-	float yDelta = (h3 - h4) / normalOffset;
+	float xDelta = (h1 - h2) / 0.1;
+	float yDelta = (h3 - h4) / 0.1;
 
 	vec3 normalMap = vec3(xDelta, yDelta, 1.0 - (xDelta * xDelta + yDelta * yDelta));
 	return normalMap * 0.03 + vec3(0.0, 0.0, 0.97);
