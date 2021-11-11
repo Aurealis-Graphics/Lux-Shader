@@ -117,6 +117,10 @@ float GetLuminance(vec3 color){
 #endif
 #endif
 
+#if DISTANT_FADE > 0
+#include "/lib/util/dither.glsl"
+#endif
+
 //Program//
 void main(){
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);

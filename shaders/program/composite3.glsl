@@ -16,7 +16,7 @@ varying vec2 texCoord;
 uniform float viewWidth, viewHeight, aspectRatio;
 uniform float centerDepthSmooth;
 
-uniform float frameTimeCounter;
+uniform int frameTimeCounter;
 
 uniform mat4 gbufferProjection;
 
@@ -91,11 +91,11 @@ vec2 samples[60] = vec2[60](
 	vec2(-0.9704701858428567, -0.22328073149467595)
 );
 
-//Common Functions//
 mat2 rotate(float angle) {
 	return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
+//Common Functions//
 vec3 DepthOfField(vec3 color, float z){
 	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
 	
@@ -106,7 +106,7 @@ vec3 DepthOfField(vec3 color, float z){
 	float noise = InterleavedGradientNoise(gl_FragCoord.xy);
 
 	#if AA == 2
-	noise = fract(noise + frameTimeCounter * 38.34718);
+	noise = fract(noise + frameTimeCounter * 11.333);
 
 	mat2 rotation = rotate(noise * 2.0 * 3.1415);
 	#endif

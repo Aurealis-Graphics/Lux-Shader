@@ -1,5 +1,4 @@
-vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
-{
+vec3 GetSkyColor(vec3 viewPos, vec3 lightCol){
     vec3 sky = skyCol;
     vec3 nViewPos = normalize(viewPos);
 

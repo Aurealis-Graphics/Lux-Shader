@@ -62,8 +62,8 @@ screen.WORLD=World
 
 #Settings
 option.ABOUT=Capt Tatsu's BSL
-option.ABOUT.comment=by Capt Tatsu (bitslablab.com) edited by Tech
-value.ABOUT.0=edited by Tech
+option.ABOUT.comment=by Capt Tatsu (bitslablab.com) edited by JustTech
+value.ABOUT.0=edited by JustTech
 
 option.AO=Ambient Occlusion
 option.AO.comment=Adds soft shadows around surface contact or intersection.
@@ -209,6 +209,15 @@ option.COLOR_GRADING.comment=Enables color grading. §e[*]§rThis option doesn't
 
 option.TONEMAP_EXPOSURE=Tonemap Exposure
 option.TonemapExposure.comment=Adjusts overall brightness.
+
+option.TONEMAP_WHITE_CURVE=Tonemap White Curve
+option.TONEMAP_WHITE_CURVE.comment=Adjusts how quickly the tonemap can reach white.
+
+option.TONEMAP_LOWER_CURVE=Tonemap Lower Curve
+option.TONEMAP_LOWER_CURVE.comment=Adjusts contrast of darker colors.
+
+option.TONEMAP_UPPER_CURVE=Tonemap Upper Curve
+option.TONEMAP_UPPER_CURVE.comment=Adjusts contrast of brighter colors.
 
 option.SATURATION=Saturation
 option.SATURATION.comment=Adjusts saturation of all colors.
@@ -490,40 +499,26 @@ value.WATER_NORMALS.2=Custom
 option.WATER_PARALLAX=Parallax
 option.WATER_PARALLAX.comment=Enables water displacement.
 
-option.WAVE_SPEED=Wave Speed
+option.WATER_OCTAVE=Octaves
+option.WATER_OCTAVE.comment=Adjusts how many layers of noise used for custom water normals.
 
-option.GERSTNER_WAVE_LENGTH=Gerstner Wave Length
-option.GERSTNER_WAVE_LENGTH.comment=Changes the wave length of the gerstner waves.
+option.WATER_BUMP=Bumpiness
+option.WATER_BUMP.comment=Adjusts the intensity of custom water normals.
 
-option.GERSTNER_WAVE_LACUNARITY=Gerstner Wave Lacunarity
-option.GERSTNER_WAVE_LACUNARITY.comment=Changes the lacunarity of the gerstner waves.
+option.WATER_LACUNARITY=Lacunarity
+option.WATER_LACUNARITY.comment=Adjusts noise size reduction each octave.
 
-option.GERSTNER_WAVE_PERSISTANCE=Gerstner Wave Persistance
-option.GERSTNER_WAVE_PERSISTANCE.comment=Changes the persistance of the gerstner waves.
+option.WATER_PERSISTANCE=Persistance
+option.WATER_PERSISTANCE.comment=Adjusts noise intensity reduction each octave.
 
-option.GERSTNER_WAVE_AMPLITUDE=Gerstner Wave Amplitude
-option.GERSTNER_WAVE_AMPLITUDE.comment=Changes the amplitude of the gerstner waves.
+option.WATER_SHARPNESS=Sharpness
+option.WATER_SHARPNESS.comment=Adjusts the sharpness of custom water normals.
 
-option.GERSTNER_WAVE_DIR_SPREAD=Directional Spread
-option.GERSTNER_WAVE_DIR_SPREAD.comment=Changes the directional spread of the gerstner waves.
+option.WATER_SIZE=Size
+option.WATER_SIZE.comment=Adjusts the base noise size for custom water normals.
 
-option.GERSTNER_WAVE_ITERATIONS=Gerstner Wave Iterations
-option.GERSTNER_WAVE_ITERATIONS.comment=Changes the number of iterations of the gerstner waves. 
-
-option.NOISE_WAVE_SCALE=Noise Wave Scale
-option.NOISE_WAVE_SCALE.comment=Changes the scale of the noise layers.
-
-option.NOISE_WAVE_LACUNARITY=Noise Wave Lacunarity
-option.NOISE_WAVE_LACUNARITY.comment=Changes the lacunarity of the noise layers.
-
-option.NOISE_WAVE_AMPLITUDE=Noise Wave Amplitude
-option.NOISE_WAVE_AMPLITUDE.comment=Changes the amplitude of the noise layers.
-
-option.NOISE_WAVE_PERSISTANCE=Noise Wave Persistance
-option.NOISE_WAVE_PERSISTANCE.comment=Changes the persistance of the noise layers.
-
-option.NOISE_WAVE_ITERATIONS=NoiseWave Iterations
-option.NOISE_WAVE_ITERATIONS.comment=Changes the number of iterations of the noise layers.
+option.WATER_SPEED=Speed
+option.WATER_SPEED.comment=Adjusts the noise speed for custom water normals.
 
 option.WAVING_GRASS=Grass
 option.WAVING_CROPS=Crops
@@ -579,7 +574,7 @@ value.DISTANT_FADE.0=OFF
 value.DISTANT_FADE.1=Spherical
 value.DISTANT_FADE.2=Cylindrical
 
-screen.SHOOTING_STARS=Shooting Stars Config
+screen.SHOOTING_STARS=Shooting Stars
 
 option.SHOOTING_STARS=Shooting Stars
 option.SHOOTING_STARS.comment=Enables Shooting Stars.

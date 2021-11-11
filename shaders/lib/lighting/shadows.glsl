@@ -63,10 +63,8 @@ vec3 SampleFilteredShadow(vec3 shadowPos, float offset){
     return shadow * 0.1;
 }
 
-vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset)
-{
+vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset){
     float noise = InterleavedGradientNoise(gl_FragCoord.xy);
-    noise = fract(noise + frameTimeCounter * 16.0);
 
     vec3 shadow = vec3(0.0);
 
