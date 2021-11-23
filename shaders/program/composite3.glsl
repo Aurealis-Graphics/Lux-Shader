@@ -134,14 +134,14 @@ vec3 DepthOfField(vec3 color, float z){
 void main(){
 	vec3 color = texture2DLod(colortex0, texCoord, 0.0).rgb;
 	
-	#ifdef DOF
 	float z = texture2D(depthtex1, texCoord.st).x;
+
+	#ifdef DOF
+	color = DepthOfField(color, z);
+	#endif
 
 	#ifdef BLACK_OUTLINE
 	DepthOutline(z);
-	#endif
-
-	color = DepthOfField(color, z);
 	#endif
 	
     /*DRAWBUFFERS:0*/

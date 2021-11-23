@@ -199,7 +199,7 @@ vec2 GetLightPos(){
 vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z, float centerDepthSmooth) 
 {
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = GetCircleOfConfusion(z, centerDepthSmooth) * 0.03;
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth) * 0.03 * fovScale;
 
 	float handMask = float(z > 0.56);
 
