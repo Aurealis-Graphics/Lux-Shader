@@ -1,3 +1,6 @@
+## NOTE:
+### This shader currently doesn't get any updates, as an official early access version is being worked on. If you want to follow along with the development until we get there, consider joining [my Discord server]() (available soon)!
+
 # The Lux Shader
 
 A minecraft shader heavily based on the [BSL Shaders by Capt Tatsu](https://bitslablab.com "Takes you to the BSL Website") (v7.1.05), adding quality of life additions and tweaks. While trying to be aestheticly pleasing, the shader tries to be as gameplay-friendly as possible.
