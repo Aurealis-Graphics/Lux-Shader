@@ -1,5 +1,5 @@
 ## NOTE:
-### This shader currently doesn't get any updates, as an official early access version is being worked on. If you want to follow along with the development until we get there, consider joining [my Discord server](https://discord.gg/eZ6GpXQXGC) (available soon)!
+### This shader currently doesn't get any updates, as an official early access version is being worked on. If you want to follow along with the development until we get there, consider joining [my Discord server](https://discord.gg/eZ6GpXQXGC)!
 
 # The Lux Shader
 
