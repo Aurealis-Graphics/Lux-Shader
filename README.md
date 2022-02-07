@@ -3,7 +3,7 @@
 
 # The Lux Shader
 
-A minecraft shader heavily based on the [BSL Shaders by Capt Tatsu](https://bitslablab.com "Takes you to the BSL Website") (v7.1.05), adding quality of life additions and tweaks. While trying to be aestheticly pleasing, the shader tries to be as gameplay-friendly as possible.
+A Minecraft shader heavily based on the [BSL Shaders by Capt Tatsu](https://bitslablab.com "Takes you to the BSL Website") (v7.1.05), adding quality of life additions and tweaks. While trying to be aestheticly pleasing, the shader tries to be as gameplay-friendly as possible.
 
 ## Features
 * Auroras
