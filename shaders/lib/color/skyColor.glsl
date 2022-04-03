@@ -1,3 +1,12 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+
 #ifdef SKY_VANILLA
 uniform vec3 skyColor;
 uniform vec3 fogColor;

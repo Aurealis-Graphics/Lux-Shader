@@ -1,28 +1,32 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Varyings//
+// Varyings
 varying float mat;
 
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 uniform int blockEntityId;
 
 uniform sampler2D tex;
 
-//Program//
-void main(){
+// Program
+void main()
+{
     #if MC_VERSION >= 11300
 	if (blockEntityId == 10250) discard;
 	#endif
@@ -46,17 +50,17 @@ void main(){
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying float mat;
 
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 uniform int worldTime;
 
 uniform float frameTimeCounter;
@@ -67,35 +71,35 @@ uniform mat4 gbufferModelView, gbufferModelViewInverse;
 uniform mat4 shadowProjection, shadowProjectionInverse;
 uniform mat4 shadowModelView, shadowModelViewInverse;
 
-//Attributes//
+// Attributes
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
-//Common Variables//
+// Common Variables
 #ifdef WORLD_TIME_ANIMATION
 float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
 #else
 float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
-//Includes//
+// Includes
 #include "/lib/vertex/waving.glsl"
 
 #ifdef WORLD_CURVATURE
 #include "/lib/vertex/worldCurvature.glsl"
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = gl_MultiTexCoord0.xy;
-	color = gl_Color;
-	
+	color = gl_Color;	
 	mat = 0;
+
 	if (mc_Entity.x == 10301) mat = 1;
 	if (mc_Entity.x == 10300 || mc_Entity.x == 10249 || mc_Entity.x == 10252) mat = 2;
 	
 	vec4 position = shadowModelViewInverse * shadowProjectionInverse * ftransform();
-	
 	float istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1.0 : 0.0;
 	position.xyz = WavingBlocks(position.xyz, istopv);
 
@@ -104,10 +108,8 @@ void main(){
 	#endif
 	
 	gl_Position = shadowProjection * shadowModelView * position;
-
 	float dist = sqrt(gl_Position.x * gl_Position.x + gl_Position.y * gl_Position.y);
 	float distortFactor = dist * shadowMapBias + (1.0 - shadowMapBias);
-	
 	gl_Position.xy *= 1.0 / distortFactor;
 	gl_Position.z = gl_Position.z * 0.2;
 }

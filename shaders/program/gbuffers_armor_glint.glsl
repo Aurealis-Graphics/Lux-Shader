@@ -1,24 +1,28 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 uniform sampler2D texture;
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	vec4 albedo = texture2D(texture, texCoord) * color;
 	albedo.rgb = pow(albedo.rgb,vec3(2.2));
 	
@@ -28,15 +32,15 @@ void main(){
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 #if AA == 2
 uniform int frameCounter;
 
@@ -50,15 +54,15 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 #endif
 
-//Includes//
+// Includes
 #ifdef WORLD_CURVATURE
 #include "/lib/vertex/worldCurvature.glsl"
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-
 	color = gl_Color;
 
 	#ifdef WORLD_CURVATURE

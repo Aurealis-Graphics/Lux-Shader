@@ -1,17 +1,20 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Extensions//
+// Extensions
 
-//Varyings//
+// Varyings
 varying float mat, recolor;
 
 varying vec2 texCoord, lmCoord;
@@ -21,7 +24,7 @@ varying vec3 sunVec, upVec;
 
 varying vec4 color;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 varying float dist;
 
 varying vec3 binormal, tangent;
@@ -30,7 +33,7 @@ varying vec3 viewVector;
 varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
-//Uniforms//
+// Uniforms
 uniform int frameCounter;
 uniform int isEyeInWater;
 uniform int worldTime;
@@ -52,7 +55,7 @@ uniform mat4 shadowModelView;
 
 uniform sampler2D texture;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 uniform sampler2D specular;
 uniform sampler2D normals;
 
@@ -67,11 +70,7 @@ uniform sampler2D noisetex;
 #endif
 #endif
 
-#if DISTANT_FADE > 0
-uniform float far;
-#endif
-
-//Common Variables//
+// Common Variables
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp(dot( sunVec,upVec) + 0.05, 0.0, 0.1) * 10.0;
 float moonVisibility = clamp(dot(-sunVec,upVec) + 0.05, 0.0, 0.1) * 10.0;
@@ -82,30 +81,33 @@ float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
 float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 vec2 dcdx = dFdx(texCoord);
 vec2 dcdy = dFdy(texCoord);
 #endif
 
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
-//Common Functions//
-float GetLuminance(vec3 color){
-	return dot(color,vec3(0.299, 0.587, 0.114));
+// Common Functions
+float GetLuminance(vec3 color) 
+{
+ 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
 }
 
-//Includes//
+// Includes
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/color/dimensionColor.glsl"
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/util/dither.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
+#include "/lib/atmospherics/sky.glsl"
+#include "/lib/color/ambientColor.glsl"
 
 #if AA == 2
 #include "/lib/util/jitter.glsl"
 #endif
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 #include "/lib/util/encode.glsl"
 #include "/lib/surface/directionalLightmap.glsl"
 #include "/lib/surface/ggx.glsl"
@@ -117,18 +119,20 @@ float GetLuminance(vec3 color){
 #endif
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
 	vec3 newNormal = normal;
 
-	#ifdef ADVANCED_MATERIALS
+	#ifdef MATERIAL_SUPPORT
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
 	float parallaxFade = clamp((dist - PARALLAX_DISTANCE) / 32.0, 0.0, 1.0);
 	float skipAdvMat = float(mat > 2.98 && mat < 3.02);
 	
 	#ifdef PARALLAX
-	if(skipAdvMat < 0.5){
+	if(skipAdvMat < 0.5)
+	{
 		newCoord = GetParallaxCoord(parallaxFade);
 		albedo = texture2DGradARB(texture, newCoord, dcdx, dcdy) * vec4(color.rgb, 1.0);
 	}
@@ -138,7 +142,8 @@ void main(){
 	vec3 rawAlbedo = vec3(0.0);
 	#endif
 
-	if (albedo.a > 0.001){
+	if (albedo.a > 0.001)
+	{
 		#ifdef TOON_LIGHTMAP
 		vec2 lightmap = clamp(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14, 0.0, 1.0);
 		#else
@@ -146,7 +151,6 @@ void main(){
 		#endif
 		
 		float foliage  = float(mat > 0.98 && mat < 1.02);
-
 		float emissiveIntensity = 0.5 * EMISSIVE_BRIGHTNESS;
 		float emissive = float(mat > 1.98 && mat < 2.02) * emissiveIntensity;
 		float lava     = float(mat > 2.98 && mat < 3.02) * emissiveIntensity;
@@ -163,27 +167,16 @@ void main(){
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-		#if DISTANT_FADE > 0
-		float dither = Bayer64(gl_FragCoord.xy);
-		if (AA == 2) dither = fract(frameTimeCounter * 16.0 + dither);
-		#if DISTANT_FADE == 1
-		float worldLength = length(worldPos);
-		#elif DISTANT_FADE == 2
-		float worldLength = length(worldPos.xz);
-		#endif
-		float alpha = (far - (worldLength + 20.0)) * 5.0 / far;
-		if (alpha < dither) discard;
-		#endif
-
-		#ifdef ADVANCED_MATERIALS
+		#ifdef MATERIAL_SUPPORT
 		float metalness = 0.0, f0 = 0.0, ao = 1.0;
 		vec3 normalMap = vec3(0.0, 0.0, 1.0);
-		GetMaterials(smoothness, metalness, f0, metalData, emissive, ao, normalMap,
-					 newCoord, dcdx, dcdy);
+		GetMaterials(smoothness, metalness, f0, metalData, emissive, ao, normalMap, newCoord, dcdx, dcdy);
 		
-		mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-							  tangent.y, binormal.y, normal.y,
-							  tangent.z, binormal.z, normal.z);
+		mat3 tbnMatrix = mat3(
+			tangent.x, binormal.x, normal.x,
+			tangent.y, binormal.y, normal.y,
+			tangent.z, binormal.z, normal.z
+		);
 
 		if (normalMap.x > -0.999 && normalMap.y > -0.999)
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
@@ -192,17 +185,22 @@ void main(){
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
 		float ec = GetLuminance(albedo.rgb) * 1.7;
+
 		#ifdef EMISSIVE_RECOLOR
-		if (recolor > 0.5){
+		if (recolor > 0.5)
+		{
 			albedo.rgb = blocklightCol * pow(ec, 1.5) / (BLOCKLIGHT_I * BLOCKLIGHT_I);
 			albedo.rgb /= 0.7 * albedo.rgb + 0.7;
 		}
-		if (lava > 0.02){
+		
+		if (lava > 0.02)
+		{
 			albedo.rgb = pow(blocklightCol * ec / BLOCKLIGHT_I, vec3(2.0));
 			albedo.rgb /= 0.5 * albedo.rgb + 0.5;
 		}
 		#else
-		if (recolor > 0.5){
+		if (recolor > 0.5)
+		{
 			albedo.rgb *= ec * 0.25 + 0.5;
 		}
 		#endif
@@ -212,12 +210,11 @@ void main(){
 		#endif
 
 		float NdotL = clamp(dot(newNormal, lightVec) * 1.01 - 0.01, 0.0, 1.0);
-
+		bool isBackface = dot(normal, lightVec) < -0.0001;
 		float quarterNdotU = clamp(0.25 * dot(newNormal, upVec) + 0.75, 0.5, 1.0);
-			  quarterNdotU*= quarterNdotU * (foliage > 0.5 ? 1.8 : 1.0);
-
 		float parallaxShadow = 1.0;
-		#ifdef ADVANCED_MATERIALS
+
+		#ifdef MATERIAL_SUPPORT
 		rawAlbedo = albedo.rgb * 0.999 + 0.001;
 		albedo.rgb *= ao;
 
@@ -227,6 +224,7 @@ void main(){
 		#endif
 
 		float doParallax = 0.0;
+
 		#ifdef SELF_SHADOW
 		#ifdef OVERWORLD
 		doParallax = float(lightmap.y > 0.0 && NdotL > 0.0);
@@ -235,7 +233,8 @@ void main(){
 		doParallax = float(NdotL > 0.0);
 		#endif
 		
-		if (doParallax > 0.5 && skipAdvMat < 0.5){
+		if (doParallax > 0.5 && skipAdvMat < 0.5)
+		{
 			parallaxShadow = GetParallaxShadow(parallaxFade, newCoord, lightVec, tbnMatrix);
 		}
 		#endif
@@ -246,15 +245,23 @@ void main(){
 		lightmap.y = DirectionalLightmap(lightmap.y, lmCoord.y, newNormal, lightmapTBN);
 		#endif
 		#endif
-		
-		vec3 shadow = vec3(0.0);
-		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, color.a, NdotL, quarterNdotU,
-					parallaxShadow, emissive + lava, foliage);
 
-		#ifdef ADVANCED_MATERIALS
+		vec3 shadow = vec3(0.0);
+
+		#ifdef OVERWORLD
+		vec3 skyEnvAmbientApprox = GetAmbientColor(newNormal, lightCol, quarterNdotU);
+		#else
+		vec3 skyEnvAmbientApprox = vec3(0.0);
+		#endif
+
+		quarterNdotU *= quarterNdotU * (foliage > 0.5 ? 1.8 : 1.0);
+
+		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, color.a, NdotL, quarterNdotU, parallaxShadow, emissive + lava, foliage, skyEnvAmbientApprox);
+
+		#ifdef MATERIAL_SUPPORT
 		float puddles = 0.0;
 		#if defined REFLECTION_RAIN && defined OVERWORLD
-		float NdotU = clamp(dot(newNormal, upVec),0.0,1.0);
+		float NdotU = clamp(dot(newNormal, upVec), 0.0, 1.0);
 
 		#if REFLECTION_RAIN_TYPE == 0
 		puddles = GetPuddles(worldPos) * NdotU * wetness;
@@ -268,16 +275,17 @@ void main(){
 		#endif
 		
 		puddles *= clamp(lightmap.y * 32.0 - 31.0, 0.0, 1.0);
-		
 		smoothness = mix(smoothness, 1.0, puddles);
 		f0 = max(f0, puddles * 0.02);
-
 		albedo.rgb *= 1.0 - (puddles * 0.15);
 
-		if (puddles > 0.001 && rainStrength > 0.001){
-			mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-							  tangent.y, binormal.y, normal.y,
-							  tangent.z, binormal.z, normal.z);
+		if (puddles > 0.001 && rainStrength > 0.001)
+		{
+			mat3 tbnMatrix = mat3(
+				tangent.x, binormal.x, normal.x,
+				tangent.y, binormal.y, normal.y,
+				tangent.z, binormal.z, normal.z
+			);
 
 			vec3 puddleNormal = GetPuddleNormal(worldPos, viewPos, tbnMatrix);
 			newNormal = normalize(mix(newNormal, puddleNormal, puddles * rainStrength));
@@ -288,36 +296,36 @@ void main(){
 
 		#if defined OVERWORLD || defined END
 		#ifdef OVERWORLD
-		vec3 lightME = mix(lightMorning, lightEvening, mefade);
-		vec3 lightDayTint = lightDay * lightME * LIGHT_DI;
-		vec3 lightDaySpec = mix(lightME, sqrt(lightDayTint), timeBrightness);
-		vec3 specularColor = mix(sqrt(lightNight),
-									lightDaySpec,
-									sunVisibility);
-		specularColor *= specularColor * lightmap.y;
+		vec3 specularColor = lightCol;		
 		#endif
+
 		#ifdef END
 		vec3 specularColor = endCol.rgb;
 		#endif
 		
-		albedo.rgb += GetSpecularHighlight(smoothness, metalness, f0, specularColor, rawAlbedo,
-							 			   shadow, newNormal, viewPos);
+		if (!isBackface)
+			albedo.rgb += GetSpecularHighlight(smoothness, metalness, f0, specularColor, rawAlbedo, shadow, newNormal, viewPos);
 		#endif
 		
 		#if defined REFLECTION_SPECULAR && defined REFLECTION_ROUGH
-		if (normalMap.x > -0.999 && normalMap.y > -0.999){
+		if (normalMap.x > -0.999 && normalMap.y > -0.999)
+		{
 			normalMap = mix(vec3(0.0, 0.0, 1.0), normalMap, smoothness);
 			newNormal = mix(normalMap * tbnMatrix, newNormal, 1.0 - pow(1.0 - puddles, 4.0));
 			newNormal = clamp(normalize(newNormal), vec3(-1.0), vec3(1.0));
 		}
 		#endif
 		#endif
-	} else albedo.a = 0.0;
+	}
+	else
+	{
+		albedo.a = 0.0;
+	}
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+	#if defined MATERIAL_SUPPORT && defined REFLECTION_SPECULAR
 	/* DRAWBUFFERS:0367 */
 	gl_FragData[1] = vec4(smoothness, metalData, skymapMod, 1.0);
 	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
@@ -327,10 +335,10 @@ void main(){
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying float mat, recolor;
 
 varying vec2 texCoord, lmCoord;
@@ -340,7 +348,7 @@ varying vec3 sunVec, upVec;
 
 varying vec4 color;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 varying float dist;
 
 varying vec3 binormal, tangent;
@@ -350,7 +358,7 @@ varying vec4 vTexCoord, vTexCoordAM;
 
 #endif
 
-//Uniforms//
+// Uniforms
 uniform int worldTime;
 
 uniform float frameTimeCounter;
@@ -366,22 +374,22 @@ uniform int frameCounter;
 uniform float viewWidth, viewHeight;
 #endif
 
-//Attributes//
+// Attributes
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 attribute vec4 at_tangent;
 #endif
 
-//Common Variables//
+// Common Variables
 #ifdef WORLD_TIME_ANIMATION
 float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
 #else
 float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
-//Includes//
+// Includes
 #include "/lib/vertex/waving.glsl"
 
 #if AA == 2
@@ -392,25 +400,26 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 #include "/lib/vertex/worldCurvature.glsl"
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-    
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
-
 	normal = normalize(gl_NormalMatrix * gl_Normal);
+	color = gl_Color;
 
-	#ifdef ADVANCED_MATERIALS
+	#ifdef MATERIAL_SUPPORT
 	binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
 	tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);
 	
-	mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-						  tangent.y, binormal.y, normal.y,
-						  tangent.z, binormal.z, normal.z);
+	mat3 tbnMatrix = mat3(
+		tangent.x, binormal.x, normal.x,
+		tangent.y, binormal.y, normal.y,
+		tangent.z, binormal.z, normal.z
+	);
 								  
 	viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
-	
 	dist = length(gl_ModelViewMatrix * gl_Vertex);
 
 	vec2 midCoord = (gl_TextureMatrix[0] *  mc_midTexCoord).st;
@@ -418,48 +427,83 @@ void main(){
 
 	vTexCoordAM.pq  = abs(texMinMidCoord) * 2;
 	vTexCoordAM.st  = min(texCoord, midCoord - texMinMidCoord);
-	
 	vTexCoord.xy    = sign(texMinMidCoord) * 0.5 + 0.5;
 	#endif
-    
-	color = gl_Color;
 	
 	mat = 0.0; recolor = 0.0;
 
-	if (mc_Entity.x == 10100 || mc_Entity.x == 10101 || mc_Entity.x == 10102 || mc_Entity.x == 10103 ||
-	    mc_Entity.x == 10104 || mc_Entity.x == 10105 || mc_Entity.x == 10106 || mc_Entity.x == 10107 ||
-	    mc_Entity.x == 10108 || mc_Entity.x == 10109)
+	if (mc_Entity.x == 10100 || 
+		mc_Entity.x == 10101 || 
+		mc_Entity.x == 10102 || 
+		mc_Entity.x == 10103 ||
+	    mc_Entity.x == 10104 || 
+		mc_Entity.x == 10105 || 
+		mc_Entity.x == 10106 || 
+		mc_Entity.x == 10107 ||
+	    mc_Entity.x == 10108 || 
+		mc_Entity.x == 10109) 
+	{
 		mat = 1.0;
-	if (mc_Entity.x == 10200 || mc_Entity.x == 10207 || mc_Entity.x == 10210 || mc_Entity.x == 10214 ||
-		mc_Entity.x == 10215 || mc_Entity.x == 10216 || mc_Entity.x == 10226 || mc_Entity.x == 10231 ||
-		mc_Entity.x == 10249 || mc_Entity.x == 10250 || mc_Entity.x == 10251 || mc_Entity.x == 10252 ||
+	}
+		
+	if (mc_Entity.x == 10200 ||
+		mc_Entity.x == 10207 ||
+		mc_Entity.x == 10210 ||
+		mc_Entity.x == 10214 ||
+		mc_Entity.x == 10215 || 
+		mc_Entity.x == 10216 || 
+		mc_Entity.x == 10226 || 
+		mc_Entity.x == 10231 ||
+		mc_Entity.x == 10249 || 
+		mc_Entity.x == 10250 || 
+		mc_Entity.x == 10251 || 
+		mc_Entity.x == 10252 ||
 		mc_Entity.x == 10253)
+	{
 		mat = 2.0;
-	if (mc_Entity.x == 10248)
+	}
+
+	if (mc_Entity.x == 10248) 
+	{
 		mat = 3.0;
+	}
 
-	if (mc_Entity.x == 10216 || mc_Entity.x == 10226 || mc_Entity.x == 10231 || mc_Entity.x == 10250 ||
-		mc_Entity.x == 10251 || mc_Entity.x == 10253)
-		recolor = 1.0;
+	if (mc_Entity.x == 10216 ||
+		mc_Entity.x == 10226 ||
+		mc_Entity.x == 10231 || 
+		mc_Entity.x == 10250 ||
+		mc_Entity.x == 10251 || 
+		mc_Entity.x == 10253) 
+	{
+		recolor = 1.0;	
+	}
 
-	if (mc_Entity.x == 10215 || mc_Entity.x == 10231 || mc_Entity.x == 10248 || mc_Entity.x == 10249 ||
+	if (mc_Entity.x == 10215 ||
+		mc_Entity.x == 10231 || 
+		mc_Entity.x == 10248 || 
+		mc_Entity.x == 10249 ||
 		mc_Entity.x == 10251)
+	{
 		lmCoord.x = 1.0;
+	}
+	
 	if (mc_Entity.x == 10245)
+	{
 		lmCoord.x -= 0.0667;
+	}
 
 	if (mc_Entity.x == 10400)
+	{
 		color.a = 1;
+	}
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
 	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
-
 	upVec = normalize(gbufferModelView[1].xyz);
 
 	vec4 position = gbufferModelViewInverse * gl_ModelViewMatrix * gl_Vertex;
-	
 	float istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1.0 : 0.0;
 	position.xyz = WavingBlocks(position.xyz, istopv);
 

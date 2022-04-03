@@ -1,17 +1,20 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Extensions//
+// Extensions
 
-//Varyings//
+// Varyings
 varying vec2 texCoord, lmCoord;
 
 varying vec3 normal;
@@ -19,7 +22,7 @@ varying vec3 sunVec, upVec;
 
 varying vec4 color;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 varying float dist;
 
 varying vec3 binormal, tangent;
@@ -28,7 +31,7 @@ varying vec3 viewVector;
 varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
-//Uniforms//
+// Uniforms
 uniform int entityId;
 uniform int frameCounter;
 uniform int isEyeInWater;
@@ -53,16 +56,12 @@ uniform mat4 shadowModelView;
 
 uniform sampler2D texture;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 uniform sampler2D specular;
 uniform sampler2D normals;
 #endif
 
-#if DISTANT_FADE > 0
-uniform float far;
-#endif
-
-//Common Variables//
+// Common Variables
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp(dot( sunVec,upVec) + 0.05, 0.0, 0.1) * 10.0;
 float moonVisibility = clamp(dot(-sunVec,upVec) + 0.05, 0.0, 0.1) * 10.0;
@@ -73,30 +72,33 @@ float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
 float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 vec2 dcdx = dFdx(texCoord);
 vec2 dcdy = dFdy(texCoord);
 #endif
 
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
-//Common Functions//
-float GetLuminance(vec3 color){
-	return dot(color,vec3(0.299, 0.587, 0.114));
+// Common Functions
+float GetLuminance(vec3 color) 
+{
+ 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
 }
 
-//Includes//
+// Includes
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/color/dimensionColor.glsl"
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/util/dither.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
+#include "/lib/atmospherics/sky.glsl"
+#include "/lib/color/ambientColor.glsl"
 
 #if AA == 2
 #include "/lib/util/jitter.glsl"
 #endif
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 #include "/lib/util/encode.glsl"
 #include "/lib/surface/ggx.glsl"
 #include "/lib/surface/materialGbuffers.glsl"
@@ -108,22 +110,20 @@ float GetLuminance(vec3 color){
 #undef SELF_SHADOW
 #endif
 
-#if DISTANT_FADE > 0
-#include "/lib/util/dither.glsl"
-#endif
-
-//Program//
-void main(){
+// Program
+void main()
+{
     vec4 albedo = texture2D(texture, texCoord) * color;
 	vec3 newNormal = normal;
 
-	#ifdef ADVANCED_MATERIALS
+	#ifdef MATERIAL_SUPPORT
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
 	float parallaxFade = clamp((dist - PARALLAX_DISTANCE) / 32.0, 0.0, 1.0);
 	float skipAdvMat = float(entityId == 10100);
 	
 	#ifdef PARALLAX
-	if (skipAdvMat < 0.5){
+	if (skipAdvMat < 0.5)
+	{
 		newCoord = GetParallaxCoord(parallaxFade);
 		albedo = texture2DGradARB(texture, newCoord, dcdx, dcdy) * color;
 	}
@@ -136,7 +136,8 @@ void main(){
 	albedo.rgb = mix(albedo.rgb, entityColor.rgb, entityColor.a);
 	
 	float lightningBolt = float(entityId == 10101);
-	if(lightningBolt > 0.5){
+	if(lightningBolt > 0.5)
+	{
 		#ifdef OVERWORLD
 		albedo.rgb = pow(weatherCol.rgb / weatherCol.a, vec3(3.0));
 		#endif
@@ -149,7 +150,8 @@ void main(){
 		albedo.a = 1.0;
 	}
 
-	if (albedo.a > 0.001 && lightningBolt < 0.5){
+	if (albedo.a > 0.001 && lightningBolt < 0.5)
+	{
 		#ifdef TOON_LIGHTMAP
 		vec2 lightmap = clamp(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14, 0.0, 1.0);
 		#else
@@ -166,32 +168,21 @@ void main(){
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-		#if DISTANT_FADE > 0
-		float dither = Bayer64(gl_FragCoord.xy);
-		if (AA == 2) dither = fract(frameTimeCounter * 16.0 + dither);
-		#if DISTANT_FADE == 1
-		float worldLength = length(worldPos);
-		#elif DISTANT_FADE == 2
-		float worldLength = length(worldPos.xz);
-		#endif
-		float alpha = (far - (worldLength + 20.0)) * 5.0 / far;
-		if (alpha < dither) discard;
-		#endif
-
-		#ifdef ADVANCED_MATERIALS
+		#ifdef MATERIAL_SUPPORT
 		float metalness = 0.0, f0 = 0.0, ao = 1.0;
 		vec3 normalMap = vec3(0.0, 0.0, 1.0);
 		
-		GetMaterials(smoothness, metalness, f0, metalData, emissive, ao, normalMap,
-					 newCoord, dcdx, dcdy);
+		GetMaterials(smoothness, metalness, f0, metalData, emissive, ao, normalMap, newCoord, dcdx, dcdy);
 					 
 		#if MC_VERSION >= 11500 && defined TEMPORARY_FIX
 		normalMap = vec3(0.0, 0.0, 1.0);
 		#endif
 		
-		mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-							  tangent.y, binormal.y, normal.y,
-							  tangent.z, binormal.z, normal.z);
+		mat3 tbnMatrix = mat3(
+			tangent.x, binormal.x, normal.x,
+			tangent.y, binormal.y, normal.y,
+			tangent.z, binormal.z, normal.z
+		);
 
 		if (normalMap.x > -0.999 && normalMap.y > -0.999 && skipAdvMat < 0.5)
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
@@ -203,12 +194,12 @@ void main(){
 		#endif
 		
 		float NdotL = clamp(dot(newNormal, lightVec) * 1.01 - 0.01, 0.0, 1.0);
-
+		bool isBackface = dot(normal, lightVec) < -0.0001;
 		float quarterNdotU = clamp(0.25 * dot(newNormal, upVec) + 0.75, 0.5, 1.0);
-			  quarterNdotU*= quarterNdotU;
+		quarterNdotU *= quarterNdotU;
 
 		float parallaxShadow = 1.0;
-		#ifdef ADVANCED_MATERIALS
+		#ifdef MATERIAL_SUPPORT
 		rawAlbedo = albedo.rgb * 0.999 + 0.001;
 		albedo.rgb *= ao;
 
@@ -226,7 +217,8 @@ void main(){
 		doParallax = float(NdotL > 0.0);
 		#endif
 		
-		if (doParallax > 0.5){
+		if (doParallax > 0.5)
+		{
 			parallaxShadow = GetParallaxShadow(parallaxFade, newCoord, lightVec, tbnMatrix);
 			NdotL *= parallaxShadow;
 		}
@@ -234,28 +226,29 @@ void main(){
 		#endif
 		
 		vec3 shadow = vec3(0.0);
-		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, quarterNdotU,
-				    parallaxShadow, emissive, 0.0);
+		
+		#ifdef OVERWORLD
+		vec3 skyEnvAmbientApprox = GetAmbientColor(newNormal, lightCol, quarterNdotU);
+		#else
+		vec3 skyEnvAmbientApprox = vec3(0.0);
+		#endif
 
-		#ifdef ADVANCED_MATERIALS
+		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, quarterNdotU, parallaxShadow, emissive, 0.0, skyEnvAmbientApprox);
+
+		#ifdef MATERIAL_SUPPORT
 		skymapMod = lightmap.y * lightmap.y * (3.0 - 2.0 * lightmap.y);
 
 		#if defined OVERWORLD || defined END
 		#ifdef OVERWORLD
-		vec3 lightME = mix(lightMorning, lightEvening, mefade);
-		vec3 lightDayTint = lightDay * lightME * LIGHT_DI;
-		vec3 lightDaySpec = mix(lightME, sqrt(lightDayTint), timeBrightness);
-		vec3 specularColor = mix(sqrt(lightNight),
-									lightDaySpec,
-									sunVisibility);
-		specularColor *= specularColor * lightmap.y;
+		vec3 specularColor = lightCol;
 		#endif
+
 		#ifdef END
 		vec3 specularColor = endCol.rgb;
 		#endif
 		
-		albedo.rgb += GetSpecularHighlight(smoothness, metalness, f0, specularColor, rawAlbedo,
-							 			   shadow, newNormal, viewPos);
+		if (!isBackface)
+			albedo.rgb += GetSpecularHighlight(smoothness, metalness, f0, specularColor, rawAlbedo, shadow, newNormal, viewPos);
 		#endif
 
 		#if defined REFLECTION_SPECULAR && defined REFLECTION_ROUGH
@@ -268,7 +261,7 @@ void main(){
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+	#if defined MATERIAL_SUPPORT && defined REFLECTION_SPECULAR
 	/* DRAWBUFFERS:0367 */
 	gl_FragData[1] = vec4(smoothness, metalData, skymapMod, 1.0);
 	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
@@ -278,10 +271,10 @@ void main(){
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord, lmCoord;
 
 varying vec3 normal;
@@ -289,7 +282,7 @@ varying vec3 sunVec, upVec;
 
 varying vec4 color;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 varying float dist;
 
 varying vec3 binormal, tangent;
@@ -298,7 +291,7 @@ varying vec3 viewVector;
 varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
-//Uniforms//
+// Uniforms
 uniform int worldTime;
 
 uniform float frameTimeCounter;
@@ -314,22 +307,22 @@ uniform int frameCounter;
 uniform float viewWidth, viewHeight;
 #endif
 
-//Attributes//
+// Attributes
 attribute vec4 mc_Entity;
 
-#ifdef ADVANCED_MATERIALS
+#ifdef MATERIAL_SUPPORT
 attribute vec4 mc_midTexCoord;
 attribute vec4 at_tangent;
 #endif
 
-//Common Variables//
+// Common Variables
 #ifdef WORLD_TIME_ANIMATION
 float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
 #else
 float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
-//Includes//
+// Includes
 #if AA == 2
 #include "/lib/util/jitter.glsl"
 #endif
@@ -338,25 +331,26 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 #include "/lib/vertex/worldCurvature.glsl"
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-    
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
-
 	normal = normalize(gl_NormalMatrix * gl_Normal);
+	color = gl_Color;
 
-	#ifdef ADVANCED_MATERIALS
+	#ifdef MATERIAL_SUPPORT
 	tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);
 	binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
 	
-	mat3 tbnMatrix = mat3(tangent.x, binormal.x, normal.x,
-						  tangent.y, binormal.y, normal.y,
-						  tangent.z, binormal.z, normal.z);
+	mat3 tbnMatrix = mat3(
+		tangent.x, binormal.x, normal.x,
+		tangent.y, binormal.y, normal.y,
+		tangent.z, binormal.z, normal.z
+	);
 								  
 	viewVector = tbnMatrix * (gl_ModelViewMatrix * gl_Vertex).xyz;
-	
 	dist = length(gl_ModelViewMatrix * gl_Vertex);
 
 	vec2 midCoord = (gl_TextureMatrix[0] *  mc_midTexCoord).st;
@@ -364,17 +358,13 @@ void main(){
 
 	vTexCoordAM.pq  = abs(texMinMidCoord) * 2;
 	vTexCoordAM.st  = min(texCoord, midCoord - texMinMidCoord);
-
 	vTexCoord.xy    = sign(texMinMidCoord) * 0.5 + 0.5;
 	#endif
-    
-	color = gl_Color;
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
 	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
-
 	upVec = normalize(gbufferModelView[1].xyz);
 
     #ifdef WORLD_CURVATURE

@@ -1,3 +1,12 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/
+
+
 #if defined OVERWORLD || defined END
 #include "/lib/lighting/shadows.glsl"
 
@@ -8,28 +17,39 @@ vec3 DistortShadow(inout vec3 worldPos, float distortFactor){
 }
 #endif
 
-void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos,
-                 vec2 lightmap, float smoothLighting, float NdotL, float quarterNdotU,
-                 float parallaxShadow, float emissive, float foliage){
+void GetLighting(
+    inout vec3 albedo,
+    out vec3 shadow,
+    vec3 viewPos,
+    vec3 worldPos,
+    vec2 lightmap,
+    float smoothLighting,
+    float NdotL,
+    float quarterNdotU,
+    float parallaxShadow,
+    float emissive,
+    float foliage,
+    vec3 ambientCol
+    )
+{
 
     #if defined OVERWORLD || defined END
     vec3 shadowPos = ToShadow(worldPos);
 
-    float distb = sqrt(shadowPos.x * shadowPos.x + shadowPos.y * shadowPos.y);
+    float distb = length(shadowPos.xy);
     float distortFactor = distb * shadowMapBias + (1.0 - shadowMapBias);
     shadowPos = DistortShadow(shadowPos, distortFactor);
 
-    float doShadow = float(
-        shadowPos.x > 0.0 && shadowPos.x < 1.0 &&
-        shadowPos.y > 0.0 && shadowPos.y < 1.0
-    );
+    float doShadow = float(clamp(shadowPos, 0.0, 1.0) == shadowPos);
 
     #ifdef OVERWORLD
     doShadow *= float(lightmap.y > 0.001);
     #endif
     
-    if ((NdotL > 0.0 || foliage > 0.5)){
-        if (doShadow > 0.5){
+    if ((NdotL > 0.0 || foliage > 0.5))
+    {
+        if (doShadow > 0.5)
+        {
             float NdotLm = NdotL * 0.99 + 0.01;
             
             float biasFactor = sqrt(1.0 - NdotLm * NdotLm) / NdotLm;
@@ -39,7 +59,8 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
             float bias = (distortBias * biasFactor + 0.05) / shadowMapResolution;
             float offset = 1.0 / shadowMapResolution;
 
-            if (foliage > 0.5){
+            if (foliage > 0.5)
+            {
                 bias = 0.0002;
                 offset = 0.0007;
             }
@@ -54,7 +75,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
-    vec3 sceneLighting = mix(ambientCol * 0.8, lightCol, fullShadow * shadowMult);
+    vec3 sceneLighting = fullShadow * shadowMult * lightCol + ambientCol;
     sceneLighting *= (4.0 - 3.0 * eBS) * lightmap.y * lightmap.y;
     #endif
 
@@ -62,7 +83,8 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     vec3 sceneLighting = endCol.rgb * (0.075 * fullShadow + 0.025);
     #endif
 
-    if (foliage > 0.5){
+    if (foliage > 0.5)
+    {
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
         float subsurface = (pow(VdotL, 15.0) + pow(VdotL, 220.0)) * 2.0 * (1.0 - rainStrength);
         sceneLighting *= smoothstep(0.0, 1.0, fullShadow) * subsurface + 1.0;
@@ -122,3 +144,7 @@ void GetLighting(inout vec3 albedo, out vec3 shadow, vec3 viewPos, vec3 worldPos
     albedo.rgb = mix(GetLuminance(albedo.rgb) * desatColor, albedo.rgb, desatAmount);
     #endif
 }
+
+
+
+

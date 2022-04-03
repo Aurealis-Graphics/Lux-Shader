@@ -1,8 +1,7 @@
+As described in "README.md", this minecraft shader heavily based on BSL (v7.1.05) so accordingly, most of
+the content in this shader was made by Capt Tatsu (https://bitslablab.com).
 
-As described in "README.md", this minecraft shader heavily based on BSL (v7.1.05) so accordingly most of
-the content in this shader was made by Capt Tatsu. (https://bitslablab.com)
-
-All the other content not provided in BSL v7.1.05 was made by me (aka Tech)
+All the other content not provided in BSL v7.1.05 was made by me (https://github.com/TechDevOnGitHub).
 
 The agreement for this shader is the same as BSL's 
 You can find it here: https://bitslablab.com/bslshaders/#download

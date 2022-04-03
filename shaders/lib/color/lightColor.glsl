@@ -1,12 +1,16 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+
 vec3 lightMorning    = vec3(LIGHT_MR,   LIGHT_MG,   LIGHT_MB)   * LIGHT_MI / 255.0;
 vec3 lightDay        = vec3(LIGHT_DR,   LIGHT_DG,   LIGHT_DB)   * LIGHT_DI / 255.0;
 vec3 lightEvening    = vec3(LIGHT_ER,   LIGHT_EG,   LIGHT_EB)   * LIGHT_EI / 255.0;
 vec3 lightNight      = vec3(LIGHT_NR,   LIGHT_NG,   LIGHT_NB)   * LIGHT_NI * 0.3 / 255.0;
-
-vec3 ambientMorning  = vec3(AMBIENT_MR, AMBIENT_MG, AMBIENT_MB) * AMBIENT_MI / 255.0;
-vec3 ambientDay      = vec3(AMBIENT_DR, AMBIENT_DG, AMBIENT_DB) * AMBIENT_DI / 255.0;
-vec3 ambientEvening  = vec3(AMBIENT_ER, AMBIENT_EG, AMBIENT_EB) * AMBIENT_EI / 255.0;
-vec3 ambientNight    = vec3(AMBIENT_NR, AMBIENT_NG, AMBIENT_NB) * AMBIENT_NI * 0.3 / 255.0;
 
 vec4 weatherRain     = vec4(vec3(WEATHER_RR, WEATHER_RG, WEATHER_RB) / 255.0, 1.0) * WEATHER_RI;
 vec4 weatherCold     = vec4(vec3(WEATHER_CR, WEATHER_CG, WEATHER_CB) / 255.0, 1.0) * WEATHER_CI;
@@ -22,8 +26,7 @@ float weatherWeight = isCold + isDesert + isMesa + isSwamp + isMushroom + isSava
 
 vec4 weatherCol = mix(
 	weatherRain,
-	(
-		weatherCold  * isCold  + weatherDesert   * isDesert   + weatherBadlands * isMesa    +
+	(	weatherCold  * isCold  + weatherDesert   * isDesert   + weatherBadlands * isMesa    +
 		weatherSwamp * isSwamp + weatherMushroom * isMushroom + weatherSavanna  * isSavanna
 	) / max(weatherWeight, 0.0001),
 	weatherWeight
@@ -35,16 +38,16 @@ vec4 weatherCol = weatherRain;
 
 float mefade = 1.0 - clamp(abs(timeAngle - 0.5) * 8.0 - 1.5, 0.0, 1.0);
 float dfade = 1.0 - timeBrightness;
+float sunHeight = clamp(dot(sunVec, upVec) * 2.0, 0.0, 1.0);
 
-vec3 CalcLightColor(vec3 morning, vec3 day, vec3 afternoon, vec3 night, vec3 weatherCol){
-	vec3 me = mix(morning, afternoon, mefade);
-	vec3 dayAll = mix(me, day, 1.0 - dfade * sqrt(dfade));
-	vec3 c = mix(night, dayAll, sunVisibility);
-	c = mix(c, dot(c, vec3(0.299, 0.587, 0.114)) * weatherCol, rainStrength);
-	return c * c;
+vec3 GetDirectColor(float height) 
+{
+    height = (1.0 - height) * 0.4;
+    vec3 baseColGradient = mix(vec3(1.0, 0.651, 0.0), vec3(0.6824, 0.0, 1.0), height);
+    vec3 sunCol = pow(exp(-(1.0 - baseColGradient) * height * 4.0), vec3(6.0));
+	vec3 moonCol = vec3(0.2824, 0.7725, 1.0) * vec3(0.05);
+	vec3 result = mix(moonCol, sunCol, sunVisibility);
+	return mix(result, dot(result, vec3(0.2125, 0.7154, 0.0721)) * weatherCol.rgb, rainStrength);
 }
 
-vec3 lightCol   = CalcLightColor(lightMorning,   lightDay,   lightEvening,   lightNight,
-								 weatherCol.rgb);
-vec3 ambientCol = CalcLightColor(ambientMorning, ambientDay, ambientEvening, ambientNight,
-								 weatherCol.rgb);
+vec3 lightCol = GetDirectColor(1.5 * (sunHeight / (0.5 + sunHeight)));

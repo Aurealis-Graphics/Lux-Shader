@@ -1,56 +1,61 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Extensions//
+// Extensions
 
-//Varyings//
+// Varyings
 
-//Uniforms//
+// Uniforms
 
-//Attributes//
+// Attributes
 
-//Optifine Constants//
+// Optifine Constants
 
-//Common Variables//
+// Common Variables
 
-//Common Functions//
+// Common Functions
 
-//Includes//
+// Includes
 
-//Program//
-void main(){
+// Program
+void main()
+{
     
 }
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 
-//Uniforms//
+// Uniforms
 
-//Attributes//
+// Attributes
 
-//Optifine Constants//
+// Optifine Constants
 
-//Common Variables//
+// Common Variables
 
-//Common Functions//
+// Common Functions
 
-//Includes//
+// Includes
 
-//Program//
-void main(){
+// Program
+void main()
+{
     
 }
 

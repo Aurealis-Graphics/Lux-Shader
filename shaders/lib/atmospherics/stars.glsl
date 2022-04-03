@@ -1,10 +1,11 @@
 
-float GetNoise(vec2 p)
-{
-	vec3 p3  = fract(vec3(p.xyx) * .1031);
-    p3 += dot(p3, p3.yzx + 33.33);
-    return fract((p3.x + p3.y) * p3.z);
-}
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
 
 void DrawStars(inout vec3 color, vec3 viewPos)
 {
@@ -22,14 +23,14 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 		star *= pow(texture2D(noisetex, coord.xy * 100.0).r, 2.0);
 	}
 	star = clamp(star - 0.8125, 0.0, 1.0) * multiplier;
-    star *= GetNoise(coord);
+    star *= Hash(coord);
 
 	color += pow(star * 2.0, 3.0) * pow(lightNight, vec3(0.8));
 }
 
-mat2 Rot(float _angle) {
-    return mat2(cos(_angle),-sin(_angle),
-                sin(_angle),cos(_angle));
+mat2 Rot(float _angle) 
+{
+    return mat2(cos(_angle),-sin(_angle), sin(_angle),cos(_angle));
 }
 
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
@@ -40,26 +41,26 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
 {
     float cosT = dot(normalize(viewPos), upVec);
 
-    if(cosT > 0.2) 
+    if(cosT > 0.2)
     {
         vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
         vec2 coord = wpos.xz + cameraPosition.xz * 0.01 / (wpos.y + length(wpos.xz));
         coord *= 0.8;
         coord = Rot(rotationAngle) * coord;
 
-        float speedMultiplier = 0.8 + GetNoise(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
+        float speedMultiplier = 0.8 + Hash(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
         time *= speedMultiplier * SHOOTING_STARS_SPEED * SHOOTING_STARS_SCALE;
-        
+
         coord += vec2(-time, time);
 
         vec3 result = vec3(0.0);
 
         // Trail
         vec2 trailGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE);
-        float trailIdHash = GetNoise(trailGridId);
+        float trailIdHash = Hash(trailGridId);
         float trailBrightness = step(trailIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
-        if(trailBrightness != 0.0) 
+        if(trailBrightness != 0.0)
         {
             vec2 trailGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE);
 
@@ -67,15 +68,15 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
             float density = distance(trailGridUv.x + trailGridUv.y, 1.0) / trailLength;
             density /= (trailIdHash * 0.5 + 0.5);
 
-            result += smoothstep(0.04, 0.01, density) * trailLength * trailLength * trailBrightness * (trailIdHash * 0.75 + 0.25);   
+            result += smoothstep(0.04, 0.01, density) * trailLength * trailLength * trailBrightness * (trailIdHash * 0.75 + 0.25);
         }
 
         // Glare
         vec2 glareGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE + vec2(-0.5, 0.5));
-        float glareIdHash = GetNoise(glareGridId);
+        float glareIdHash = Hash(glareGridId);
         float glareBrightness = step(glareIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
-        if(glareBrightness != 0.0) 
+        if(glareBrightness != 0.0)
         {
             vec2 glareGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE + 0.5) - 0.5;
             float glare = pow(saturate(0.012 / length(glareGridUv) * smoothstep(0.5, 0.0, length(glareGridUv))), 2.0);
@@ -85,60 +86,60 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
             result += glare;
         }
 
-        return result * (1. - rainStrength) * smoothstep(0.2, 1.0, cosT);
+        return result * (1. - rainStrength) * smoothstep(0.3, 1.0, cosT) * pow(lightNight, vec3(0.8));
     }
-    
+
     return vec3(0.0);
 }
 
-vec3 DrawShootingStars(in vec3 viewPos, in float time) 
+vec3 DrawShootingStars(in vec3 viewPos, in float time)
 {
     vec3 result;
 
     for (int i = 0; i < SHOOTING_STARS_ROTATION_ITERATIONS; i++)
     {
         float rotation = float(i) / float(SHOOTING_STARS_ROTATION_ITERATIONS) * PI;
-        float n = GetNoise(vec2(rotation));
+        float n = Hash(vec2(rotation));
         result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
     }
 
     return result;
 
     // float cosT = dot(normalize(viewPos), upVec);
-
+	
     // vec3 shootingStars;
-
-    // if (cosT > 0.1) 
+	
+    // if (cosT > 0.1)
     // {
     //     vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
     //     vec2 wind = vec2(frametime, 0.0);
     //     vec2 coord = (wpos.xz / (wpos.y + length(wpos.xz) * 0.6) * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125) * 100.0;
-
+	
     //     vec2 ratio = vec2(0.05, 1.6);
-
+	
     //     coord *= ratio;
-
+	
     //     vec2 gridUv = fract(coord);
     //     vec2 gridID = floor(coord);
-
-    //     float idHash = GetNoise(gridID);
-
+	
+    //     float idHash = Hash(gridID);
+	
     //     float time = frameTimeCounter * (step(idHash, 0.5) * 6.0 - 3.0) * 2.0;
-
+	
     //     vec2 trailCoord = gridUv.xx + time + idHash * 123.4287;
     //     vec2 trailUv = fract(trailCoord);
     //     vec2 trailID = floor(trailCoord);
-
+	
     //     float trailMult = trailUv.x * trailUv.x;
     //     float mult = pow(sin(gridUv.x * PI), 2.0 / ratio.y) * pow(sin(gridUv.y * PI), 2.0 / ratio.x / trailMult) * pow(sin(trailUv.x * PI), 2.0 / ratio.y);
     //     mult *= trailMult * trailMult;
-
-    //     float noise = GetNoise(trailID * 137.33);
-
+	
+    //     float noise = Hash(trailID * 137.33);
+	
     //     shootingStars += (1.0 - step(1.0, noise * 1000.0));
     //     shootingStars *= mult;
     //     shootingStars *= (1. - rainStrength) * smoothstep(0.2, 1.0, cosT);
     // }
-
+	
     // return shootingStars;
 }

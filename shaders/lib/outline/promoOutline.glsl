@@ -1,6 +1,21 @@
-vec2 promoOutlineOffsets[4] = vec2[4](vec2(-1.0,1.0),vec2(0.0,1.0),vec2(1.0,1.0),vec2(1.0,0.0));
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
 
-void PromoOutline(inout vec3 color, sampler2D depth){
+
+vec2 promoOutlineOffsets[4] = vec2[4](
+	vec2( -1.0,  1.0 ),
+	vec2(  0.0,  1.0 ),
+	vec2(  1.0,  1.0 ),
+	vec2(  1.0,  0.0 )
+);
+
+void PromoOutline(inout vec3 color, sampler2D depth)
+{
 	float ph = 1.0 / 1080.0;
 	float pw = ph / aspectRatio;
 
@@ -11,7 +26,8 @@ void PromoOutline(inout vec3 color, sampler2D depth){
 	float sampleza = 0.0;
 	float samplezb = 0.0;
 
-	for(int i = 0; i < 4; i++){
+	for (int i = 0; i < 4; i++)
+	{
 		vec2 offset = vec2(pw, ph) * promoOutlineOffsets[i];
 		sampleza = GetLinearDepth(texture2D(depth, texCoord + offset).r) * far;
 		samplezb = GetLinearDepth(texture2D(depth, texCoord - offset).r) * far;
@@ -28,7 +44,9 @@ void PromoOutline(inout vec3 color, sampler2D depth){
 	float outline = (0.35 * (outlinea * outlineb) + 0.65) * 
 					(0.75 * (1.0 - outlined) * outlinec + 1.0);
 
+	// TODO: This can definitely be faster
 	color = sqrt(sqrt(color));
 	color *= outline;
-	color *= color; color *= color;
+	color *= color; 
+	color *= color;
 }

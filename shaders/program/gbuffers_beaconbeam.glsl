@@ -1,31 +1,36 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 uniform sampler2D texture;
 
-//Includes//
+// Includes
 #include "/lib/color/blocklightColor.glsl"
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	vec4 albedo = texture2D(texture, texCoord) * color;
 	
 	#ifdef EMISSIVE_RECOLOR
-	if (dot(color.rgb, vec3(1.0)) > 2.66){
+	if (dot(color.rgb, vec3(1.0)) > 2.66)
+	{
 		float ec = length(albedo.rgb);
 		albedo.rgb = blocklightCol * (ec * 0.63 / BLOCKLIGHT_I) + ec * 0.07;
 	}
@@ -38,9 +43,9 @@ void main(){
 	#endif
     
     /* DRAWBUFFERS:0 */
-	gl_FragData[0] = albedo;
+	gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
 
-	#ifdef ADVANCED_MATERIALS
+	#ifdef MATERIAL_SUPPORT
 	/* DRAWBUFFERS:0367 */
 	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
 	gl_FragData[2] = vec4(0.0, 0.0, float(gl_FragCoord.z < 1.0), 1.0);
@@ -50,15 +55,15 @@ void main(){
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
 varying vec4 color;
 
-//Uniforms//
+// Uniforms
 #if AA == 2
 uniform int frameCounter;
 
@@ -72,15 +77,15 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 #endif
 
-//Includes//
+// Includes
 #ifdef WORLD_CURVATURE
 #include "/lib/vertex/worldCurvature.glsl"
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-
 	color = gl_Color;
 
 	#ifdef WORLD_CURVATURE

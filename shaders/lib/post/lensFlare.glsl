@@ -1,24 +1,38 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
 float fovmult = gbufferProjection[1][1] / 1.37373871;
 
-float BaseLens(vec2 lightPos, float size, float dist, float hardness){
+float BaseLens(vec2 lightPos, float size, float dist, float hardness)
+{
 	vec2 lensCoord = (texCoord + (lightPos * dist - 0.5)) * vec2(aspectRatio,1.0);
 	float lens = clamp(1.0 - length(lensCoord) / (size * fovmult), 0.0, 1.0 / hardness) * hardness;
 	lens *= lens; lens *= lens;
 	return lens;
 }
 
-float OverlapLens(vec2 lightPos, float size, float dista, float distb){
+float OverlapLens(vec2 lightPos, float size, float dista, float distb)
+{
 	return BaseLens(lightPos, size, dista, 2.0) * BaseLens(lightPos, size, distb, 2.0);
 }
 
-float PointLens(vec2 lightPos, float size, float dist){
+float PointLens(vec2 lightPos, float size, float dist)
+{
 	return BaseLens(lightPos, size, dist, 1.5) + BaseLens(lightPos, size * 4.0, dist, 1.0) * 0.5;
 }
 
-float RingLensTransform(float lensFlare){
+float RingLensTransform(float lensFlare)
+{
 	return pow(1.0 - pow(1.0 - pow(lensFlare, 0.25), 10.0), 5.0);
 }
-float RingLens(vec2 lightPos, float size, float distA, float distB){
+
+float RingLens(vec2 lightPos, float size, float distA, float distB)
+{
 	float lensFlare1 = RingLensTransform(BaseLens(lightPos, size, distA, 1.0));
 	float lensFlare2 = RingLensTransform(BaseLens(lightPos, size, distB, 1.0));
 	
@@ -27,40 +41,43 @@ float RingLens(vec2 lightPos, float size, float distA, float distB){
 	return lensFlare;
 }
 
-float AnamorphicLens(vec2 lightPos, float size, float dist){
+float AnamorphicLens(vec2 lightPos, float size, float dist)
+{
 	vec2 lensCoord = abs(texCoord + (lightPos.xy * dist - 0.5)) * vec2(aspectRatio * 0.1, 2.0);
 	float lens = clamp(1.0 - length(pow(lensCoord / (size * fovmult), vec2(0.85))) * 4.0, 0.0, 1.0);
 	lens *= lens * lens;
 	return lens;
 }
 
-vec3 RainbowLens(vec2 lightPos, float size, float dist, float rad){
+vec3 RainbowLens(vec2 lightPos, float size, float dist, float rad)
+{
 	vec2 lensCoord = (texCoord + (lightPos * dist - 0.5)) * vec2(aspectRatio,1.0);
 	float lens = clamp(1.0 - length(lensCoord) / (size * fovmult), 0.0, 1.0);
 	
 	vec3 rainbowLens = 
 		(smoothstep(0.0, rad, lens) - smoothstep(rad, rad * 2.0, lens)) * vec3(1.0, 0.0, 0.0) +
 		(smoothstep(rad * 0.5, rad * 1.5, lens) - smoothstep(rad * 1.5, rad * 2.5, lens)) * vec3(0.0, 1.0, 0.0) +
-		(smoothstep(rad, rad * 2.0, lens) - smoothstep(rad * 2.0, rad * 3.0, lens)) * vec3(0.0, 0.0, 1.0)
-	;
+		(smoothstep(rad, rad * 2.0, lens) - smoothstep(rad * 2.0, rad * 3.0, lens)) * vec3(0.0, 0.0, 1.0);
 
 	return rainbowLens;
 }
 
-vec3 LensTint(vec3 lens, float truePos){
+vec3 LensTint(vec3 lens, float truePos)
+{
 	float isMoon = truePos * 0.5 + 0.5;
-
 	float visibility = mix(sunVisibility,moonVisibility, isMoon);
 	lens = mix(lens, GetLuminance(lens) * lightNight * 0.5, isMoon * 0.98);
 	return lens * visibility;
 }
 
-void LensFlare(inout vec3 color, vec2 lightPos, float truePos, float multiplier){
+void LensFlare(inout vec3 color, vec2 lightPos, float truePos, float multiplier)
+{
 	float falloffBase = length(lightPos * vec2(aspectRatio, 1.0));
 	float falloffIn = pow(clamp(falloffBase * 10.0, 0.0, 1.0), 2.0);
 	float falloffOut = clamp(falloffBase * 3.0 - 1.5, 0.0, 1.0);
 
-	if (falloffOut < 0.999){
+	if (falloffOut < 0.999)
+	{
 		vec3 lensFlare = (
 			BaseLens(lightPos, 0.3, -0.45, 1.0) * vec3(2.2, 1.2, 0.1) * 0.07 +
 			BaseLens(lightPos, 0.3,  0.10, 1.0) * vec3(2.2, 0.4, 0.1) * 0.03 +

@@ -8,9 +8,11 @@ profile.ULTRA=Ultra
 profile.comment=Low : low shadows, no extra effects. Medium : medium shadows, no extra effects. High : medium shadows, AO and light shafts. Ultra : high shadows, AO, and light shafts.
 
 #Screens
-screen.VISUAL=Visual
-screen.ADVANCED_MATERIALS=Advanced Materials Config
-
+screen.CAMERA=Camera Settings
+screen.ATMOSPHERICS=Atmospherics
+screen.SURFACE=Surface Settings
+screen.MISC=Misc
+screen.SURFACE_WAVING=Surface Waving
 screen.POST_PROCESS=Post Process
 screen.COLOR_GRADING=Color Grading
 screen.CG_R=Red Channel
@@ -71,11 +73,11 @@ option.AO.comment=Adds soft shadows around surface contact or intersection.
 option.AO_STRENGTH=AO Strength
 option.AO_STRENGTH.comment=Adjusts ambient occlusion strength.
 
-option.LIGHT_SHAFT=Light Shafts
-option.LIGHT_SHAFT.comment=Adds volumetric rays from sun / moon. §a[+]§rThis effect benefits from TAA. §e[*]§rPerformance depends on Shadowmap Resolution.
+option.VOLUMETRIC_FOG=Volumetric Fog
+option.VOLUMETRIC_FOG.comment=Adds volumetric fog rays. §a[+]§rThis effect benefits from TAA. §e[*]§rPerformance depends on Shadowmap Resolution.
 
-option.LIGHT_SHAFT_STRENGTH=Light Shaft Strength
-option.LIGHT_SHAFT_STRENGTH.comment=Adjusts light shaft strength.
+option.VOLUMETRIC_FOG_STRENGTH=Volumetric Fog Strength
+option.VOLUMETRIC_FOG_STRENGTH.comment=Adjusts volumetric fog strength.
 
 option.DESATURATION=Desaturation
 option.DESATURATION.comment=Reduces saturation while adding some tint in darker areas.
@@ -94,8 +96,8 @@ option.REFLECTION.comment=Enables screen space reflection. §e[*]§rThis toggle 
 option.REFLECTION_TRANSLUCENT=Translucent Reflections
 option.REFLECTION_TRANSLUCENT.comment=Allows reflection to be rendered on translucent surfaces, such as stained glass, ice, slime blocks, and more.
 
-option.ADVANCED_MATERIALS=Advanced Materials
-option.ADVANCED_MATERIALS.comment=Enables the use of specular and normal mapping which allows for more detail on various things.  §e[*]§rThis option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
+option.MATERIAL_SUPPORT=Material Support
+option.MATERIAL_SUPPORT.comment=Enables the use of PBR recourcepacks.  §e[*]§rThis option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
 
 option.BLACK_OUTLINE=Black Outline
 option.BLACK_OUTLINE.comment=Enables black outline.
@@ -137,10 +139,10 @@ option.PARALLAX.comment=Adds displacement on a surface using height map.
 option.PARALLAX_DEPTH=Parallax Depth
 option.PARALLAX_DEPTH.comment=Adjusts parallax deepness.
 
-option.SELF_SHADOW=Self Shadows
+option.SELF_SHADOW=Parallax Shadowing
 option.SELF_SHADOW.comment=Allows a surface to cast shadow to itself using heightmap.
 
-option.SELF_SHADOW_ANGLE=Self Shadowing Angle
+option.SELF_SHADOW_ANGLE=Parallax Shadowing Angle
 option.SELF_SHADOW_ANGLE.comment=Adjusts the self shadowing angle, higher value allows the shadow to travel further.
 
 option.PARALLAX_QUALITY=Parallax Quality
@@ -162,7 +164,7 @@ value.DIRECTIONAL_LIGHTMAP_STRENGTH.0.5=Very High
 
 option.DOF=Depth of Field
 options.DOF.comment=Enables camera focus effect.
-option.DOF_STRENGTH=DoF Strength
+option.DOF_STRENGTH=DOF Strength
 option.DOF_STRENGTH.comment=Adjusts the focus strength, higher value blurs quicker.
 
 option.MOTION_BLUR=Motion Blur
@@ -421,8 +423,11 @@ value.AURORA_HEIGHT.22.5=Very High
 option.AURORA_PERBIOME=Biome Check
 
 option.AURORA_COLORING_TYPE=Coloring Type
-value.AURORA_COLORING_TYPE.0=Default
-value.AURORA_COLORING_TYPE.1=Custom
+value.AURORA_COLORING_TYPE.0=Round-Robin
+value.AURORA_COLORING_TYPE.1=§aGreen§r/§9Blue
+value.AURORA_COLORING_TYPE.2=§cRed§r/§9Blue
+value.AURORA_COLORING_TYPE.3=Custom
+option.AURORA_COLORING_TYPE.comment=Adjusts the coloring of the auroras.
 
 option.AURORA_COLOR_ONE_R=Color One Red
 option.AURORA_COLOR_TWO_R=Color Two Red
@@ -549,6 +554,9 @@ option.WEATHER.comment=Enables rain and snowfall.
 option.WEATHER_OPACITY=Weather Opacity
 option.WEATHER_OPACITY.comment=Adjusts weather opacity.
 
+option.BORDER_FOG=Border Fog
+option.BORDER_FOG.comment=Enables border fog.
+
 option.FOG=Fog
 option.FOG.comment=Enables fog.
 
@@ -598,3 +606,9 @@ option.SHOOTING_STARS_ROTATION_ITERATIONS.comment=Defines the amount of rotation
 
 option.CHROMATIC_ABBERATION=Chromatic Abberation
 option.CHROMATIC_ABBERATION.comment=Enables Chromatic Abberation.
+
+option.CHROMATIC_ABBERATION_STRENGTH=Chromatic Abberation Strength
+option.CHROMATIC_ABBERATION_STRENGTH.comment=Changes Chromatic Abberation Strength §b[!]§rAutomatically adapts to the depth of field strength.
+
+screen.MATERIAL_NORMAL_SUPPORT=Material Normal Config
+screen.MATERIAL_REFLECTION_SUPPORT=Material Reflection Config

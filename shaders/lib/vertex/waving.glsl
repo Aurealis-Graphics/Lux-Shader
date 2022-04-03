@@ -1,3 +1,11 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
 #define WAVING_CROPS
 #define WAVING_FIRE
 #define WAVING_GRASS
@@ -11,11 +19,13 @@
 const float pi = 3.1415927;
 float pi2wt = 6.2831854 * (frametime * 24.0);
 
-float GetNoise(vec2 pos){
+float GetNoise(vec2 pos)
+{
 	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
-float Noise2D(vec2 pos){
+float Noise2D(vec2 pos)
+{
     vec2 flr = floor(pos);
     vec2 frc = fract(pos);
     frc = frc * frc * (3.0 - 2.0 * frc);
@@ -31,58 +41,73 @@ float Noise2D(vec2 pos){
     return mix(n0, n1, frc.x) - 0.5;
 }
 
-vec3 CalcMove(vec3 pos, float density, float speed, vec2 mult){
+vec3 CalcMove(vec3 pos, float density, float speed, vec2 mult)
+{
     pos = pos * density + frametime * speed;
     vec3 wave = vec3(Noise2D(pos.yz), Noise2D(pos.xz + 0.333), Noise2D(pos.xy + 0.667));
     return wave * vec3(mult, mult.x);
 }
 
-float CalcLilypadMove(vec3 worldpos){
+float CalcLilypadMove(vec3 worldpos)
+{
     float wave = sin(2 * pi * (frametime * 0.7 + worldpos.x * 0.14 + worldpos.z * 0.07)) +
                  sin(2 * pi * (frametime * 0.5 + worldpos.x * 0.10 + worldpos.z * 0.20));
     return wave * 0.025;
 }
 
-float CalcLavaMove(vec3 worldpos){
+float CalcLavaMove(vec3 worldpos)
+{
     float fy = fract(worldpos.y + 0.005);
 		
-    if (fy > 0.01){
-    float wave = sin(pi * (frametime * 0.7 + worldpos.x * 0.14 + worldpos.z * 0.07)) +
-                 sin(pi * (frametime * 0.5 + worldpos.x * 0.10 + worldpos.z * 0.20));
-    return wave * 0.025;
-    } else return 0.0;
+    if (fy > 0.01)
+    {
+        float wave = sin(pi * (frametime * 0.7 + worldpos.x * 0.14 + worldpos.z * 0.07)) +
+                     sin(pi * (frametime * 0.5 + worldpos.x * 0.10 + worldpos.z * 0.20));
+        return wave * 0.025;
+    }
+    else 
+    {
+        return 0.0;
+    }
 }
 
-vec3 CalcLanternMove(vec3 position){
+vec3 CalcLanternMove(vec3 position)
+{
     vec3 frc = fract(position);
     frc = vec3(frc.x - 0.5, fract(frc.y - 0.001) - 1.0, frc.z - 0.5);
     vec3 flr = position - frc;
-    float offset = flr.x * 2.4 + flr.y * 2.7 + flr.z * 2.2;
 
+    float offset = flr.x * 2.4 + flr.y * 2.7 + flr.z * 2.2;
     float rx = sin(frametime       + offset) * pi * 0.016;
     float ry = sin(frametime * 1.7 + offset) * pi * 0.016;
     float rz = sin(frametime * 1.4 + offset) * pi * 0.016;
+    
+    // TODO: Optimize, precompute sin() and cos()
     mat3 rotx = mat3(
-               1,        0,        0,
-               0,  cos(rx), -sin(rx),
-               0,  sin(rx),  cos(rx)
+        1,        0,        0,
+        0,  cos(rx), -sin(rx),
+        0,  sin(rx),  cos(rx)
     );
+    
     mat3 roty = mat3(
-         cos(ry),        0,  sin(ry),
-               0,        1,        0,
-        -sin(ry),        0,  cos(ry)
+         cos(ry), 0, sin(ry),
+               0, 1,       0,
+        -sin(ry), 0, cos(ry)
     );
+
     mat3 rotz = mat3(
-         cos(rz), -sin(rz),        0,
-         sin(rz),  cos(rz),        0,
-               0,        0,        1
+        cos(rz), -sin(rz), 0,
+        sin(rz),  cos(rz), 0,
+              0,        0, 1
     );
+    
     frc = rotx * roty * rotz * frc;
     
     return flr + frc - position;
 }
 
-vec3 WavingBlocks(vec3 position, float istopv){
+vec3 WavingBlocks(vec3 position, float istopv)
+{
     vec3 wave = vec3(0.0);
     vec3 worldpos = position + cameraPosition;
 
@@ -127,7 +152,5 @@ vec3 WavingBlocks(vec3 position, float istopv){
 		wave += CalcLanternMove(worldpos);
     #endif
 
-    position += wave;
-
-    return position;
+    return position + wave;
 }

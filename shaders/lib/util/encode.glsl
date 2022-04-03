@@ -1,10 +1,20 @@
-//Spheremap Transform from https://aras-p.info/texts/CompactNormalStorage.html
-vec2 EncodeNormal(vec3 n){
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+// Spheremap Transform from https://aras-p.info/texts/CompactNormalStorage.html
+vec2 EncodeNormal(vec3 n)
+{
     float f = sqrt(n.z * 8.0 + 8.0);
     return n.xy / f + 0.5;
 }
 
-vec3 DecodeNormal(vec2 enc){
+vec3 DecodeNormal(vec2 enc)
+{
     vec2 fenc = enc * 4.0 - 2.0;
     float f = dot(fenc,fenc);
     float g = sqrt(1.0 - f / 4.0);

@@ -1,18 +1,21 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
-*/
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
-//Uniforms//
+// Uniforms
 uniform sampler2D colortex1;
 
 uniform float viewWidth, viewHeight;
@@ -20,17 +23,8 @@ uniform float rainStrength;
 
 uniform int isEyeInWater;
 
-//Optifine Constants//
-/*
-const int colortex0Format = R11F_G11F_B10F; //main
-const int colortex1Format = RGB8; //raw translucent, bloom
-const int colortex2Format = RGBA16; //temporal stuff
-const int colortex3Format = RGB8; //specular data
-const int gaux1Format = R8; //cloud alpha
-const int gaux2Format = RGB10_A2; //reflection image
-const int gaux3Format = RGB16; //normals
-const int gaux4Format = RGB16; //specular highlight
-*/
+// Optifine Constants
+#include "/lib/util/framebufferFormats.glsl"
 
 const bool shadowHardwareFiltering = true;
 
@@ -39,20 +33,22 @@ const int noiseTextureResolution = 512;
 const float drynessHalflife = 25.0;
 const float wetnessHalflife = 200.0;
 
-//Common Functions//
+// Common Functions
 #if SHARPEN > 0
 vec2 sharpenOffsets[4] = vec2[4](
-	vec2( 1.0,  0.0),
-	vec2( 0.0,  1.0),
-	vec2(-1.0,  0.0),
-	vec2( 0.0, -1.0)
+	vec2(  1.0,  0.0 ),
+	vec2(  0.0,  1.0 ),
+	vec2( -1.0,  0.0 ),
+	vec2(  0.0, -1.0 )
 );
 
-void SharpenFilter(inout vec3 color){
+void SharpenFilter(inout vec3 color)
+{
 	vec2 view = 1.0 / vec2(viewWidth, viewHeight);
 	vec3 pixelBlur = vec3(0.0);
 
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 4; i++)
+	{
 		vec2 offset = sharpenOffsets[i] * view;
 		pixelBlur += texture2D(colortex1, texCoord + offset).rgb / 4.0;
 	}
@@ -61,17 +57,17 @@ void SharpenFilter(inout vec3 color){
 }
 #endif
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	vec3 color = texture2D(colortex1, texCoord).rgb;
 
 	if(isEyeInWater == 1) 
 	{
-		vec3 gradedColor = color * vec3(0.7, 0.95, 1.0);
-		gradedColor.b *= 0.8 + abs(gradedColor.b - sqrt(gradedColor.g * 0.3 * gradedColor.r));
-		gradedColor.r *= 1. - abs(gradedColor.b - sqrt(gradedColor.r));
-		gradedColor *= 0.8;
-		color = mix(color, gradedColor, 0.3 * (1. - rainStrength));
+		vec3 gradedColor = color * 0.9 * vec3(0.6549, 0.9412, 1.0);
+		gradedColor.b *= 0.8 + abs(gradedColor.b - gradedColor.g * 0.3 * gradedColor.r);
+		gradedColor.r *= 1. - abs(gradedColor.b - gradedColor.r);
+		color = mix(color, gradedColor, 0.35 * (1. - rainStrength));
 	}
 
 	#if SHARPEN > 0
@@ -83,16 +79,16 @@ void main(){
 
 #endif
 
-//Vertex Shader///////////////////////////////////////// ////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord;
 
-//Program//
-void main(){
-	texCoord = gl_MultiTexCoord0.xy;
-	
+// Program
+void main()
+{
+	texCoord = gl_MultiTexCoord0.xy;	
 	gl_Position = ftransform();
 }
 

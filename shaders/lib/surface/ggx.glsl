@@ -1,4 +1,12 @@
-//GGX area light approximation from Horizon Zero Dawn
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+// GGX area light approximation from Horizon Zero Dawn
 float GetNoHSquared(float radiusTan, float NoL, float NoV, float VoL)
 {
     float radiusCos = 1.0 / sqrt(1.0 + radiusTan * radiusTan);
@@ -32,10 +40,11 @@ float GetNoHSquared(float radiusTan, float NoL, float NoV, float VoL)
     return max(NoH * NoH / HoH, 0.0);
 }
 
-float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, float sunSize) {
-    float roughness = 1.0 - smoothness;
-    if (roughness < 0.05) roughness = 0.05;
-    roughness *= roughness; roughness *= roughness;
+float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, float sunSize)
+{
+    float roughness = max(1.0 - smoothness, 0.03);
+    roughness *= roughness;
+    roughness *= roughness;
     
     vec3 halfVec = normalize(lightVec - viewPos);
 
@@ -55,9 +64,10 @@ float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, 
     return specular;
 }
 
-vec3 GetMetalCol(float f0){
+// TODO: Use an array for this, not a bunch of if statements
+vec3 GetMetalCol(float f0)
+{
     int metalidx = int(f0 * 255.0);
-
     if (metalidx == 230) return vec3(0.24867, 0.22965, 0.21366);
     if (metalidx == 231) return vec3(0.88140, 0.57256, 0.11450);
     if (metalidx == 232) return vec3(0.81715, 0.82021, 0.83177);
@@ -69,16 +79,30 @@ vec3 GetMetalCol(float f0){
     return vec3(1.0);
 }
 
-vec3 GetSpecularHighlight(float smoothness, float metalness, float f0, vec3 specularColor,
-                          vec3 rawAlbedo, vec3 shadow, vec3 normal, vec3 viewPos){
+vec3 GetSpecularHighlight(
+    float smoothness,
+    float metalness, 
+    float f0, 
+    vec3 specularColor,
+    vec3 rawAlbedo,
+    vec3 shadow,
+    vec3 normal,
+    vec3 viewPos
+    )
+{
     if (dot(shadow, shadow) < 0.001) return vec3(0.0);
 
     #ifdef END
     smoothness *= 0.4;
     #endif
 
-    float specular = GGX(normal, normalize(viewPos), lightVec, smoothness, f0,
-                         0.025 * sunVisibility + 0.05);
+    float sunSize = 0.025 * sunVisibility + 0.05;
+
+    #ifdef ROUND_SUN_MOON
+    sunSize = 0.02;
+    #endif
+
+    float specular = GGX(normal, normalize(viewPos), lightVec, smoothness, f0, sunSize);
     specular *= (1.0 - sqrt(rainStrength)) * shadowFade;
     
     specularColor = pow(specularColor, vec3(1.0 - 0.5 * metalness));

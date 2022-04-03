@@ -1,20 +1,23 @@
 /* 
-BSL Shaders v7.1.05 by Capt Tatsu 
-https://bitslablab.com 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
 */ 
 
-//Settings//
+// Settings
 #include "/lib/settings.glsl"
 
-//Fragment Shader///////////////////////////////////////////////////////////////////////////////////
+// Fragment Shader
 #ifdef FSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord, lmCoord;
 
 varying vec3 upVec, sunVec;
 
-//Uniforms//
+// Uniforms
 uniform int isEyeInWater;
 uniform int worldTime;
 
@@ -30,12 +33,13 @@ uniform mat4 gbufferProjectionInverse;
 uniform sampler2D texture;
 uniform sampler2D depthtex0;
 
-//Common Variables//
+// Common Variables
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 
-//Common Functions//
-void Defog(inout vec3 albedo){
+// Common Functions
+void Defog(inout vec3 albedo)
+{
 	float z = texture2D(depthtex0,gl_FragCoord.xy/vec2(viewWidth,viewHeight)).r;
 	if (z == 1.0) return;
 
@@ -50,57 +54,57 @@ void Defog(inout vec3 albedo){
     albedo.rgb /= 1.0 - fog;
 }
 
-//Includes//
+// Includes
 #include "/lib/color/lightColor.glsl"
 #include "/lib/color/blocklightColor.glsl"
+#include "/lib/atmospherics/sky.glsl"
+#include "/lib/color/ambientColor.glsl"
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	#if defined NETHER || defined END
 	discard;
 	#endif
 
     vec4 albedo = vec4(0.0);
+	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
 	
 	#ifdef WEATHER
 	albedo.a = texture2D(texture, texCoord).a;
 	
-	if (albedo.a > 0.001){
+	if (albedo.a > 0.001)
+	{
 		albedo.rgb = texture2D(texture, texCoord).rgb;
-
-		albedo.a *= 0.25 * rainStrength * length(albedo.rgb / 3.0) * float(albedo.a > 0.1);
+		albedo.a *= 0.3 * rainStrength * length(albedo.rgb / 3.0) * float(albedo.a > 0.1);
 		albedo.rgb = sqrt(albedo.rgb);
-		albedo.rgb *= (ambientCol + lmCoord.x * lmCoord.x * blocklightCol) * WEATHER_OPACITY;
-		
-		#if defined FOG && MC_VERSION <= 11500
-		//if (gl_FragCoord.z > 0.991) Defog(albedo.rgb);
-		#endif
+		albedo.rgb *= (skyEnvAmbientApprox + lmCoord.x * lmCoord.x * blocklightCol) * WEATHER_OPACITY;
 	}
 	#endif
-	
-/* DRAWBUFFERS:0 */
+
+	/* DRAWBUFFERS:0 */
 	gl_FragData[0] = albedo;
 }
 
 #endif
 
-//Vertex Shader/////////////////////////////////////////////////////////////////////////////////////
+// Vertex Shader
 #ifdef VSH
 
-//Varyings//
+// Varyings
 varying vec2 texCoord, lmCoord;
 
 varying vec3 sunVec, upVec;
 
-//Uniforms//
+// Uniforms
 uniform float timeAngle;
 
 uniform mat4 gbufferModelView;
 
-//Program//
-void main(){
+// Program
+void main()
+{
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
 	lmCoord = clamp(lmCoord * 2.0 - 1.0, 0.0, 1.0);
 
@@ -108,9 +112,7 @@ void main(){
 	float ang = fract(timeAngle - 0.25);
 	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
-
 	upVec = normalize(gbufferModelView[1].xyz);
-	
 	gl_Position = ftransform();
 }
 

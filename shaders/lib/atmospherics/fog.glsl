@@ -1,5 +1,15 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+
 #ifdef OVERWORLD
-vec3 GetFogColor(vec3 viewPos){
+vec3 GetFogColor(vec3 viewPos, vec3 ambientCol)
+{
 	vec3 fogCol = fogCol;
 	vec3 nViewPos = normalize(viewPos);
 	float lViewPos = length(viewPos) / 64.0;
@@ -29,13 +39,14 @@ vec3 GetFogColor(vec3 viewPos){
 }
 #endif
 
-void NormalFog(inout vec3 color, vec3 viewPos){
+void NormalFog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
+{
 	#ifdef OVERWORLD
 	float fog = length(viewPos) * FOG_DENSITY / 256.0;
 	float clearDay = sunVisibility * (1.0 - rainStrength);
 	fog *= (0.5 * rainStrength + 1.0) / (3.0 * clearDay + 1.0);
 	fog = 1.0 - exp(-2.0 * pow(fog, 0.25 * clearDay + 1.25) * eBS);
-	vec3 fogColor = GetFogColor(viewPos);
+	vec3 fogColor = GetFogColor(viewPos, ambientCol);
 	#endif
 
 	#ifdef NETHER
@@ -55,13 +66,15 @@ void NormalFog(inout vec3 color, vec3 viewPos){
 	color = mix(color, fogColor, fog);
 }
 
-void BlindFog(inout vec3 color, vec3 viewPos){
+void BlindFog(inout vec3 color, vec3 viewPos)
+{
 	float fog = length(viewPos) * (5.0 / blindFactor);
 	fog = (1.0 - exp(-6.0 * fog * fog * fog)) * blindFactor;
 	color = mix(color, vec3(0.0), fog);
 }
 
-void LavaFog(inout vec3 color, vec3 viewPos){
+void LavaFog(inout vec3 color, vec3 viewPos)
+{
 	float fog = length(viewPos) * 0.5;
 	fog = (1.0 - exp(-4.0 * fog * fog * fog));
 	#ifdef EMISSIVE_RECOLOR
@@ -71,8 +84,9 @@ void LavaFog(inout vec3 color, vec3 viewPos){
 	#endif
 }
 
-void Fog(inout vec3 color, vec3 viewPos){
-	NormalFog(color, viewPos);
+void Fog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
+{
+	NormalFog(color, viewPos, ambientCol);
 	if (isEyeInWater == 2) LavaFog(color, viewPos);
 	if (blindFactor > 0.0) BlindFog(color, viewPos);
 }
