@@ -131,7 +131,9 @@ void main()
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
 
+	#ifdef OVERWORLD
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
+	#endif
 
 	if (z < 1.0)
 	{
@@ -213,7 +215,11 @@ void main()
 		#endif
 
 		#ifdef FOG
+		#ifdef OVERWORLD
 		Fog(color.rgb, viewPos.xyz, skyEnvAmbientApprox);
+		#else
+		Fog(color.rgb, viewPos.xyz, vec3(0.0));
+		#endif
 		#endif
 	}
 	else

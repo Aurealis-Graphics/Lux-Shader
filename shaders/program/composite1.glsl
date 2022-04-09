@@ -56,7 +56,7 @@ void main()
     vec4 color = texture2D(colortex0, texCoord.xy);
 	vec3 vl = texture2D(colortex1, texCoord.xy).rgb;
 	float z0 = texture2D(depthtex0, texCoord).r;
-	float vlVisibilityMult = VOLUMETRIC_FOG_STRENGTH * (1.0 - rainStrength * eBS * 0.875) * shadowFade * (1.0 - blindFactor);
+	float vlVisibilityMult = (1.0 - rainStrength * eBS * 0.875) * shadowFade * (1.0 - blindFactor);
 
 	#if defined(OVERWORLD) || defined(BORDER_FOG)
 	vec4 screenPos = vec4(texCoord, z0, 1.0);

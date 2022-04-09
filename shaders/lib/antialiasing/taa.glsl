@@ -37,16 +37,17 @@ vec2 neighbourhoodOffsets[8] = vec2[8](
 
 vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 view)
 {
-	vec3 minclr = color, maxclr = color;
+	vec3 minColor = color, maxColor = color;
 
-	for(int i = 0; i < 8; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		vec2 offset = neighbourhoodOffsets[i] * view;
-		vec3 clr = texture2DLod(colortex1, texCoord + offset, 0.0).rgb;
-		minclr = min(minclr, clr); maxclr = max(maxclr, clr);
+		vec3 sample = texture2DLod(colortex1, texCoord + offset, 0.0).rgb;
+		minColor = min(minColor, sample); 
+		maxColor = max(maxColor, sample);
 	}
 
-	return clamp(tempColor, minclr, maxclr);
+	return clamp(tempColor, minColor, maxColor);
 }
 
 void TAA(inout vec3 color, inout vec4 temp)

@@ -58,7 +58,7 @@ vec3 getVolumetricRays(float z0, float z1, vec3 color, float dither)
 	viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
-	const float fogEnd = 0.5;
+	const float fogEnd = 0.5 / VOLUMETRIC_FOG_STRENGTH;
 
 	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
 	float cosS = dot(normalize(viewPos.xyz), lightVec);

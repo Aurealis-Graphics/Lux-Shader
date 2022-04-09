@@ -47,7 +47,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	dither = fract(16.0 * frameTimeCounter + dither);
 	#endif
 
-	float cloud = 0.0;
+	float cloudAlpha = 0.0;
 	float cloudGradient = 0.0;
 	float gradientMix = dither * 0.1667;
 	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength));
@@ -64,7 +64,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 
 	for (int i = 0; i < 6; i++) 
 	{
-		if (cloud > 0.99) break;
+		if (cloudAlpha > 0.99) break;
 
 		vec3 planeCoord = worldPos * ((CLOUD_HEIGHT + (i + dither) * 1.3) / worldPos.y) * 0.004;
 		vec2 coord = cameraPosition.xz * 0.00025 + planeCoord.xz;
@@ -77,23 +77,23 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 		cloudGradient = mix(
 			cloudGradient,
 			mix(gradientMix * gradientMix, 1.0 - noise, 0.25),
-			noise * (1.0 - cloud * cloud)
+			noise * (1.0 - cloudAlpha * cloudAlpha)
 		);
 		
-		cloud = mix(cloud, 1.0, noise);
+		cloudAlpha = mix(cloudAlpha, 1.0, noise);
 		gradientMix += 0.1667;
 	}
 
-	if (cloud < 0.005) return vec4(0.0);
+	if (cloudAlpha < 0.005) return vec4(0.0);
 
 	cloudColor = mix(
 		ambientCol * 0.5 * (0.5 * sunVisibility + 0.5),
 		lightCol * (1.0 + scattering),
-		cloudGradient * cloud
+		cloudGradient * cloudAlpha
 	);
 	
 	cloudColor *= 1.0 - 0.6 * rainStrength;
-	cloud *= sqrt(sqrt(clamp(cosT * 10.0 - 1.0, 0.0, 1.0))) * (1.0 - 0.6 * rainStrength);
+	cloudAlpha *= clamp(1. - exp2(-(cosT - 0.1) * 40.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
 
-	return vec4(cloudColor * colorMultiplier, cloud * cloud * CLOUD_OPACITY);
+	return vec4(cloudColor * colorMultiplier, cloudAlpha * cloudAlpha * CLOUD_OPACITY);
 }
