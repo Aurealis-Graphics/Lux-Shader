@@ -74,12 +74,12 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 
 float GetAuroraNoiseSharpness(in float cosT) 
 {
-	return 12.0 * (1. - exp(-cosT * 3.0) + 0.05);
+	return 12.0 * (1.05 - exp(-cosT * 3.0));
 }
 
 vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 {
-	if(1.0 - max(sunVisibility, rainStrength) == 0.0) return vec4(0.0);
+	if (1.0 - max(sunVisibility, rainStrength) == 0.0) return vec4(0.0);
 
 	#ifdef AURORA_PERBIOME
 	if(isCold < 0.005) return vec4(0.0);
@@ -97,7 +97,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	float noiseSharpness = GetAuroraNoiseSharpness(cosT);
     vec3 worldPos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 
-	for(int i = 0; i < iterations; i++)
+	for (int i = 0; i < iterations; i++)
 	{
 		if (auroraAlpha > 0.99) break;
 
