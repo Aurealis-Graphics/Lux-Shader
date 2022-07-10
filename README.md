@@ -1,4 +1,4 @@
-# <center>The Lux Shaders</center>
+<h1 align="center">The Lux Shaders</h1>
 
 [![Support me on Patreon](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DTechTheDev%26type%3Dpatrons&style=flat)](https://patreon.com/techthedev)
 [![Discord](https://img.shields.io/discord/853294489636831242.svg?logo=discord&logoColor=white&logoWidth=20&labelColor=7289DA&label=Discord)](https://discord.gg/eZ6GpXQXGC)
