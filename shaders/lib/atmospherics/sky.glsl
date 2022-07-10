@@ -7,14 +7,9 @@ See AGREEMENT.txt for more information.
 */ 
 
 
-float Luma(vec3 color) 
-{
-    return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
-
 vec3 Saturation(vec3 color, float saturation) 
 {
-    return mix(vec3(Luma(color)), color, saturation);
+    return mix(vec3(GetLuminance(color)), color, saturation);
 }
 
 vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
@@ -28,23 +23,24 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
     float sunDot = exp(-distance(viewDir, sunVec) * (sunHeightVar + 0.8)) * (1.0 - rainStrength * sunHeightVar);
     float y = max(dot(viewDir, upVec), 0.0);
 
-    vec3 skyBaseColor = mix(vec3(0.2235, 0.6675, 0.8588), vec3(0.2784, 0.5961, 0.8588), sunVisibility);
-    skyBaseColor = mix(skyBaseColor, Luma(skyBaseColor) * weatherCol.rgb, rainStrength);
+    vec3 skyBaseColor = mix(vec3(0.2235, 0.702, 0.8588), vec3(0.2784, 0.5961, 0.8588), sunVisibility);
+    skyBaseColor = mix(skyBaseColor, GetLuminance(skyBaseColor) * weatherCol.rgb, rainStrength);
 
-    float saturationAmount = sunVisibility * 0.4 + 0.2 * (1.0 - rainStrength * sunVisibility) + 0.4;
+    float saturationAmount = 0.2 * (3.0 - sunVisibility * (rainStrength - 2.0));
     skyBaseColor = Saturation(skyBaseColor, saturationAmount) * (sunHeightVar * 0.3 + 0.7);
 
-    vec3 lightColor = GetDirectColor(sunHeightVar);
     vec3 skyColor = skyBaseColor;
     float mieFactor = sunDot * (1.0 - sunHeight) * sunHeightVar;
 
     skyColor = mix(skyColor, lightCol, mieFactor);
 
-    result = exp(-(1.0 - skyColor) * (sqrt(y * 0.9 + 0.1 + (1.0 - sunVisibility) + rainStrength * 0.3)) * 7.0);
+    y = sqrt(y + 0.1 + (1.0 - sunVisibility) + rainStrength * 0.5);
+
+    result = exp((skyColor - 1.0) * y * 7.0);
 
     result = mix(result, lightCol, mieFactor);
 
-    float mult = sunVisibility * 0.4 + 0.6;
+    float mult = sunVisibility * 0.3 + 0.6;
     result *= mult;
     #endif
     

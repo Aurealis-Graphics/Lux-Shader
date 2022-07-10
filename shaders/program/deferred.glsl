@@ -7,7 +7,7 @@ See AGREEMENT.txt for more information.
 */ 
 
 // Settings
-#include "/lib/settings.glsl"
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -44,6 +44,12 @@ uniform sampler2D colortex5;
 uniform sampler2D colortex6;
 uniform sampler2D colortex7;
 uniform sampler2D noisetex;
+
+uniform sampler2D gaux2;
+
+#ifndef REFLECTION_ROUGH
+uniform sampler2D depthtex1;
+#endif
 #endif
 
 // Optifine Constants
@@ -65,21 +71,10 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
 // Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
 
 float GetLinearDepth(float depth)
 {
    	return (2.0 * near) / (far + near - depth * (far - near));
-}
-
-float Hash(vec2 p)
-{
-	vec3 p3  = fract(vec3(p.xyx) * .1031);
-	p3 += dot(p3, p3.yzx + 33.33);
-	return fract((p3.x + p3.y) * p3.z);
 }
 
 // Includes
@@ -88,8 +83,8 @@ float Hash(vec2 p)
 #include "/lib/color/blocklightColor.glsl"
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
-#include "/lib/atmospherics/fog.glsl"
 #include "/lib/atmospherics/sky.glsl"
+#include "/lib/atmospherics/fog.glsl"
 #include "/lib/color/ambientColor.glsl"
 
 #ifdef AO
@@ -110,9 +105,19 @@ float Hash(vec2 p)
 #include "/lib/reflections/raytrace.glsl"
 #include "/lib/reflections/complexFresnel.glsl"
 #include "/lib/surface/materialDeferred.glsl"
+
+#ifdef REFLECTION_ROUGH
 #include "/lib/reflections/roughReflections.glsl"
+#else
+#include "/lib/atmospherics/borderFog.glsl"
+#include "/lib/vertex/jitter.glsl"
+#include "/lib/util/spaceConversion.glsl"
+#include "/lib/reflections/simpleReflections.glsl"
+#endif
+
 #ifdef OVERWORLD
 #include "/lib/atmospherics/clouds.glsl"
+
 #ifdef AURORA
 #include "/lib/atmospherics/aurora.glsl"
 #endif
@@ -123,7 +128,7 @@ float Hash(vec2 p)
 void main()
 {
 	float z	= texture2D(depthtex0, texCoord).r;
-	vec4 color = texture2D(colortex0, texCoord);	
+	vec4 color = texture2D(colortex0, texCoord);
 
 	float dither = InterleavedGradientNoise(gl_FragCoord.xy);
 	
@@ -158,7 +163,12 @@ void main()
 			vec4 reflection = vec4(0.0);
 			vec3 skyReflection = vec3(0.0);
 			
+			#ifdef REFLECTION_ROUGH
 			reflection = RoughReflection(viewPos.xyz, normal, dither, smoothness);
+			#else
+			reflection = SimpleReflection(viewPos.xyz, normal, dither, far, cameraPosition, previousCameraPosition);
+			reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
+			#endif
 
 			if (reflection.a < 1.0)
 			{
@@ -232,14 +242,7 @@ void main()
 		color.rgb += endCol.rgb * 0.025;
 		#endif
 
-		if (isEyeInWater == 2)
-		{
-			#ifdef EMISSIVE_RECOLOR
-			color.rgb = pow(blocklightCol / BLOCKLIGHT_I, vec3(4.0)) * 2.0;
-			#else
-			color.rgb = vec3(1.0, 0.3, 0.01);
-			#endif
-		}
+		if (isEyeInWater == 2) color.rgb = vec3(1.0, 0.3, 0.01);
 
 		if (blindFactor > 0.0) color.rgb *= 1.0 - blindFactor;
 	}
@@ -248,6 +251,8 @@ void main()
 	float wFogMult = 1.0 + eBS;
 	BlackOutline(color.rgb, depthtex0, wFogMult, skyEnvAmbientApprox);
 	#endif
+
+	// color += 1.0;
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
@@ -280,7 +285,7 @@ void main()
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
-	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	ang = (ang + (cos(ang * PI) * -0.5 + 0.5 - ang) / 3.0) * TAU;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
 	upVec = normalize(gbufferModelView[1].xyz);
 }

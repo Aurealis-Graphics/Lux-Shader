@@ -25,7 +25,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 	star = clamp(star - 0.8125, 0.0, 1.0) * multiplier;
     star *= Hash(coord);
 
-	color += pow(star * 2.0, 3.0) * pow(lightNight, vec3(0.8));
+	color += pow(star * 2.3, 3.3) * pow(lightNight, vec3(0.8));
 }
 
 mat2 Rot(float _angle) 
@@ -34,8 +34,6 @@ mat2 Rot(float _angle)
 }
 
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
-
-#define PI 3.14159265359
 
 vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle)
 {
@@ -103,7 +101,7 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
         result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
     }
 
-    return result;
+    return result * 1.4;
 
     // float cosT = dot(normalize(viewPos), upVec);
 	

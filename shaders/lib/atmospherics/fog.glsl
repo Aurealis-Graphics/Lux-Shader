@@ -77,11 +77,7 @@ void LavaFog(inout vec3 color, vec3 viewPos)
 {
 	float fog = length(viewPos) * 0.5;
 	fog = (1.0 - exp(-4.0 * fog * fog * fog));
-	#ifdef EMISSIVE_RECOLOR
-	color = mix(color, pow(blocklightCol / BLOCKLIGHT_I, vec3(4.0)) * 2.0, fog);
-	#else
 	color = mix(color, vec3(1.0, 0.3, 0.01), fog);
-	#endif
 }
 
 void Fog(inout vec3 color, vec3 viewPos, vec3 ambientCol)

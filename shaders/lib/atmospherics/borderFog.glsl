@@ -15,9 +15,9 @@ float GetBorderFogMixFactor(in vec3 eyePlayerPos, in float far, in float z0, ino
     }
 
 	float eyeDist = length(eyePlayerPos);
-	if (eyeDist > far * 0.5)
+	if (eyeDist > far * 0.6)
 	{
-		float borderFogFactor = smoothstep(far * 0.5, far * 0.9, eyeDist);
+		float borderFogFactor = smoothstep(far * 0.6, far * 0.9, eyeDist);
 		borderFogFactor *= borderFogFactor;
 		hasBorderFog = true;
 		return borderFogFactor;

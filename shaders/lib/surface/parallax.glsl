@@ -16,6 +16,7 @@ vec2 GetParallaxCoord(float parallaxFade)
 {
     vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
     vec2 coord = vTexCoord.st;
+    // float dither = InterleavedGradientNoise(gl_FragCoord.xy + frameTimeCounter * 17.333);
 
     if (parallaxFade < 1.0)
     {
@@ -29,6 +30,8 @@ vec2 GetParallaxCoord(float parallaxFade)
             float multiplier = 0.25 * (1.0 - parallaxFade) * PARALLAX_DEPTH / (-viewVector.z * PARALLAX_QUALITY);
             vec2 interval = viewVector.xy * multiplier;
             
+            // coord += interval * (dither - 0.5);
+
             for(int i = 0; i < PARALLAX_QUALITY; i++) 
             {
                 if (ReadNormal(coord).a < 1.0 - float(i) / PARALLAX_QUALITY) coord += interval;

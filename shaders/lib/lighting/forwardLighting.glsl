@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */
 
-
 #if defined OVERWORLD || defined END
 #include "/lib/lighting/shadows.glsl"
 
@@ -34,7 +33,7 @@ void GetLighting(
 {
 
     #if defined OVERWORLD || defined END
-    vec3 shadowPos = ToShadow(worldPos);
+    vec3 shadowPos = ToShadow(worldPos, shadowModelView, shadowProjection);
 
     float distb = length(shadowPos.xy);
     float distortFactor = distb * shadowMapBias + (1.0 - shadowMapBias);
@@ -56,21 +55,21 @@ void GetLighting(
             float distortBias = distortFactor * shadowDistance / 256.0;
             distortBias *= 8.0 * distortBias;
             
-            float bias = (distortBias * biasFactor + 0.05) / shadowMapResolution;
+            float bias = (distortBias * biasFactor + 0.02) / shadowMapResolution;
             float offset = 1.0 / shadowMapResolution;
 
             if (foliage > 0.5)
             {
-                bias = 0.0002;
-                offset = 0.0007;
+                bias = 0.00003;
+                offset = max(offset, 0.005 * (1.0 - NdotL));
             }
             
-            shadow = GetShadow(shadowPos, bias, offset, foliage);
+            shadow = GetShadow(shadowPos, bias, offset);
 
         } else shadow = vec3(lightmap.y);
     }
     shadow *= parallaxShadow;
-    
+
     vec3 fullShadow = shadow * max(NdotL, foliage);
     
     #ifdef OVERWORLD
@@ -87,7 +86,7 @@ void GetLighting(
     {
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
         float subsurface = (pow(VdotL, 15.0) + pow(VdotL, 220.0)) * 2.0 * (1.0 - rainStrength);
-        sceneLighting *= smoothstep(0.0, 1.0, fullShadow) * subsurface + 1.0;
+        sceneLighting *= fullShadow * fullShadow * (3.0 - 2.0 * fullShadow) * subsurface + 1.0;
     }
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
@@ -112,8 +111,9 @@ void GetLighting(
 
     #ifdef DESATURATION
     #ifdef OVERWORLD
+    float fullBlockLight = min(lightmap.x + emissive, 1.0);
     float desatAmount = sqrt(max(sqrt(length(fullShadow / 3.0)) * lightmap.y, lightmap.y)) *
-                        sunVisibility * (1.0 - rainStrength * 0.4) + smoothstep(0.0, 1.0, lightmap.x + emissive);
+                        sunVisibility * (1.0 - rainStrength * 0.4) + fullBlockLight * fullBlockLight * (3.0 - 2.0 * fullBlockLight);
 
     vec3 desatNight   = lightNight / LIGHT_NI;
     vec3 desatWeather = weatherCol.rgb / weatherCol.a * 0.5;

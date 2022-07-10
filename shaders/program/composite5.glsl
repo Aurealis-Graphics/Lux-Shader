@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -27,6 +27,9 @@ uniform float rainStrength;
 uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
 uniform float centerDepthSmooth;
+
+uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
 
 uniform ivec2 eyeBrightnessSmooth;
 
@@ -60,12 +63,19 @@ float moonVisibility = clamp(dot(-sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 float pw = 1.0 / viewWidth;
 float ph = 1.0 / viewHeight;
 
-// Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
+// Includes
+#include "/lib/color/lightColor.glsl"
+#include "/lib/util/circleOfConfusion.glsl"
 
+#ifdef LENS_FLARE
+#include "/lib/post/lensFlare.glsl"
+#endif
+
+#ifdef RETRO_FILTER
+#include "/lib/util/dither.glsl"
+#endif
+
+// Common Functions
 void UnderwaterDistort(inout vec2 texCoord)
 {
 	vec2 originalTexCoord = texCoord;
@@ -101,11 +111,6 @@ vec3 GetBloomTile(float lod, vec2 coord, vec2 offset)
 	return pow(bloom, vec3(4.0)) * 128.0;
 }
 
-float Luma(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
-
 void Bloom(inout vec3 color, vec2 coord)
 {
 	vec3 blur1 = GetBloomTile(2.0, coord, vec2(0.0      , 0.0   ));
@@ -127,7 +132,7 @@ void Bloom(inout vec3 color, vec2 coord)
 
 	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5 + blur6) * 0.125;
 
-	color += blur * pow(Luma(blur), 2.0) * BLOOM_STRENGTH;
+	color += blur * 0.03 * BLOOM_STRENGTH;
 }
 
 void AutoExposure(inout vec3 color, inout float exposure, float tempExposure)
@@ -137,7 +142,7 @@ void AutoExposure(inout vec3 color, inout float exposure, float tempExposure)
 	exposure = length(texture2DLod(colortex0, vec2(0.5), exposureLod).rgb);
 	exposure = clamp(exposure, 0.0001, 10.0);
 
-	color /= 2.5 * clamp(tempExposure, 0.001, 10.0) + 0.125;
+	color /= 2.5 * clamp(tempExposure, 0.05, 10.0) + 0.125;
 }
 
 void ColorGrading(inout vec3 color)
@@ -153,16 +158,9 @@ void ColorGrading(inout vec3 color)
 	color = mix(color, cgTint, CG_TM);
 }
 
-vec3 Burgess_Modified(vec3 color)
+vec3 BurgessModified(vec3 color)
 {
     vec3 maxColor = color * min(vec3(1.0), 1.0 - exp(-1.0 / 0.004 * color)) * 0.8;
-    vec3 retColor = (maxColor * (6.2 * maxColor + 0.5)) / (maxColor * (6.2 * maxColor + 1.7) + 0.06);
-    return retColor;
-}
-
-vec3 Burgess_Benas(vec3 color)
-{
-	vec3 maxColor = color * min(vec3(1.0), 1.0 - exp(-1.0 / 0.004 * color)) * 0.8;
     vec3 retColor = (maxColor * (6.2 * maxColor + 0.5)) / (maxColor * (6.2 * maxColor + 1.7) + 0.06);
     return retColor;
 }
@@ -190,6 +188,72 @@ void ColorSaturation(inout vec3 color)
 	color = color * SATURATION - graySaturation * (SATURATION - 1.0);
 }
 
+vec2 PincushionDistortion(in vec2 uv, float strength) 
+{
+	vec2 st = uv - 0.5;
+    float uvA = atan(st.x, st.y);
+    float uvD = dot(st, st);
+    return 0.5 + vec2(sin(uvA), cos(uvA)) * sqrt(uvD) * (1.0 - strength * uvD);
+}
+
+vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z)
+{
+	if (z < 0.56) return texture2D(texSampler, texcoord).rgb;
+
+	vec2 st = texcoord - 0.5;
+    float uvA = atan(st.x, st.y);
+    float uvD = dot(st, st);
+	vec2 newCoord = vec2(sin(uvA), cos(uvA)) * sqrt(uvD);
+	
+	#ifndef DOF
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth, gbufferProjection, 1.0) * 0.7;
+	#else
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth, gbufferProjection, DOF_STRENGTH) * 0.3;
+	#endif
+
+	#if CHROMATIC_ABBERATION_MODE == 0
+	float strength = 12.0 * CHROMATIC_ABBERATION_STRENGTH * coc;
+	#elif CHROMATIC_ABBERATION_MODE == 1
+	float strength = 0.03 * CHROMATIC_ABBERATION_STRENGTH * CHROMATIC_ABBERATION_STATIC_STRENGTH;
+	#else
+	float strength = 12.0 * CHROMATIC_ABBERATION_STRENGTH * coc + 0.03 * CHROMATIC_ABBERATION_STRENGTH * CHROMATIC_ABBERATION_STATIC_STRENGTH;
+	#endif
+
+	mat2 coordMatrix = mat2(
+		0.5 + newCoord * (1.0 - strength * uvD),
+		0.5 + newCoord * (1.0 + strength * uvD)
+	);
+
+	// Distortion: Linear Scaling
+	// mat2 coordMatrix = mat2(
+	// 	texcoord * (1.0 - coc * 2.0) + coc,
+	// 	texcoord * (1.0 + coc * 2.0) - coc
+	// );
+
+	#ifdef CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH
+	for (int i = 0; i < 2; i++) 
+	{
+		float tapDepth = texture2D(depthtex1, coordMatrix[i]).r;
+		
+		#ifndef DOF
+		float tapCoc = GetCircleOfConfusion(tapDepth, centerDepthSmooth, gbufferProjection, 1.0) * 0.7;
+		#else
+		float tapCoc = GetCircleOfConfusion(tapDepth, centerDepthSmooth, gbufferProjection, DOF_STRENGTH) * 0.3;
+		#endif
+
+		float tapStrength = exp2(-distance(coc, tapCoc) * CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE);
+
+		coordMatrix[i] = mix(texcoord, coordMatrix[i], tapStrength);
+	}
+	#endif
+
+	return vec3(
+		texture2D(texSampler, coordMatrix[0]).r,
+		texture2D(texSampler, texcoord).g,
+		texture2D(texSampler, coordMatrix[1]).b
+	);
+}
+
 #ifdef LENS_FLARE
 vec2 GetLightPos()
 {
@@ -199,37 +263,6 @@ vec2 GetLightPos()
 }
 #endif
 
-// Includes
-#include "/lib/color/lightColor.glsl"
-#include "/lib/util/circleOfConfusion.glsl"
-
-#ifdef LENS_FLARE
-#include "/lib/post/lensFlare.glsl"
-#endif
-
-#ifdef RETRO_FILTER
-#include "/lib/util/dither.glsl"
-#endif
-
-vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z, float centerDepthSmooth)
-{
-	float fovScale = gbufferProjection[1][1] / 1.37;
-
-	#ifndef DOF
-	float coc = GetCircleOfConfusion(z, centerDepthSmooth, CHROMATIC_ABBERATION_STRENGTH) * 0.03 * fovScale;
-	#else
-	float coc = GetCircleOfConfusion(z, centerDepthSmooth, CHROMATIC_ABBERATION_STRENGTH * DOF_STRENGTH) * 0.03 * fovScale;
-	#endif
-
-	if (z < 0.56) return texture2D(texSampler, texcoord).rgb;
-
-	return vec3(
-		texture2D(texSampler, texcoord * (1.0 - coc * 2.0) + coc).r,
-		texture2D(texSampler, texcoord).g,
-		texture2D(texSampler, texcoord * (1.0 + coc * 2.0) - coc).b
-	);
-}
-
 // Program
 void main()
 {
@@ -238,7 +271,8 @@ void main()
 
 	#ifdef CHROMATIC_ABBERATION
 	float z = texture2D(depthtex1, newTexCoord).r;
-	vec3 color = ChromaticAbberation(colortex0, newTexCoord, z, centerDepthSmooth);
+
+	vec3 color = ChromaticAbberation(colortex0, newTexCoord, z);
 	#else
 	vec3 color = texture2D(colortex0, newTexCoord).rgb;
 	#endif
@@ -274,8 +308,8 @@ void main()
 	ColorGrading(color);
 	#endif
 
-	color = TechTonemap(pow(color, vec3(1.01)) * 2.8 * TONEMAP_EXPOSURE);
-	// color = Burgess_Modified(pow(color * 1.3, vec3(1.2)) * TONEMAP_EXPOSURE);
+	color = TechTonemap(pow(color, vec3(1.01)) * 3.1 * TONEMAP_EXPOSURE);
+	// color = BurgessModified(pow(color * 1.3, vec3(1.2)) * TONEMAP_EXPOSURE);
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();
@@ -300,16 +334,18 @@ void main()
 	#endif
 
     #ifdef VIGNETTE
-    // color *= 1.0 - length(texCoord - 0.5) * (1.0 - GetLuminance(color));
 	float luminance = GetLuminance(color);
-	color *= mix(1.0, pow(sin(texCoord.x * 3.1415) * sin(texCoord.y * 3.1415), 1.0 - luminance / (0.2 + luminance)), 0.8);
+	float vignette = sin(texCoord.x * PI) * sin(texCoord.y * PI);
+	vignette = pow(vignette, VIGNETTE_STRENGTH / (5.0 * luminance + 1.0));
+	vignette = mix(vignette, 1.0, 0.6 / (VIGNETTE_STRENGTH + 2.0));
+	
+	color *= vignette;
 	#endif
 
 	color = pow(color, vec3(1.0 / 2.2));
 
 	ColorSaturation(color);
 
-	// TODO: Is this needed / wanted?
 	vec3 filmGrain = texture2D(noisetex, texCoord * vec2(viewWidth, viewHeight) / 512.0).rgb;
 	color += (filmGrain - 0.25) / 128.0;
 
@@ -341,7 +377,7 @@ void main()
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
-	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	ang = (ang + (cos(ang * PI) * -0.5 + 0.5 - ang) / 3.0) * TAU;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
 	upVec = normalize(gbufferModelView[1].xyz);
 }

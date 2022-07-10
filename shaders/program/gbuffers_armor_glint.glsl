@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -46,7 +46,11 @@ uniform int frameCounter;
 
 uniform float viewWidth;
 uniform float viewHeight;
-#include "/lib/util/jitter.glsl"
+
+uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
+
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #ifdef WORLD_CURVATURE
@@ -74,7 +78,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 

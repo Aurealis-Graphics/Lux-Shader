@@ -44,7 +44,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	if (cosT < 0.1) return vec4(0.0);
 
 	#if AA == 2
-	dither = fract(16.0 * frameTimeCounter + dither);
+	dither = fract(dither + frameTimeCounter / PHI * 13.333);
 	#endif
 
 	float cloudAlpha = 0.0;
@@ -68,7 +68,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 
 		vec3 planeCoord = worldPos * ((CLOUD_HEIGHT + (i + dither) * 1.3) / worldPos.y) * 0.004;
 		vec2 coord = cameraPosition.xz * 0.00025 + planeCoord.xz;
-		float coverage = float(i - 3.0 + dither) * 0.667;
+		float coverage = float(i - 3.0 + dither) * 0.6;
 
 		float noise = CloudNoise(coord * 0.1, wind * 0.6);
 		noise = CloudCoverage(noise, cosT, coverage) * noiseMultiplier;
@@ -93,7 +93,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	);
 	
 	cloudColor *= 1.0 - 0.6 * rainStrength;
-	cloudAlpha *= clamp(1. - exp2(-(cosT - 0.1) * 40.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
+	cloudAlpha *= clamp(1. - exp2(-(cosT - 0.1) * 30.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
 
 	return vec4(cloudColor * colorMultiplier, cloudAlpha * cloudAlpha * CLOUD_OPACITY);
 }

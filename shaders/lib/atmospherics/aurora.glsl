@@ -6,11 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-vec2 HashVec2(vec2 p)
-{
-	p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
-	return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
-}
 
 // Simplex Noise 2D by Inigo Quillez
 const float K1 = 0.366025404; 	// (sqrt(3) - 1) / 2;
@@ -40,8 +35,8 @@ float GetWarpedRidgedMultifractalNoise(in vec2 coord, float scale, float time, f
 float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, float localY)
 {
 	float noise = GetWarpedRidgedMultifractalNoise(coord, scale, time, sharpness);
-	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 3.0).r, 1.0, 0.6);
-	return smoothstep(0.0, 1.0, noise);
+	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 5.0).r, 1.0, 0.6);
+	return noise * noise * (3.0 - 2.0 * noise) * (1.0 - localY);
 }
 
 const vec3 auroraBlue = vec3(0.1, 0.2, 1.0);
@@ -52,7 +47,7 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 	#if AURORA_COLORING_TYPE == 0
 		float n1 = SimplexNoise(coord * scale * 0.7) * 0.5 + 0.5;
 		float n2 = SimplexNoise(coord.yx * scale * 0.7) * 0.5 + 0.5;
-		float mixFactor = smoothstep(0.0, 1.0, SimplexNoise((coord - frameTimeCounter * 0.12) * scale * 0.075) * 0.5 + 0.5);
+		float mixFactor = SimplexNoise((coord - frameTimeCounter * 0.12) * scale * 0.15) * 0.5 + 0.5;
 
 		vec3 finalColor = mix(mix(auroraBlue, auroraGreen, n1), mix(auroraBlue, auroraRed, n2), mixFactor);
 	#else
@@ -90,25 +85,25 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	if(cosT < 0.0) return vec4(0.0);
 
 	#if AA == 2
-	dither = fract(dither + frameTimeCounter * 8.333);
+	dither = fract(dither + frameTimeCounter / PHI * 13.333);
 	#endif
 
 	float auroraAlpha = 0.0;
 	float noiseSharpness = GetAuroraNoiseSharpness(cosT);
     vec3 worldPos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
+	float fIterations = float(iterations);
+	float iMult = 11.0 / fIterations;
 
 	for (int i = 0; i < iterations; i++)
 	{
 		if (auroraAlpha > 0.99) break;
 
-		vec3 planeCoord = worldPos * ((AURORA_HEIGHT + (i * 11.0 / float(iterations) + dither * 11.0 / float(iterations))) / worldPos.y) * 0.0005;
-		vec2 coord = (cameraPosition.xz + 1000002.0) * 0.00012 + planeCoord.xz;
+		vec2 planeCoord = worldPos.xz * (AURORA_HEIGHT + (i + dither) * iMult) / worldPos.y * 0.0005;
+		vec2 coord = planeCoord.xy + cameraPosition.xz * 0.0001;
+		float localYPos = (float(i) + dither) / fIterations;
+		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0003, noiseSharpness, localYPos);
 
-		float localYPos = (float(i) + dither) / float(iterations);
-		float noise = GetAuroraNoise(coord, 35.0, frameTimeCounter * 0.0005, noiseSharpness, pow(localYPos, float(iterations)));
-
-		noise *= 1. - localYPos;
-		auroraAlpha = mix(auroraAlpha, 1.0, noise / float(iterations) * 6.0);
+		auroraAlpha = mix(auroraAlpha, 1.0, noise / fIterations * 6.0);
 	}
 	
 	auroraAlpha *= clamp(1. - exp2(-cosT * 20.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
@@ -120,7 +115,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	vec3 colorAlbedo = GetAuroraColor(worldPos.xz, 1.7);
 
 	#ifdef AURORA_PERBIOME
-	auroraAlpha *= smoothstep(0.0, 1.0, isCold);
+	auroraAlpha *= isCold * isCold * (3.0 - 2.0 * isCold);
 	#endif
 
 	return vec4(colorAlbedo * AURORA_BRIGHTNESS, auroraAlpha);

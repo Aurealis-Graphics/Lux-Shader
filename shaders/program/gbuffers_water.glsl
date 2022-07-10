@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -69,7 +69,7 @@ uniform float wetness;
 
 // Optifine Constants
 #ifdef MATERIAL_SUPPORT
-const bool gaux2MipmapEnabled = true; 	//unavailable :(
+const bool gaux2MipmapEnabled = true;
 #endif
 
 // Common Variables
@@ -91,26 +91,12 @@ vec2 dcdy = dFdy(texCoord);
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
 // Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
 
-#define PI 3.14159265359
-#define TWO_PI 6.283184
-
-float GetWaveLayer(vec2 coord, float wavelength, float steepness, vec2 direction, float speed) 
+float GetWaveLayer(vec2 coord, float wavelength, vec2 direction, float speed) 
 {
-    float k = (TWO_PI / wavelength);
+    float k = TAU / wavelength;
 	float x = k * dot(normalize(direction), coord.xy) - frameTimeCounter * 3.0 * speed;
-    return steepness / k * sin(x + cos(x) * 0.8);
-}
-
-float Hash(vec2 p)
-{
-	vec3 p3  = fract(vec3(p.xyx) * .1031);
-	p3 += dot(p3, p3.yzx + 33.33);
-	return fract((p3.x + p3.y) * p3.z);
+    return sin(x + cos(x) * 0.8) / k;
 }
 
 float ComputeWaterWaves(
@@ -128,16 +114,15 @@ float ComputeWaterWaves(
 	in float noiseAmplitude,
 	in float noisePersistance,
 	in int noiseIterations
-	) 
+)
 {
 	float noise;
-	vec2 waterWorldPos = planeCoord * 8.4;
 
 	for (int i = 0; i < gWaveIterations; i++) 
 	{
 		vec2 direction = vec2(Hash(vec2(float(i))), Hash(-vec2(float(i)))) * 2.0 - 1.0;
 		direction = mix(vec2(1.0), direction, gWaveDirSpread);
-		noise += GetWaveLayer(waterWorldPos, gWaveLength, 1.0, direction, waveSpeed) * gWaveAmplitude;
+		noise += GetWaveLayer(planeCoord * 8.4, gWaveLength, direction, waveSpeed) * gWaveAmplitude;
 		gWaveLength *= gWaveLacunarity;
 		gWaveAmplitude *= gWavePersistance;
 	}
@@ -241,7 +226,7 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 
 // Includes
 #if AA == 2
-#include "/lib/util/jitter.glsl"
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #include "/lib/color/blocklightColor.glsl"
@@ -252,11 +237,11 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 #include "/lib/util/dither.glsl"
 #include "/lib/reflections/raytrace.glsl"
 #include "/lib/util/spaceConversion.glsl"
+#include "/lib/atmospherics/sky.glsl"
 #include "/lib/atmospherics/fog.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/atmospherics/borderFog.glsl"
 #include "/lib/reflections/simpleReflections.glsl"
-#include "/lib/atmospherics/sky.glsl"
 #include "/lib/color/ambientColor.glsl"
 
 #ifdef OVERWORLD
@@ -316,7 +301,7 @@ void main()
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
 		#if AA == 2
-		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
+		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5, cameraPosition, previousCameraPosition), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
 		#endif
@@ -459,8 +444,6 @@ void main()
 		vec3 specularColor = endCol.rgb;
 		#endif
 
-		float volumetricsDither = InterleavedGradientNoise(gl_FragCoord.xy);
-
 		if (water > 0.5 || (translucent > 0.5 && albedo.a < 0.95))
 		{
 			vec4 reflection = vec4(0.0);
@@ -471,7 +454,7 @@ void main()
 			fresnel *= 1.0 - translucent * 0.3;
 
 			#ifdef REFLECTION
-			reflection = SimpleReflection(viewPos, newNormal, dither, far);
+			reflection = SimpleReflection(viewPos, newNormal, dither, far, cameraPosition, previousCameraPosition);
 			reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
 			#endif
 
@@ -495,12 +478,12 @@ void main()
 				skyReflection += (specular / specularDiv) * specularColor * shadow;
 
 				#ifdef CLOUDS
-				vec4 cloud = DrawCloud(skyRefPos * 100.0, volumetricsDither, lightCol, skyEnvAmbientApprox);
+				vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, skyEnvAmbientApprox);
 				skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
 				#endif
 
 				#ifdef AURORA
-				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, volumetricsDither, AURORA_SAMPLES_REFLECTION);
+				vec4 aurora = DrawAurora(skyRefPos.xyz * 100.0, dither, AURORA_SAMPLES_REFLECTION);
 				skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 				#endif
 
@@ -547,7 +530,7 @@ void main()
 				vec4 reflection = vec4(0.0);
 				vec3 skyReflection = vec3(0.0);
 
-				reflection = SimpleReflection(viewPos, newNormal, dither, far);
+				reflection = SimpleReflection(viewPos, newNormal, dither, far, cameraPosition, previousCameraPosition);
 				reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
 
 				if (reflection.a < 1.0)
@@ -557,12 +540,12 @@ void main()
 					skyReflection = GetSkyColor(skyRefPos, lightCol);
 
 					#ifdef CLOUDS
-					vec4 cloud = DrawCloud(skyRefPos * 100.0, volumetricsDither, lightCol, skyEnvAmbientApprox);
+					vec4 cloud = DrawCloud(skyRefPos * 100.0, dither, lightCol, skyEnvAmbientApprox);
 					skyReflection = mix(skyReflection, cloud.rgb, cloud.a);
 					#endif
 
 					#ifdef AURORA
-					vec4 aurora = DrawAurora(skyRefPos * 100.0, volumetricsDither, AURORA_SAMPLES_REFLECTION);
+					vec4 aurora = DrawAurora(skyRefPos * 100.0, dither, AURORA_SAMPLES_REFLECTION);
 					skyReflection = mix(skyReflection, aurora.rgb, aurora.a);
 					#endif
 
@@ -611,7 +594,6 @@ void main()
 		vec3 skyEnvAmbientApproxFog = netherColSqrt.rgb;
 		#endif
 
-
 		Fog(albedo.rgb, viewPos, skyEnvAmbientApproxFog);
 
 		if (isEyeInWater == 1) albedo.a = mix(albedo.a, 1.0, min(length(viewPos) / waterFog, 1.0));
@@ -658,6 +640,8 @@ uniform mat4 gbufferModelView, gbufferModelViewInverse;
 uniform int frameCounter;
 
 uniform float viewWidth, viewHeight;
+
+uniform vec3 previousCameraPosition;
 #endif
 
 // Attributes
@@ -688,7 +672,7 @@ float WavingWater(vec3 worldPos)
 
 // Includes
 #if AA == 2
-#include "/lib/util/jitter.glsl"
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #ifdef WORLD_CURVATURE
@@ -730,7 +714,7 @@ void main()
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
-	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	ang = (ang + (cos(ang * PI) * -0.5 + 0.5 - ang) / 3.0) * TAU;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
 	upVec = normalize(gbufferModelView[1].xyz);
 
@@ -751,7 +735,7 @@ void main()
 	if (mat == 0.0) gl_Position.z -= 0.00001;
 
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 

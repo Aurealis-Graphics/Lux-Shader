@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH

@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-float GetCircleOfConfusion(float z, float centerDepthSmooth, float cocStrength)
+float GetCircleOfConfusion(float z, float centerDepth, mat4 gbufferProjection, float cocStrength)
 {	
-	float coc = abs(z - centerDepthSmooth) / 0.6;
-	return coc / (1 / cocStrength + coc);
+	float coc = abs(z - centerDepth) / 0.8;
+	return coc / (1.0 / cocStrength + coc) * gbufferProjection[1][1] / 1.37 * 0.1;
 }

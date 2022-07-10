@@ -17,9 +17,11 @@ vec2 jitterOffsets[8] = vec2[8](
 	vec2( 0.375,-0.875),
 	vec2( 0.875, 0.875)
 );
-							   
-vec2 TAAJitter(vec2 coord, float w)
+
+vec2 TAAJitter(vec2 coord, float w, vec3 cameraPosition, vec3 previousCameraPosition)
 {
+	if (DistanceSqr(cameraPosition, previousCameraPosition) > 0.0004) return coord;
+	
 	vec2 offset = jitterOffsets[int(mod(frameCounter, 8))] * (w / vec2(viewWidth, viewHeight));
 	return coord + offset;
 }

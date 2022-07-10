@@ -36,7 +36,7 @@ vec4 Raytrace(
 	float dist = 0.0;
 	
 	#if AA == 2
-	dither = fract(dither + frameTimeCounter);
+	dither = fract(dither + frameTimeCounter / PHI * 13.333);
 	#endif
 
 	vec3 start = viewPos;
@@ -69,8 +69,8 @@ vec4 Raytrace(
 		viewPos = start + tvector * (dither * 0.05 + 0.975);
     }
 
-	#ifdef REFLECTION_PREVIOUS
 	// Previous frame reprojection from Chocapic13
+	#ifdef REFLECTION_PREVIOUS
 	vec4 viewPosPrev = gbufferProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);
 	viewPosPrev /= viewPosPrev.w;
 	viewPosPrev = gbufferModelViewInverse * viewPosPrev;

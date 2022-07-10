@@ -6,12 +6,12 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-float fovmult = gbufferProjection[1][1] / 1.37373871;
+float fovMult = gbufferProjection[1][1] / 1.37373871;
 
 float BaseLens(vec2 lightPos, float size, float dist, float hardness)
 {
 	vec2 lensCoord = (texCoord + (lightPos * dist - 0.5)) * vec2(aspectRatio,1.0);
-	float lens = clamp(1.0 - length(lensCoord) / (size * fovmult), 0.0, 1.0 / hardness) * hardness;
+	float lens = clamp(1.0 - length(lensCoord) / (size * fovMult), 0.0, 1.0 / hardness) * hardness;
 	lens *= lens; lens *= lens;
 	return lens;
 }
@@ -44,7 +44,7 @@ float RingLens(vec2 lightPos, float size, float distA, float distB)
 float AnamorphicLens(vec2 lightPos, float size, float dist)
 {
 	vec2 lensCoord = abs(texCoord + (lightPos.xy * dist - 0.5)) * vec2(aspectRatio * 0.1, 2.0);
-	float lens = clamp(1.0 - length(pow(lensCoord / (size * fovmult), vec2(0.85))) * 4.0, 0.0, 1.0);
+	float lens = clamp(1.0 - length(pow(lensCoord / (size * fovMult), vec2(0.85))) * 4.0, 0.0, 1.0);
 	lens *= lens * lens;
 	return lens;
 }
@@ -52,7 +52,7 @@ float AnamorphicLens(vec2 lightPos, float size, float dist)
 vec3 RainbowLens(vec2 lightPos, float size, float dist, float rad)
 {
 	vec2 lensCoord = (texCoord + (lightPos * dist - 0.5)) * vec2(aspectRatio,1.0);
-	float lens = clamp(1.0 - length(lensCoord) / (size * fovmult), 0.0, 1.0);
+	float lens = clamp(1.0 - length(lensCoord) / (size * fovMult), 0.0, 1.0);
 	
 	vec3 rainbowLens = 
 		(smoothstep(0.0, rad, lens) - smoothstep(rad, rad * 2.0, lens)) * vec3(1.0, 0.0, 0.0) +

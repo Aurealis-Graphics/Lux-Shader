@@ -68,8 +68,7 @@ float GetPuddleHeight(vec3 pos, vec3 fpos)
 	float noise = 0.0;
 	pos = pos + cameraPosition;
 
-	// TODO: optimize this multiplier
-	float mult = sqrt(-dot(normalize(normal), normalize(fpos))) / sqrt(sqrt(max(length(pos), 4.0)));
+	float mult = sqrt(-dot(normalize(normal), normalize(fpos)) / sqrt(max(length(pos), 4.0)));
 	
 	if (mult > 0.01)
 	{

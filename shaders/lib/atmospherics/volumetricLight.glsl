@@ -6,11 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-float LinearizeDepth(float z)
-{
-	return (far * (z - near)) / (z * (far - near));
-}
-
 float GetDepth(float depth)
 {
     return 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near));
@@ -43,35 +38,15 @@ vec4 getShadowSpace(float shadowdepth, vec2 texCoord)
 }
 
 // Volumetric light from Robobo1221 (modified)
-// TODO: Rename to GetVolumetricLight()
-vec3 getVolumetricRays(float z0, float z1, vec3 color, float dither)
+vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 {
 	vec3 vl = vec3(0.0);
 
 	if (z0 == 1.0) return vl;
 
 	#if AA == 2
-	dither = fract(dither + frameCounter / 32.0);
+	dither = fract(dither + frameTimeCounter / PHI * 13.333);
 	#endif
-
-	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord, z0, 1.0) * 2.0 - 1.0);
-	viewPos /= viewPos.w;
-
-	#ifdef OVERWORLD
-	const float fogEnd = 0.5 / VOLUMETRIC_FOG_STRENGTH;
-
-	vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
-	float cosS = dot(normalize(viewPos.xyz), lightVec);
-	float distVar = 1.0 - exp(-length(viewPos.xyz) * 0.00015);
-	float visibility = distVar / fogEnd * exp2(distVar - fogEnd);
-	visibility *= (1.0 + (1.0 - sunHeight) * 1.4) * (1.0 + max(cosS * cosS * cosS * 0.025, 0.0));
-	#endif
-
-	#ifdef END
-	float visibility = 0.06;
-	#endif
-
-	if (visibility <= 0.0) return vec3(0.0);
 
 	float maxDist = 128.0;
 	float depth0 = GetDepth(z0);
@@ -86,7 +61,7 @@ vec3 getVolumetricRays(float z0, float z1, vec3 color, float dither)
 		if (minDist >= maxDist) break;
 		if (depth1 < minDist || (depth0 < minDist && color == vec3(0.0))) break;
 
-		shadowPos = getShadowSpace(LinearizeDepth(minDist), texCoord.st);
+		shadowPos = getShadowSpace(LinearizeDepth(minDist, far, near), texCoord.st);
 		// shadowPos.z += 0.00002;
 
 		if (length(shadowPos.xy * 2.0 - 1.0) < 1.0)
@@ -118,7 +93,6 @@ vec3 getVolumetricRays(float z0, float z1, vec3 color, float dither)
 			vl += 1.0;
 		}
 	}
-	vl *= visibility;
 
-	return vl;
+	return max(vec3(0.0), vl);
 }

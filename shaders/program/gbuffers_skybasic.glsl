@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -53,26 +53,14 @@ float moonVisibility = clamp(dot(-sunVec, upVec) + 0.07, 0.0, 0.1) * 10.0;
 vec3 lightVec = sunVec * (1.0 - 2.0 * float(timeAngle > 0.5325 && timeAngle < 0.9675));
 
 // Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
-
-float Hash(vec2 p)
-{
-	vec3 p3  = fract(vec3(p.xyx) * .1031);
-	p3 += dot(p3, p3.yzx + 33.33);
-	return fract((p3.x + p3.y) * p3.z);
-}
-
-void RoundSunMoon(inout vec3 color, vec3 viewPos, vec3 lightCol)
+void RoundSunMoon(inout vec3 color, vec3 viewPos, vec3 lightCol, vec3 moonCol)
 {
 	vec3 viewDir = normalize(viewPos.xyz);
 	float sunDot = clamp(1.0 - dot(sunVec, viewDir), 0.0, 1.0);
 	float moonDot = clamp(1.0 - dot(-sunVec, viewDir), 0.0, 1.0);
 
 	vec3 sun = vec3(min(0.002 / max(sunDot - 0.0001, 0.0), 40.0 * (1.0 - rainStrength))) * lightCol;
-	vec3 moon = vec3(min(0.001 / max(moonDot - 0.0001, 0.0), 40.0 * (1.0 - rainStrength))) * clamp(dot(-sunVec, upVec), 0.0, 1.0);
+	vec3 moon = vec3(min(0.001 / max(moonDot - 0.0001, 0.0), 40.0 * (1.0 - rainStrength))) * clamp(dot(-sunVec, upVec), 0.0, 1.0) * 10.0 * moonCol / (moonCol + 0.3);
 
 	float y = dot(viewDir, upVec);
 	float mult = smoothstep(0.0, 0.05, y + 0.02) * pow(1.0 - rainStrength, 5.0);
@@ -127,10 +115,7 @@ void main()
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
 
 	#ifdef ROUND_SUN_MOON
-	// vec3 lightMA = mix(lightMorning, lightEvening, mefade);
-    // vec3 sunColor = mix(lightMA, sqrt(lightDay * lightMA * LIGHT_DI), timeBrightness);
-    // vec3 moonColor = sqrt(lightNight);
-	RoundSunMoon(albedo, viewPos.xyz, lightCol);
+	RoundSunMoon(albedo, viewPos.xyz, lightCol, moonCol);
 	#endif
 
 	#ifdef STARS
@@ -193,7 +178,7 @@ void main()
 {
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
-	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	ang = (ang + (cos(ang * PI) * -0.5 + 0.5 - ang) / 3.0) * TAU;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
 	upVec = normalize(gbufferModelView[1].xyz);
 	gl_Position = ftransform();

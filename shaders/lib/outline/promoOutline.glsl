@@ -44,9 +44,7 @@ void PromoOutline(inout vec3 color, sampler2D depth)
 	float outline = (0.35 * (outlinea * outlineb) + 0.65) * 
 					(0.75 * (1.0 - outlined) * outlinec + 1.0);
 
-	// TODO: This can definitely be faster
-	color = sqrt(sqrt(color));
+	outline *= outline;
+	outline *= outline;
 	color *= outline;
-	color *= color; 
-	color *= color;
 }

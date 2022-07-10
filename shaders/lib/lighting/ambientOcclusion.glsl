@@ -9,7 +9,7 @@ See AGREEMENT.txt for more information.
 
 vec2 OffsetDist(float x, int s)
 {
-	float n = fract(x * 1.414) * 3.1415;
+	float n = fract(x * 1.414) * PI;
     return vec2(cos(n), sin(n)) * x / s;
 }
 
@@ -19,7 +19,7 @@ float AmbientOcclusion(sampler2D depth, float dither)
 
 	#if AA == 2
 	int samples = 5;
-	dither = fract(frameTimeCounter * 4.0 + dither);
+	dither = fract(dither + frameTimeCounter / PHI * 13.333);
 	#else
 	int samples = 10;
 	#endif
@@ -57,5 +57,5 @@ float AmbientOcclusion(sampler2D depth, float dither)
 	}
 	ao /= samples;
 	
-	return pow(ao, AO_STRENGTH);
+	return pow(ao, AO_STRENGTH * 0.9);
 }

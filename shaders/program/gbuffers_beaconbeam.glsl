@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -27,23 +27,14 @@ uniform sampler2D texture;
 void main()
 {
 	vec4 albedo = texture2D(texture, texCoord) * color;
-	
-	#ifdef EMISSIVE_RECOLOR
-	if (dot(color.rgb, vec3(1.0)) > 2.66)
-	{
-		float ec = length(albedo.rgb);
-		albedo.rgb = blocklightCol * (ec * 0.63 / BLOCKLIGHT_I) + ec * 0.07;
-	}
-	#endif
-    
-	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * 4.0;
+	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * 6.0;
 	
 	#ifdef WHITE_WORLD
 	albedo.rgb = vec3(2.0);
 	#endif
     
     /* DRAWBUFFERS:0 */
-	gl_FragData[0] = vec4(1.0, 0.0, 0.0, 1.0);
+	gl_FragData[0] = albedo;
 
 	#ifdef MATERIAL_SUPPORT
 	/* DRAWBUFFERS:0367 */
@@ -69,7 +60,11 @@ uniform int frameCounter;
 
 uniform float viewWidth;
 uniform float viewHeight;
-#include "/lib/util/jitter.glsl"
+
+uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
+
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #ifdef WORLD_CURVATURE
@@ -97,7 +92,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 

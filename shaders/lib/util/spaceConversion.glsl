@@ -24,8 +24,8 @@ vec3 ToWorld(vec3 pos)
 	return mat3(gbufferModelViewInverse) * pos + gbufferModelViewInverse[3].xyz;
 }
 
-vec3 ToShadow(vec3 pos)
+vec3 ToShadow(vec3 pos, mat4 viewMat, mat4 projMat)
 {
-	vec3 shadowpos = mat3(shadowModelView) * pos + shadowModelView[3].xyz;
-	return projMAD(shadowProjection, shadowpos);
+	vec3 shadowpos = mat3(viewMat) * pos + viewMat[3].xyz;
+	return projMAD(projMat, shadowpos);
 }

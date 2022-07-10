@@ -43,23 +43,23 @@ float texture2DShadow(sampler2D shadowtex, vec3 shadowPos)
 }
 */
 
-vec2 offsetDist(float x, int s)
+vec2 OffsetDist(float x, int s)
 {
-	float n = fract(x * 1.414) * 3.1415;
+	float n = fract(x * 1.414) * PI;
     return vec2(cos(n), sin(n)) * 1.4 * x / s;
 }
 
 vec3 SampleBasicShadow(vec3 shadowPos)
 {
-    float shadow0 = shadow2D(shadowtex0,vec3(shadowPos.st, shadowPos.z)).x;
+    float shadow0 = shadow2D(shadowtex0, shadowPos).x;
 
     vec3 shadowcol = vec3(0.0);
     #ifdef SHADOW_COLOR
     if (shadow0 < 1.0)
     {
-        float shadow1 = shadow2D(shadowtex1,vec3(shadowPos.st, shadowPos.z)).x;
+        float shadow1 = shadow2D(shadowtex1, shadowPos).x;
         if (shadow1 > 0.0)
-            shadowcol = texture2D(shadowcolor0,shadowPos.st).rgb * shadow1;
+            shadowcol = texture2D(shadowcolor0, shadowPos.st).rgb * shadow1;
     }
     #endif
 
@@ -72,22 +72,22 @@ vec3 SampleFilteredShadow(vec3 shadowPos, float offset)
     
     for (int i = 0; i < 8; i++)
     {
-        shadow+= SampleBasicShadow(vec3(offset * shadowoffsets[i] + shadowPos.st, shadowPos.z));
+        shadow += SampleBasicShadow(vec3(offset * shadowoffsets[i] + shadowPos.st, shadowPos.z));
     }
     
-    return shadow * 0.1;
+    return shadow * (1.0 / 8.0);
 }
 
 vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset)
 {
     float noise = InterleavedGradientNoise(gl_FragCoord.xy);
-    noise = fract(noise + frameTimeCounter * 16.0);
+    noise = fract(noise + frameTimeCounter * 8.0);
 
     vec3 shadow = vec3(0.0);
 
     for(int i = 0; i < 2; i++)
     {
-        vec2 offset = offsetDist(noise + i, 2) * offset;
+        vec2 offset = OffsetDist(noise + i, 2) * offset;
         shadow += SampleBasicShadow(vec3(shadowPos.st + offset, shadowPos.z));
         shadow += SampleBasicShadow(vec3(shadowPos.st - offset, shadowPos.z));
     }
@@ -95,11 +95,9 @@ vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset)
     return shadow * 0.25;
 }
 
-vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
+vec3 GetShadow(vec3 shadowPos, float bias, float offset)
 {
     shadowPos.z -= bias;
-
-    if(foliage > 0.5) offset *= 4.0;
 
     #ifdef SHADOW_FILTER
     #if AA == 2

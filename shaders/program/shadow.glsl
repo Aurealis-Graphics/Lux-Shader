@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -64,6 +64,7 @@ varying vec4 color;
 uniform int worldTime;
 
 uniform float frameTimeCounter;
+uniform float rainStrength;
 
 uniform vec3 cameraPosition;
 
@@ -101,7 +102,7 @@ void main()
 	
 	vec4 position = shadowModelViewInverse * shadowProjectionInverse * ftransform();
 	float istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1.0 : 0.0;
-	position.xyz = WavingBlocks(position.xyz, istopv);
+	position.xyz = WavingBlocks(position.xyz, istopv, 1.0, 1.0, rainStrength);
 
 	#ifdef WORLD_CURVATURE
 	position.y -= WorldCurvature(position.xz);

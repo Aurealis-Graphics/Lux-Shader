@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -49,6 +49,11 @@ uniform sampler2D texture;
 uniform sampler2D depthtex0;
 #endif
 
+#if AA == 2
+uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
+#endif
+
 // Common Variables
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp(dot( sunVec,upVec) + 0.05, 0.0, 0.1) * 10.0;
@@ -63,10 +68,6 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
 // Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
 
 #ifdef SOFT_PARTICLES
 float GetLinearDepth(float depth)
@@ -82,10 +83,10 @@ float GetLinearDepth(float depth)
 #include "/lib/util/spaceConversion.glsl"
 #include "/lib/lighting/forwardLighting.glsl"
 #include "/lib/atmospherics/sky.glsl"
-#include "/lib/color/sky.glsl"
+#include "/lib/color/ambientColor.glsl"
 
 #if AA == 2
-#include "/lib/util/jitter.glsl"
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 // Program
@@ -99,7 +100,7 @@ void main()
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
 		#if AA == 2
-		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z));
+		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5, cameraPosition, previousCameraPosition), screenPos.z));
 		#else
 		vec3 viewPos = ToNDC(screenPos);
 		#endif
@@ -117,7 +118,12 @@ void main()
 		quarterNdotU *= quarterNdotU;
 		
 		vec3 shadow = vec3(0.0);
+
+		#ifdef OVERWORLD
 		vec3 skyEnvAmbientApprox = GetAmbientColor(normal, lightCol, quarterNdotU);
+		#else
+		vec3 skyEnvAmbientApprox = vec3(0.0);
+		#endif
 
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, 1.0, 1.0, 0.0, 0.0, skyEnvAmbientApprox);
 	}
@@ -129,10 +135,10 @@ void main()
 	float difference = clamp(linearBackZ - linearZ, 0.0, 1.0);
 	difference = difference * difference * (3.0 - 2.0 * difference);
 
-	float opaqueThreshold = fract(Bayer64(gl_FragCoord.xy) + frameTimeCounter * 8.0);
+	// float opaqueThreshold = fract(InterleavedGradientNoise(gl_FragCoord.xy) + frameTimeCounter * 38.34718);
 
-	if (albedo.a > 0.999) albedo.a *= float(difference > opaqueThreshold);
-	else albedo.a *= difference;
+	/*if (albedo.a > 0.999) albedo.a *= float(difference > opaqueThreshold);*/
+	albedo.a *= difference;
 	#endif
 
     /* DRAWBUFFERS:0 */
@@ -179,6 +185,10 @@ uniform float viewWidth, viewHeight;
 uniform float far, near;
 #endif
 
+#if AA == 2
+uniform vec3 previousCameraPosition;
+#endif
+
 // Attributes
 attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
@@ -205,7 +215,7 @@ float GetLogarithmicDepth(float depth)
 
 // Includes
 #if AA == 2
-#include "/lib/util/jitter.glsl"
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #ifdef WORLD_CURVATURE
@@ -223,7 +233,7 @@ void main()
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);
-	ang = (ang + (cos(ang * 3.14159265358979) * -0.5 + 0.5 - ang) / 3.0) * 6.28318530717959;
+	ang = (ang + (cos(ang * PI) * -0.5 + 0.5 - ang) / 3.0) * TAU;
 	sunVec = normalize((gbufferModelView * vec4(vec3(-sin(ang), cos(ang) * sunRotationData) * 2000.0, 1.0)).xyz);
 	upVec = normalize(gbufferModelView[1].xyz);
 
@@ -242,7 +252,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 

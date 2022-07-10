@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -18,19 +18,11 @@ varying vec2 texCoord;
 // Uniforms
 uniform sampler2D texture;
 
-float Luma(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
-
 // Program
 void main()
 {
     vec4 albedo = texture2D(texture, texCoord);
-	
-	// Entity Eye Recoloring
-	albedo.rgb /= Luma(albedo.rgb) * 2.0;
-
+	albedo.rgb /= GetLuminance(albedo.rgb) * 2.0;		// Entity Eye Recoloring
     albedo.rgb = pow(albedo.rgb, vec3(2.2));
 	
     #ifdef WHITE_WORLD
@@ -62,7 +54,11 @@ uniform int frameCounter;
 
 uniform float viewWidth;
 uniform float viewHeight;
-#include "/lib/util/jitter.glsl"
+
+uniform vec3 cameraPosition;
+uniform vec3 previousCameraPosition;
+
+#include "/lib/vertex/jitter.glsl"
 #endif
 
 #ifdef WORLD_CURVATURE
@@ -89,7 +85,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 

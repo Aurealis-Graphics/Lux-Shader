@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -25,8 +25,6 @@ uniform mat4 gbufferProjection;
 
 uniform sampler2D colortex0;
 uniform sampler2D depthtex1;
-
-// Optifine Constants
 
 // Bokeh Offsets
 const vec2 samples[60] = vec2[60](
@@ -101,19 +99,13 @@ const vec2 samples[60] = vec2[60](
 #endif
 
 // Common Functions
-mat2 Rotate(float angle) 
-{
-	return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
-}
-
 vec3 DepthOfField(vec3 color, float z)
 {
 	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
 	
-	float fovScale = gbufferProjection[1][1] / 1.37;
-	float coc = GetCircleOfConfusion(z, centerDepthSmooth, DOF_STRENGTH) * 0.1 * fovScale;
+	float coc = GetCircleOfConfusion(z, centerDepthSmooth, gbufferProjection, DOF_STRENGTH);
 	
-	// if (coc < 1.0 / max(viewWidth, viewHeight)) return color;
+	if (coc < 1.0 / max(viewWidth, viewHeight)) return color;
 
 	vec3 dof = vec3(0.0);
 	float noise = InterleavedGradientNoise(gl_FragCoord.xy);
@@ -121,7 +113,11 @@ vec3 DepthOfField(vec3 color, float z)
 	#if AA == 2
 	noise = fract(noise + frameTimeCounter * 38.34718);
 
-	mat2 rotation = Rotate(noise * 2.0 * 3.1415);
+	mat2 rotation = Rotate(noise * 2.0 * PI);
+	#endif
+
+	#ifdef DOF_SAMPLE_REJECTION
+	float totalWeight = 0.0;
 	#endif
 
 	for (int i = 0; i < 60; i++)
@@ -132,12 +128,26 @@ vec3 DepthOfField(vec3 color, float z)
 		offset = rotation * offset;
 		#endif
 
-		// dof = max(dof, texture2DLod(colortex0, texCoord + offset / vec2(aspectRatio, 1.0), 0.0).rgb);
-		dof += texture2DLod(colortex0, texCoord + offset / vec2(aspectRatio, 1.0), 0.0).rgb;
+		offset /= vec2(aspectRatio, 1.0);
+
+		#ifdef DOF_SAMPLE_REJECTION
+		float tapDepth = texture2D(depthtex1, texCoord + offset, 0.0).x;
+		float tapCoc = GetCircleOfConfusion(tapDepth, centerDepthSmooth, gbufferProjection, DOF_STRENGTH);
+		float tapWeight = exp2(-distance(coc, tapCoc) * DOF_SAMPLE_REJECTION_RESPONSE);
+		totalWeight += tapWeight;
+
+		dof += texture2DLod(colortex0, texCoord + offset, 0.0).rgb * tapWeight;
+		#else
+		dof += texture2DLod(colortex0, texCoord + offset, 0.0).rgb;
+		#endif
 	}
-	
-	return dof / 60.0;
+
 	// return dof;
+	#ifdef DOF_SAMPLE_REJECTION
+	return dof / totalWeight;
+	#else
+	return dof / 60.0;
+	#endif
 }
 
 // Program

@@ -28,6 +28,14 @@ void GetMaterials(
     metalness = f0 >= 0.9 ? 1.0 : 0.0;
     metalData = f0;
 
+    /*
+    if (!isMetal) 
+    {
+        if (specularMap.b > 0.250980) subsurface = specularMap.b;
+        else						  porosity   = specularMap.b;
+    }
+    */
+
     emissive = mix(specularMap.a < 1.0 ? specularMap.a : 0.0, 1.0, emissive);
     ao = texture2DGradARB(normals, newCoord, dcdx, dcdy).z;
 
@@ -51,7 +59,7 @@ void GetMaterials(
     smoothness = specularMap.r;
     metalness = specularMap.g;
 
-    if(metalness > 0.5) smoothness = 1.0;   // TODO: ?
+    if (metalness > 0.5) smoothness = 1.0;   // TODO: ?
     
     f0 = 0.78 * metalness + 0.02;
     metalData = metalness;

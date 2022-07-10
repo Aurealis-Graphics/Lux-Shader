@@ -6,9 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
-#include "/lib/util/dither.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -46,7 +45,9 @@ vec3 BloomTile(float lod, vec2 offset)
 				float wg = weight[i + 3] * weight[j + 3];
 				vec2 pixelOffset = vec2(i * pw, j * ph);
 				vec2 bloomCoord = (texCoord - offset + pixelOffset) * scale;
-				bloom += texture2D(colortex0, bloomCoord).rgb * wg;
+				vec3 sample = texture2D(colortex0, bloomCoord).rgb;
+				float tapLuminance = GetLuminance(sample);
+				bloom += sample * tapLuminance * tapLuminance * wg;
 			}
 		}
 		bloom /= 4096.0;

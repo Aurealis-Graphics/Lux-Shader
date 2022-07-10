@@ -6,8 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-// Settings
-#include "/lib/settings.glsl"
+// Global Include
+#include "/lib/global.glsl"
 
 // Fragment Shader
 #ifdef FSH
@@ -36,10 +36,6 @@ const bool colortex1MipmapEnabled = true;
 #endif
 
 // Common Functions
-float GetLuminance(vec3 color) 
-{
- 	return dot(color, vec3(0.2125, 0.7154, 0.0721));
-}
 
 // Includes
 #if AA == 1
@@ -67,7 +63,7 @@ void main()
     vec3 color = texture2DLod(colortex1, floor(texCoord * view) / view, 0.0).rgb;
     #endif
 
-    color = mix(color, smoothstep(0.0, 1.0, color), 0.1);
+    color = mix(color, color * color * (3.0 - 2.0 * color), 0.1);
 
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(color, 1.0);

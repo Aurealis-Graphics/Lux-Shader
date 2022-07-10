@@ -53,7 +53,7 @@ float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, 
     float dotNH = GetNoHSquared(sunSize, dotNL, dot(normal, -viewPos), dot(-viewPos, lightVec));
     
     float denom = dotNH * roughness - dotNH + 1.0;
-    float D = roughness / (3.141592653589793 * denom * denom);
+    float D = roughness / (PI * denom * denom);
     float F = exp2((-5.55473 * dotLH - 6.98316) * dotLH) * (1.0 - f0) + f0;
     float k2 = roughness * 0.25;
 
@@ -91,10 +91,6 @@ vec3 GetSpecularHighlight(
     )
 {
     if (dot(shadow, shadow) < 0.001) return vec3(0.0);
-
-    #ifdef END
-    smoothness *= 0.4;
-    #endif
 
     float sunSize = 0.025 * sunVisibility + 0.05;
 
