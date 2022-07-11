@@ -35,7 +35,7 @@ vec4 weatherCol = weatherRain;
 float sunHeight = clamp(dot(sunVec, upVec) * 2.0, 0.0, 1.0);
 float moonHeight = clamp(-dot(sunVec, upVec) * 2.0, 0.0, 1.0);
 
-const vec3 moonCol = vec3(0.2824, 0.7725, 1.0) * 0.07;
+const vec3 moonCol = vec3(0.2824, 0.7725, 1.0) * 0.055;
 
 // vec3 GetDirectColor(float height) 
 // {

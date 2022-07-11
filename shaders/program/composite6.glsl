@@ -65,8 +65,6 @@ void main()
     vec3 color = texture2DLod(colortex1, floor(texCoord * view) / view, 0.0).rgb;
     #endif
 
-    color = mix(color, Smooth3(color), 0.1);
-
     color = ColorGrade(color);
 
     /* DRAWBUFFERS:1 */

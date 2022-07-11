@@ -94,7 +94,7 @@ void main()
 	const float fogEnd = 0.6 / VOLUMETRIC_FOG_STRENGTH;
 	float distVar = 1.0 - exp(-pow(length(viewPos.xyz), 1.4) * 0.00005);
 	float vlVisibilityFog = distVar / fogEnd * exp2(distVar - fogEnd);
-	vlVisibilityFog *= (1.0 + (1.0 - sunHeight) * 0.5) * (1.0 + max(cosS * cosS * cosS * 0.025, 0.0)) * 0.5;
+	vlVisibilityFog *= (1.0 + (1.0 - sunHeight + moonHeight * 4.0) * 0.5) * (1.0 + max(cosS * cosS * cosS * 0.025, 0.0)) * 0.5;
 	
 	vec3 vlFog = vl * vlVisibilityFog * vlVisibilityMult;
 

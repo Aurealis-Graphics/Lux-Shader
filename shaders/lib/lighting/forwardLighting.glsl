@@ -138,7 +138,7 @@ void GetLighting(
     vec3 desatColor = endCol.rgb * 1.25;
     #endif
 
-    desatAmount = clamp(desatAmount, DESATURATION_FACTOR * 0.4, 1.0);
+    desatAmount = clamp(desatAmount, DESATURATION_FACTOR * 0.38, 1.0);
     desatColor *= 1.0 - desatAmount;
 
     albedo.rgb = mix(GetLuminance(albedo.rgb) * desatColor, albedo.rgb, desatAmount);

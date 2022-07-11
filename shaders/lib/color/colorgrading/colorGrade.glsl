@@ -15,14 +15,16 @@ vec3 ColorGrade(vec3 rgb)
     vec3 hsv = RGBToHSV(rgb);
 
     /* Greens */
-    RotateHueAroundHue(hsv, 110.0, 20.0, 6.0, 22.0);
-    RotateSaturationAroundHue(hsv, 110.0, 20.0, 0.1, 22.0);
+    RotateHueAroundHue(hsv, 110.0, 20.0, 4.0, 22.0);
+    RotateSaturationAroundHue(hsv, 110.0, 20.0, 0.06, 22.0);
 
     /* Cyan */
     RotateSaturationAroundHue(hsv, 170.0, 8.0, 0.15, 22.0);
 
     /* Oranges */
-    RotateSaturationAroundHue(hsv, 22.0, 4.0, 0.1, 22.0);
+    RotateSaturationAroundHue(hsv, 27.0, 4.0, 0.07, 22.0);
 
-    return HSVToRGB(hsv);
+    hsv.yz = Saturate(hsv.yz);
+    rgb = HSVToRGB(hsv);
+    return mix(rgb, Smooth3(rgb), 0.1);
 }
