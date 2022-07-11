@@ -38,6 +38,8 @@ const bool colortex1MipmapEnabled = true;
 // Common Functions
 
 // Includes
+#include "/lib/color/colorgrading/colorGrade.glsl"
+
 #if AA == 1
 #include "/lib/antialiasing/fxaa.glsl"
 #endif
@@ -64,6 +66,8 @@ void main()
     #endif
 
     color = mix(color, Smooth3(color), 0.1);
+
+    color = ColorGrade(color);
 
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(color, 1.0);
