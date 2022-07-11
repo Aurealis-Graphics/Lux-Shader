@@ -58,8 +58,10 @@ vec3 SampleBasicShadow(vec3 shadowPos)
     if (shadow0 < 1.0)
     {
         float shadow1 = shadow2D(shadowtex1, shadowPos).x;
-        if (shadow1 > 0.0)
-            shadowcol = texture2D(shadowcolor0, shadowPos.st).rgb * shadow1;
+        if (shadow1 > 0.0) {
+            vec4 shadowcol0 = texture2D(shadowcolor0, shadowPos.st);
+            shadowcol = shadowcol0.rgb * (1.0 - shadowcol0.a) * shadow1;
+        }
     }
     #endif
 
