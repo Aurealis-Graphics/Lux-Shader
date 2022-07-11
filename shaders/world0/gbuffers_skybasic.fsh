@@ -6,7 +6,7 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-#version 130 
+#version 120 
 
 #define OVERWORLD
 #define FSH
