@@ -270,7 +270,7 @@ void main()
 
 	#ifdef MATERIAL_SUPPORT
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
-	float parallaxFade = clamp((dist - PARALLAX_DISTANCE) / 32.0, 0.0, 1.0);
+	float parallaxFade = Saturate((dist - PARALLAX_DISTANCE) / 32.0);
 
 	#ifdef PARALLAX
 	newCoord = GetParallaxCoord(parallaxFade);
@@ -287,7 +287,7 @@ void main()
 	if (albedo.a > 0.001)
 	{
 		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = clamp(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14, 0.0, 1.0);
+		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
 		#else
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 		#endif
@@ -334,7 +334,8 @@ void main()
 		}
 		#endif
 
-    	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.5);
@@ -347,7 +348,8 @@ void main()
 			#elif WATER_MODE == 1
 			albedo.rgb *= albedo.a;
 			#elif WATER_MODE == 2
-			float waterLuma = length(albedo.rgb / pow(color.rgb, vec3(2.2))) * 2.0;
+			// float waterLuma = length(albedo.rgb / pow(color.rgb, vec3(2.2))) * 2.0;
+			float waterLuma = length(albedo.rgb / SRGBToLinear(color.rgb)) * 2.0;
 			albedo.rgb = waterLuma * waterColor.rgb * waterColor.a * albedo.a;
 			#endif
 			albedo.a = waterAlpha;
@@ -415,7 +417,7 @@ void main()
 		puddles *= 1.0 - weatherweight;
 		#endif
 
-		puddles *= clamp(lightmap.y * 32.0 - 31.0, 0.0, 1.0);
+		puddles *= Saturate(lightmap.y * 32.0 - 31.0);
 		smoothness = mix(smoothness, 1.0, puddles);
 		f0 = max(f0, puddles * 0.02);
 		albedo.rgb *= 1.0 - (puddles * 0.15);
@@ -503,7 +505,7 @@ void main()
 				skyReflection += (specular / fresnel) * specularColor * shadow;
 				#endif
 
-				skyReflection *= clamp(1.0 - isEyeInWater, 0.0, 1.0);
+				skyReflection *= Saturate(1.0 - isEyeInWater);
 			}
 
 			reflection.rgb = max(mix(skyReflection, reflection.rgb, reflection.a), vec3(0.0));
@@ -684,7 +686,7 @@ void main()
 {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
+	lmCoord = Saturate((lmCoord - 0.03125) * 1.06667);
 	normal   = normalize(gl_NormalMatrix * gl_Normal);
 	binormal = normalize(gl_NormalMatrix * cross(at_tangent.xyz, gl_Normal.xyz) * at_tangent.w);
 	tangent  = normalize(gl_NormalMatrix * at_tangent.xyz);

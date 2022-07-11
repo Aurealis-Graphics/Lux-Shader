@@ -68,7 +68,6 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
 // Common Functions
-
 #ifdef SOFT_PARTICLES
 float GetLinearDepth(float depth)
 {
@@ -106,7 +105,8 @@ void main()
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-    	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.5);
@@ -132,7 +132,7 @@ void main()
 	float linearZ = GetLinearDepth(gl_FragCoord.z) * (far - near);
 	float backZ = texture2D(depthtex0, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).r;
 	float linearBackZ = GetLinearDepth(backZ) * (far - near);
-	float difference = clamp(linearBackZ - linearZ, 0.0, 1.0);
+	float difference = Saturate(linearBackZ - linearZ);
 	difference = Smooth3(difference);
 
 	// float opaqueThreshold = fract(InterleavedGradientNoise(gl_FragCoord.xy) + frameTimeCounter * 38.34718);
@@ -227,7 +227,7 @@ void main()
 {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
+	lmCoord = Saturate((lmCoord - 0.03125) * 1.06667);
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 	color = gl_Color;
 

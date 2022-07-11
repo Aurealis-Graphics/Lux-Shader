@@ -36,7 +36,7 @@ float RingLens(vec2 lightPos, float size, float distA, float distB)
 	float lensFlare1 = RingLensTransform(BaseLens(lightPos, size, distA, 1.0));
 	float lensFlare2 = RingLensTransform(BaseLens(lightPos, size, distB, 1.0));
 	
-	float lensFlare = clamp(lensFlare2 - lensFlare1, 0.0, 1.0);
+	float lensFlare = Saturate(lensFlare2 - lensFlare1);
 	lensFlare *= sqrt(lensFlare);
 	return lensFlare;
 }
@@ -52,7 +52,7 @@ float AnamorphicLens(vec2 lightPos, float size, float dist)
 vec3 RainbowLens(vec2 lightPos, float size, float dist, float rad)
 {
 	vec2 lensCoord = (texCoord + (lightPos * dist - 0.5)) * vec2(aspectRatio,1.0);
-	float lens = clamp(1.0 - length(lensCoord) / (size * fovMult), 0.0, 1.0);
+	float lens = Saturate(1.0 - length(lensCoord) / (size * fovMult));
 	
 	vec3 rainbowLens = 
 		(smoothstep(0.0, rad, lens) - smoothstep(rad, rad * 2.0, lens)) * vec3(1.0, 0.0, 0.0) +
@@ -73,8 +73,8 @@ vec3 LensTint(vec3 lens, float truePos)
 void LensFlare(inout vec3 color, vec2 lightPos, float truePos, float multiplier)
 {
 	float falloffBase = length(lightPos * vec2(aspectRatio, 1.0));
-	float falloffIn = pow(clamp(falloffBase * 10.0, 0.0, 1.0), 2.0);
-	float falloffOut = clamp(falloffBase * 3.0 - 1.5, 0.0, 1.0);
+	float falloffIn = pow(Saturate(falloffBase * 10.0), 2.0);
+	float falloffOut = Saturate(falloffBase * 3.0 - 1.5);
 
 	if (falloffOut < 0.999)
 	{

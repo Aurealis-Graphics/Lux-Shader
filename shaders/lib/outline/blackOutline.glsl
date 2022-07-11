@@ -24,7 +24,7 @@ void BlackOutline(inout vec3 color, sampler2D depth, float wFogMult, vec3 ambien
 		sampleZA = texture2D(depth, texCoord + offset).r;
 		sampleZB = texture2D(depth, texCoord - offset).r;
 		float sampleZsum = GetLinearDepth(sampleZA) + GetLinearDepth(sampleZB);
-		outline *= clamp(1.0 - (z - sampleZsum * far), 0.0, 1.0);
+		outline *= Saturate(1.0 - (z - sampleZsum * far));
 		minZ = min(minZ, min(sampleZA, sampleZB));
 	}
 	
@@ -60,5 +60,5 @@ float BlackOutlineMask(sampler2D depth0, sampler2D depth1)
 		              texture2D(depth1, texCoord - offset).r);
 	}
 
-	return clamp(mask, 0.0, 1.0);
+	return Saturate(mask);
 }

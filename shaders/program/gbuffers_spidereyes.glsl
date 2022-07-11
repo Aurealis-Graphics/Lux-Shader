@@ -23,7 +23,8 @@ void main()
 {
     vec4 albedo = texture2D(texture, texCoord);
 	albedo.rgb /= GetLuminance(albedo.rgb) * 2.0;		// Entity Eye Recoloring
-    albedo.rgb = pow(albedo.rgb, vec3(2.2));
+    // albedo.rgb = pow(albedo.rgb, vec3(2.2));
+	albedo.rgb = SRGBToLinear(albedo.rgb);
 	
     #ifdef WHITE_WORLD
 	albedo.rgb = vec3(2.0);

@@ -74,9 +74,9 @@ void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol)
 	float visfactor = 0.05 * (1.0 - 0.8 * timeBrightness) * (3.0 * rainStrength + 1.0);
 	float invvisfactor = 1.0 - visfactor;
 
-	float visibility = clamp(cosS * 0.5 + 0.5, 0.0, 1.0);
+	float visibility = Saturate(cosS * 0.5 + 0.5);
     visibility = visfactor / (1.0 - invvisfactor * visibility) - visfactor;
-	visibility = clamp(visibility * 1.015 / invvisfactor - 0.015, 0.0, 1.0);
+	visibility = Saturate(visibility * 1.015 / invvisfactor - 0.015);
 	visibility = mix(1.0, visibility, 0.25 * eBS + 0.75) * (1.0 - rainStrength * eBS * 0.875);
 	visibility *= shadowFade * VOLUMETRIC_FOG_STRENGTH;
 

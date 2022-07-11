@@ -29,7 +29,7 @@ float CloudNoise(vec2 coord, vec2 wind)
 float CloudCoverage(float noise, float cosT, float coverage)
 {
 	float noiseMix = mix(noise, 21.0, 0.33 * rainStrength);
-	float noiseFade = clamp(sqrt(cosT * 10.0), 0.0, 1.0);
+	float noiseFade = Saturate(sqrt(cosT * 10.0));
 	float noiseCoverage = ((coverage * coverage) + CLOUD_AMOUNT);
 	float multiplier = 1.0 - 0.5 * rainStrength;
 
@@ -93,7 +93,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	);
 	
 	cloudColor *= 1.0 - 0.6 * rainStrength;
-	cloudAlpha *= clamp(1. - exp2(-(cosT - 0.1) * 30.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
+	cloudAlpha *= Saturate(1. - exp2(-(cosT - 0.1) * 30.0)) * (1.0 - 0.6 * rainStrength);
 
 	return vec4(cloudColor * colorMultiplier, cloudAlpha * cloudAlpha * CLOUD_OPACITY);
 }

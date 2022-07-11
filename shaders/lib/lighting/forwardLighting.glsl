@@ -39,7 +39,7 @@ void GetLighting(
     float distortFactor = distb * shadowMapBias + (1.0 - shadowMapBias);
     shadowPos = DistortShadow(shadowPos, distortFactor);
 
-    float doShadow = float(clamp(shadowPos, 0.0, 1.0) == shadowPos);
+    float doShadow = float(Saturate(shadowPos) == shadowPos);
 
     #ifdef OVERWORLD
     doShadow *= float(lightmap.y > 0.001);

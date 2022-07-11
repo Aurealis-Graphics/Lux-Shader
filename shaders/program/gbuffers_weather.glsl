@@ -106,7 +106,7 @@ void main()
 {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp(lmCoord * 2.0 - 1.0, 0.0, 1.0);
+	lmCoord = Saturate(lmCoord * 2.0 - 1.0);
 
 	const vec2 sunRotationData = vec2(cos(sunPathRotation * 0.01745329251994), -sin(sunPathRotation * 0.01745329251994));
 	float ang = fract(timeAngle - 0.25);

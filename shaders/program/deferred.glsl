@@ -71,7 +71,6 @@ float frametime = frameTimeCounter * ANIMATION_SPEED;
 #endif
 
 // Common Functions
-
 float GetLinearDepth(float depth)
 {
    	return (2.0 * near) / (far + near - depth * (far - near));

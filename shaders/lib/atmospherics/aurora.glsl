@@ -106,7 +106,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 		auroraAlpha = mix(auroraAlpha, 1.0, noise / fIterations * 6.0);
 	}
 	
-	auroraAlpha *= clamp(1. - exp2(-cosT * 20.0), 0.0, 1.0) * (1.0 - 0.6 * rainStrength);
+	auroraAlpha *= Saturate(1. - exp2(-cosT * 20.0)) * (1.0 - 0.6 * rainStrength);
 
 	if (auroraAlpha < 0.005) return vec4(0.0);
 

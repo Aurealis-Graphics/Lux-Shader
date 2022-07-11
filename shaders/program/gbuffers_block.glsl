@@ -117,7 +117,7 @@ void main()
 
 	#ifdef MATERIAL_SUPPORT
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
-	float parallaxFade = clamp((dist - PARALLAX_DISTANCE) / 32.0, 0.0, 1.0);
+	float parallaxFade = Saturate((dist - PARALLAX_DISTANCE) / 32.0);
 	float skipAdvMat = float(blockEntityId == 63);
 	
 	#ifdef PARALLAX
@@ -135,7 +135,7 @@ void main()
 	if (albedo.a > 0.001)
 	{
 		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = clamp(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14, 0.0, 1.0);
+		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
 		#else
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 		#endif
@@ -170,7 +170,8 @@ void main()
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		#endif
 
-    	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.5);
@@ -320,7 +321,7 @@ void main()
 {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
+	lmCoord = Saturate((lmCoord - 0.03125) * 1.06667);
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 
 	#ifdef MATERIAL_SUPPORT

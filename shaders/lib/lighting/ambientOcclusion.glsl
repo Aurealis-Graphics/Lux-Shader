@@ -43,17 +43,17 @@ float AmbientOcclusion(sampler2D depth, float dither)
 	
 		if (hand > 0.5) sample *= 1024.0;
 	
-		angle = clamp(0.5 - sample, 0.0, 1.0);
-		dist = clamp(0.25 * sample - 1.0, 0.0, 1.0);
+		angle = Saturate(0.5 - sample);
+		dist = Saturate(0.25 * sample - 1.0);
 
 		sampleDepth = GetLinearDepth(texture2D(depth, texCoord - offset).r);
 		sample = (far - near) * (d - sampleDepth) * 2.0;
 	
 		if (hand > 0.5) sample *= 1024.0;
 	
-		angle += clamp(0.5 - sample, 0.0, 1.0);
-		dist += clamp(0.25 * sample - 1.0, 0.0, 1.0);	
-		ao += clamp(angle + dist, 0.0, 1.0);
+		angle += Saturate(0.5 - sample);
+		dist += Saturate(0.25 * sample - 1.0);	
+		ao += Saturate(angle + dist);
 	}
 	ao /= samples;
 	

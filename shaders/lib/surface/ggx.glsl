@@ -19,7 +19,7 @@ float GetNoHSquared(float radiusTan, float NoL, float NoV, float VoL)
     float NoTr = rOverLengthT * (NoV - RoL * NoL);
     float VoTr = rOverLengthT * (2.0 * NoV * NoV - 1.0 - RoL * VoL);
 
-    float triple = sqrt(clamp(1.0 - NoL * NoL - NoV * NoV - VoL * VoL + 2.0 * NoL * NoV * VoL, 0.0, 1.0));
+    float triple = sqrt(Saturate(1.0 - NoL * NoL - NoV * NoV - VoL * VoL + 2.0 * NoL * NoV * VoL));
     
     float NoBr = rOverLengthT * triple, VoBr = rOverLengthT * (2.0 * triple * NoV);
     float NoLVTr = NoL * radiusCos + NoV + NoTr, VoLVTr = VoL * radiusCos + 1.0 + VoTr;

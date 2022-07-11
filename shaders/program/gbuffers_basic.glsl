@@ -83,7 +83,7 @@ void main()
 	if (albedo.a > 0.001)
 	{
 		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = clamp(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14, 0.0, 1.0);
+		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
 		#else
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 		#endif
@@ -96,7 +96,8 @@ void main()
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-    	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		albedo.rgb = SRGBToLinear(albedo.rgb);
 		albedo.a = albedo.a * 0.5 + 0.5;
 
 		#ifdef WHITE_WORLD
@@ -185,7 +186,7 @@ void main()
 {
 	texCoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;    
 	lmCoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
-	lmCoord = clamp((lmCoord - 0.03125) * 1.06667, 0.0, 1.0);
+	lmCoord = Saturate((lmCoord - 0.03125) * 1.06667);
 	normal = normalize(gl_NormalMatrix * gl_Normal);
 	color = gl_Color;
 

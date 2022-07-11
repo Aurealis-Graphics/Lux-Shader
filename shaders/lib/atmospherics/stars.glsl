@@ -22,7 +22,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 	if (NdotU > 0.0){
 		star *= pow(texture2D(noisetex, coord.xy * 100.0).r, 2.0);
 	}
-	star = clamp(star - 0.8125, 0.0, 1.0) * multiplier;
+	star = Saturate(star - 0.8125) * multiplier;
     star *= Hash(coord);
 
 	color += pow(star * 2.3, 3.3) * pow(lightNight, vec3(0.8));
@@ -32,8 +32,6 @@ mat2 Rot(float _angle)
 {
     return mat2(cos(_angle),-sin(_angle), sin(_angle),cos(_angle));
 }
-
-float saturate(float x) { return clamp(x, 0.0, 1.0); }
 
 vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle)
 {
@@ -77,7 +75,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
         if(glareBrightness != 0.0)
         {
             vec2 glareGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE + 0.5) - 0.5;
-            float glare = pow(saturate(0.012 / length(glareGridUv) * smoothstep(0.5, 0.0, length(glareGridUv))), 2.0);
+            float glare = pow(Saturate(0.012 / length(glareGridUv) * smoothstep(0.5, 0.0, length(glareGridUv))), 2.0);
             glare *= cosT * (glareIdHash * 0.75 + 0.25);
 
             result *= 1. - glare;
