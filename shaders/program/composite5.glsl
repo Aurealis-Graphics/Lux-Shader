@@ -308,7 +308,7 @@ void main()
 	ColorGrading(color);
 	#endif
 
-	color = TechTonemap(pow(color, vec3(1.01)) * 3.1 * TONEMAP_EXPOSURE);
+	color = TechTonemap(color * 3.1 * TONEMAP_EXPOSURE);
 	// color = BurgessModified(pow(color * 1.3, vec3(1.2)) * TONEMAP_EXPOSURE);
 
 	#ifdef LENS_FLARE
@@ -342,7 +342,8 @@ void main()
 	color *= vignette;
 	#endif
 
-	color = pow(color, vec3(1.0 / 2.2));
+	// color = pow(color, vec3(1.0 / 2.2));
+	color = LinearTosRGB(color);
 
 	ColorSaturation(color);
 

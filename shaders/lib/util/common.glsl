@@ -72,3 +72,31 @@ vec3 Smooth3(vec3 x)
 	x = Saturate(x);
 	return x * x * (3.0 - 2.0 * x);
 }
+
+float LinearTosRGB(float x)
+{
+	float sRGBLo = x * 12.92;
+	float sRGBHi = pow((x + 0.055) / 1.055, 2.4);
+	return mix(sRGBLo, sRGBHi, step(x, 0.0031308));
+}
+
+float SRGBToLinear(float x)
+{
+	float linearLo = x / 12.92;
+	float linearHi = pow((x + 0.055) / 1.055, 2.4);
+	return mix(linearLo, linearHi, step(x, 0.04045));
+}
+
+vec3 LinearTosRGB(vec3 x)
+{
+	vec3 sRGBLo = x * 12.92;
+	vec3 sRGBHi = pow(abs(x), vec3(1.0 / 2.4)) * 1.055 - 0.055;
+	return mix(sRGBHi, sRGBLo, step(x, vec3(0.0031308)));
+}
+
+vec3 SRGBToLinear(vec3 x)
+{
+	vec3 linearLo = x / 12.92;
+	vec3 linearHi = pow((x + 0.055) / 1.055, vec3(2.4));
+	return mix(linearHi, linearLo, step(x, vec3(0.04045)));
+}
