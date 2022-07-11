@@ -279,7 +279,7 @@ void main()
 		}
 		#endif
 
-		skymapMod = lightmap.y * lightmap.y * (3.0 - 2.0 * lightmap.y);
+		skymapMod = Smooth3(lightmap.y);
 
 		#if defined OVERWORLD || defined END
 		#ifdef OVERWORLD

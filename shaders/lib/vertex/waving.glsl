@@ -11,7 +11,7 @@ float Noise2D(vec2 pos)
 {
     vec2 flr = floor(pos);
     vec2 frc = fract(pos);
-    frc = frc * frc * (3.0 - 2.0 * frc);
+    frc = Smooth3(frc);
 
     float n00 = Hash(flr);
     float n01 = Hash(flr + vec2(0.0, 1.0));

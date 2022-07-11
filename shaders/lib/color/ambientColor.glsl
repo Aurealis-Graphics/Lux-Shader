@@ -15,7 +15,7 @@ vec3 GetAmbientColor(vec3 normal, vec3 lightCol, float quarterNdotU)
     vec3 ambient = pow(GetSkyColor(normal, lightCol), vec3(0.2)) / PI;
     ambient *= sqrt(lightCol) * 0.1 + 0.9;
     // ambient *= sunHeight * (1.5 - 0.75 * sunHeight) + 0.25;
-    ambient *= sunHeight * sunHeight * (3.0 - 2.0 * sunHeight) * 0.7 + 0.3;
+    ambient *= Smooth3(sunHeight) * 0.7 + 0.3;
     
     vec3 ambientRain = dot(ambient, vec3(0.2125, 0.7154, 0.0721)) * weatherCol.rgb;
     

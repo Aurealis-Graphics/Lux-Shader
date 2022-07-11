@@ -133,7 +133,7 @@ void main()
 	float backZ = texture2D(depthtex0, gl_FragCoord.xy / vec2(viewWidth, viewHeight)).r;
 	float linearBackZ = GetLinearDepth(backZ) * (far - near);
 	float difference = clamp(linearBackZ - linearZ, 0.0, 1.0);
-	difference = difference * difference * (3.0 - 2.0 * difference);
+	difference = Smooth3(difference);
 
 	// float opaqueThreshold = fract(InterleavedGradientNoise(gl_FragCoord.xy) + frameTimeCounter * 38.34718);
 

@@ -177,7 +177,7 @@ void main()
 				skyReflection = GetSkyColor(skyRefPos, lightCol);
 				
 				#ifdef REFLECTION_ROUGH
-				float cloudMixRate = smoothness * smoothness * (3.0 - 2.0 * smoothness);
+				float cloudMixRate = Smooth3(smoothness);
 				#else
 				float cloudMixRate = 1.0;
 				#endif

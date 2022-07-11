@@ -514,7 +514,7 @@ void main()
 		else
 		{
 			#ifdef MATERIAL_SUPPORT
-			skymapMod = lightmap.y * lightmap.y * (3.0 - 2.0 * lightmap.y);
+			skymapMod = Smooth3(lightmap.y);
 
 			#ifdef REFLECTION_SPECULAR
 			#if MATERIAL_FORMAT == 0

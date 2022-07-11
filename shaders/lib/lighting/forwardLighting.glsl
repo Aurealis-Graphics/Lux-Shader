@@ -86,7 +86,7 @@ void GetLighting(
     {
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
         float subsurface = (pow(VdotL, 15.0) + pow(VdotL, 220.0)) * 2.0 * (1.0 - rainStrength);
-        sceneLighting *= fullShadow * fullShadow * (3.0 - 2.0 * fullShadow) * subsurface + 1.0;
+        sceneLighting *= Smooth3(fullShadow) * subsurface + 1.0;
     }
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
@@ -113,7 +113,7 @@ void GetLighting(
     #ifdef OVERWORLD
     float fullBlockLight = min(lightmap.x + emissive, 1.0);
     float desatAmount = sqrt(max(sqrt(length(fullShadow / 3.0)) * lightmap.y, lightmap.y)) *
-                        sunVisibility * (1.0 - rainStrength * 0.4) + fullBlockLight * fullBlockLight * (3.0 - 2.0 * fullBlockLight);
+                        sunVisibility * (1.0 - rainStrength * 0.4) + Smooth3(fullBlockLight);
 
     vec3 desatNight   = lightNight / LIGHT_NI;
     vec3 desatWeather = weatherCol.rgb / weatherCol.a * 0.5;

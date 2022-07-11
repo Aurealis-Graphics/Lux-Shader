@@ -219,7 +219,7 @@ void main()
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, quarterNdotU, parallaxShadow, emissive, 0.0, skyEnvAmbientApprox);
 
 		#ifdef MATERIAL_SUPPORT
-		skymapMod = lightmap.y * lightmap.y * (3.0 - 2.0 * lightmap.y);
+		skymapMod = Smooth3(lightmap.y);
 
 		#if defined OVERWORLD || defined END
 		#ifdef OVERWORLD

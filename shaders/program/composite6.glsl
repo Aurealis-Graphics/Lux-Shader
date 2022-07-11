@@ -63,7 +63,7 @@ void main()
     vec3 color = texture2DLod(colortex1, floor(texCoord * view) / view, 0.0).rgb;
     #endif
 
-    color = mix(color, color * color * (3.0 - 2.0 * color), 0.1);
+    color = mix(color, Smooth3(color), 0.1);
 
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(color, 1.0);

@@ -36,7 +36,7 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 {
 	float noise = GetWarpedRidgedMultifractalNoise(coord, scale, time, sharpness);
 	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 5.0).r, 1.0, 0.6);
-	return noise * noise * (3.0 - 2.0 * noise) * (1.0 - localY);
+	return Smooth3(noise) * (1.0 - localY);
 }
 
 const vec3 auroraBlue = vec3(0.1, 0.2, 1.0);
@@ -115,7 +115,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	vec3 colorAlbedo = GetAuroraColor(worldPos.xz, 1.7);
 
 	#ifdef AURORA_PERBIOME
-	auroraAlpha *= isCold * isCold * (3.0 - 2.0 * isCold);
+	auroraAlpha *= Smooth3(isCold);
 	#endif
 
 	return vec4(colorAlbedo * AURORA_BRIGHTNESS, auroraAlpha);
