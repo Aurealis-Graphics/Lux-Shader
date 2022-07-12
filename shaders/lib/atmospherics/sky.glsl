@@ -7,11 +7,6 @@ See AGREEMENT.txt for more information.
 */ 
 
 
-vec3 Saturation(vec3 color, float saturation) 
-{
-    return mix(vec3(GetLuminance(color)), color, saturation);
-}
-
 vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
 {
     vec3 result = vec3(0.0);

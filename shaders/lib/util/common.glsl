@@ -1,3 +1,12 @@
+/* 
+----------------------------------------------------------------
+Lux Shader by https://github.com/TechDevOnGithub/
+Based on BSL Shaders v7.1.05 by Capt Tatsu https://bitslablab.com 
+See AGREEMENT.txt for more information.
+----------------------------------------------------------------
+*/ 
+
+
 float GetLuminance(vec3 color)
 {
  	return dot(color, vec3(0.2125, 0.7154, 0.0721));
@@ -99,4 +108,9 @@ vec3 SRGBToLinear(vec3 x)
 	vec3 linearLo = x / 12.92;
 	vec3 linearHi = pow((x + 0.055) / 1.055, vec3(2.4));
 	return mix(linearHi, linearLo, step(x, vec3(0.04045)));
+}
+
+vec3 Saturation(vec3 color, float saturation) 
+{
+    return mix(vec3(GetLuminance(color)), color, saturation);
 }
