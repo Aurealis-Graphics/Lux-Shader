@@ -66,7 +66,7 @@ void main()
 	SharpenFilter(color);
 	#endif
 
-	if(isEyeInWater == 1) 
+	if (isEyeInWater == 1) 
 	{
 		vec3 gradedColor = color * 0.9 * vec3(0.6549, 0.9412, 1.0);
 		gradedColor.b *= 0.8 + abs(gradedColor.b - gradedColor.g * 0.3 * gradedColor.r);

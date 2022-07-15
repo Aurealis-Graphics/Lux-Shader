@@ -198,7 +198,7 @@ vec2 PincushionDistortion(in vec2 uv, float strength)
 
 vec3 ChromaticAbberation(sampler2D texSampler, vec2 texcoord, float z)
 {
-	if (z < 0.56) return texture2D(texSampler, texcoord).rgb;
+	if (IsHand(z)) return texture2D(texSampler, texcoord).rgb;
 
 	vec2 st = texcoord - 0.5;
     float uvA = atan(st.x, st.y);

@@ -24,13 +24,13 @@ float AmbientOcclusion(sampler2D depth, float dither)
 	int samples = 10;
 	#endif
 	
-	float d = texture2D(depth, texCoord).r;
-	float hand = float(d < 0.56);
-	d = GetLinearDepth(d);
+	float z = texture2D(depth, texCoord).r;
+	bool hand = IsHand(z);
+	z = GetLinearDepth(z);
 	
 	float sampleDepth = 0.0, angle = 0.0, dist = 0.0;
 	float fovScale = gbufferProjection[1][1] / 1.37;
-	float distScale = max((far - near) * d + near, 6.0);
+	float distScale = max((far - near) * z + near, 6.0);
 	vec2 scale = 0.32 * vec2(1.0 / aspectRatio, 1.0) * fovScale / distScale;
 
 	for (int i = 1; i <= samples; i++) 
@@ -39,17 +39,17 @@ float AmbientOcclusion(sampler2D depth, float dither)
 
 		sampleDepth = GetLinearDepth(texture2D(depth, texCoord + offset).r);
 	
-		float sample = (far - near) * (d - sampleDepth) * 2.0;
+		float sample = (far - near) * (z - sampleDepth) * 2.0;
 	
-		if (hand > 0.5) sample *= 1024.0;
+		if (hand) sample *= 1024.0;
 	
 		angle = Saturate(0.5 - sample);
 		dist = Saturate(0.25 * sample - 1.0);
 
 		sampleDepth = GetLinearDepth(texture2D(depth, texCoord - offset).r);
-		sample = (far - near) * (d - sampleDepth) * 2.0;
+		sample = (far - near) * (z - sampleDepth) * 2.0;
 	
-		if (hand > 0.5) sample *= 1024.0;
+		if (hand) sample *= 1024.0;
 	
 		angle += Saturate(0.5 - sample);
 		dist += Saturate(0.25 * sample - 1.0);	

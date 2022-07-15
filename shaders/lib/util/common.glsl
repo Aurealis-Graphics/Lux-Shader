@@ -114,3 +114,8 @@ vec3 Saturation(vec3 color, float saturation)
 {
     return mix(vec3(GetLuminance(color)), color, saturation);
 }
+
+bool IsHand(float z) 
+{
+	return z < 0.56;
+}

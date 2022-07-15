@@ -101,7 +101,7 @@ const vec2 samples[60] = vec2[60](
 // Common Functions
 vec3 DepthOfField(vec3 color, float z)
 {
-	if(z < 0.56) return texture2D(colortex0, texCoord).rgb;
+	if(IsHand(z)) return texture2D(colortex0, texCoord).rgb;
 	
 	float coc = GetCircleOfConfusion(z, centerDepthSmooth, gbufferProjection, DOF_STRENGTH);
 	

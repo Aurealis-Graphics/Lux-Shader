@@ -29,7 +29,7 @@ uniform sampler2D depthtex1;
 // Common Functions
 vec3 MotionBlur(vec3 color, float z, float dither)
 {
-	if (z < 0.56) return color;
+	if (IsHand(z)) return color;
 
 	float mbwg = 0.0;
 	vec2 doublePixel = 2.0 / vec2(viewWidth, viewHeight);
