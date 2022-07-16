@@ -100,7 +100,7 @@ option.REFLECTION_TRANSLUCENT=Translucent Reflections
 option.REFLECTION_TRANSLUCENT.comment=Allows reflection to be rendered on translucent surfaces, such as stained glass, ice, slime blocks, and more.
 
 option.MATERIAL_SUPPORT=Material Support
-option.MATERIAL_SUPPORT.comment=Enables the use of PBR recourcepacks.  §e[*]§r This option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
+option.MATERIAL_SUPPORT.comment=Enables the use of PBR resource packs.  §e[*]§r This option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
 
 option.BLACK_OUTLINE=Black Outline
 option.BLACK_OUTLINE.comment=Enables black outline.
