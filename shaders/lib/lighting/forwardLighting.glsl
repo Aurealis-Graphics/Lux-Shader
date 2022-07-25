@@ -95,7 +95,7 @@ void GetLighting(
     float newLightmap  = pow(lightmap.x, 10.0) * (EMISSIVE_BRIGHTNESS + 0.5) + lightmap.x * 0.7;
     vec3 blockLighting = blocklightCol * newLightmap * newLightmap;
 
-    float minLighting = 0.04 * (1.0 - eBS);
+    float minLighting = 0.06 * (1.0 - eBS);
 
     #ifdef TOON_LIGHTMAP
     minLighting *= floor(smoothLighting * 8.0 + 1.001) / 4.0;
