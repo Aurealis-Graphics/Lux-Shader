@@ -21,11 +21,14 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
     vec3 skyBaseColor = mix(vec3(0.2235, 0.702, 0.8588), vec3(0.2784, 0.5961, 0.8588), sunVisibility);
     skyBaseColor = mix(skyBaseColor, GetLuminance(skyBaseColor) * weatherCol.rgb, rainStrength);
 
-    float saturationAmount = 0.2 * (3.0 - sunVisibility * (rainStrength - 2.0));
+    float saturationAmount = 0.18 * (3.0 - sunVisibility * (rainStrength - 2.0));
     skyBaseColor = Saturation(skyBaseColor, saturationAmount) * (sunHeightVar * 0.3 + 0.7);
 
-    vec3 skyColor = skyBaseColor;
     float mieFactor = sunDot * (1.0 - sunHeight) * sunHeightVar;
+    mieFactor += exp(-(y + 0.03) * 6.0) * (dot(viewDir, sunVec) * 0.35 + 0.65) * sunHeightVar * pow(1.0 - sunHeight, 2.0);
+    mieFactor = min(mieFactor, 1.0);
+
+    vec3 skyColor = skyBaseColor;
 
     skyColor = mix(skyColor, lightCol, mieFactor);
 
