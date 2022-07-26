@@ -6,6 +6,52 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
+#define Saturate(x) clamp(x, 0.0, 1.0)
+#define Max0(x) max(x, 0.0)
+#define MaxEPS(x) max(x, EPS)
+
+float Pow2(float x) { 				return x * x; 		}
+float Pow3(float x) { 				return Pow2(x) * x; }
+float Pow4(float x) { x = Pow2(x); 	return x * x; 		}
+float Pow5(float x) { 				return Pow4(x) * x; }
+float Pow6(float x) { x = Pow3(x); 	return x * x; 		}
+
+vec2 Pow2(vec2 x) { 				return x * x; 		}
+vec2 Pow3(vec2 x) { 				return Pow2(x) * x; }
+vec2 Pow4(vec2 x) { x = Pow2(x); 	return x * x; 		}
+vec2 Pow5(vec2 x) { 				return Pow4(x) * x; }
+vec2 Pow6(vec2 x) { x = Pow3(x); 	return x * x; 		}
+
+vec3 Pow2(vec3 x) { 				return x * x; 		}
+vec3 Pow3(vec3 x) { 				return Pow2(x) * x; }
+vec3 Pow4(vec3 x) { x = Pow2(x); 	return x * x; 		}
+vec3 Pow5(vec3 x) { 				return Pow4(x) * x; }
+vec3 Pow6(vec3 x) { x = Pow3(x); 	return x * x; 		}
+
+vec4 Pow2(vec4 x) { 				return x * x; 		}
+vec4 Pow3(vec4 x) { 				return Pow2(x) * x; }
+vec4 Pow4(vec4 x) { x = Pow2(x); 	return x * x; 		}
+vec4 Pow5(vec4 x) { 				return Pow4(x) * x; }
+vec4 Pow6(vec4 x) { x = Pow3(x); 	return x * x; 		}
+
+/* 3rd-degree smoothstep polynomial */
+float Smooth3(float x) 
+{
+	x = Saturate(x);
+	return x * x * (3.0 - 2.0 * x);
+}
+
+vec2 Smooth3(vec2 x) 
+{
+	x = Saturate(x);
+	return x * x * (3.0 - 2.0 * x);
+}
+
+vec3 Smooth3(vec3 x) 
+{
+	x = Saturate(x);
+	return x * x * (3.0 - 2.0 * x);
+}
 
 float GetLuminance(vec3 color)
 {
@@ -41,45 +87,6 @@ float DistanceSqr(vec3 a, vec3 b)
 float LinearizeDepth(float z, float zFar, float zNear)
 {
 	return (zFar * (z - zNear)) / (z * (zFar - zNear));
-}
-
-float Saturate(float x) 
-{
-	return clamp(x, 0.0, 1.0);
-}
-
-vec2 Saturate(vec2 x) 
-{
-	return clamp(x, 0.0, 1.0);
-}
-
-vec3 Saturate(vec3 x) 
-{
-	return clamp(x, 0.0, 1.0);
-}
-
-vec4 Saturate(vec4 x) 
-{
-	return clamp(x, 0.0, 1.0);
-}
-
-/* 3rd-degree smoothstep polynomial */
-float Smooth3(float x) 
-{
-	x = Saturate(x);
-	return x * x * (3.0 - 2.0 * x);
-}
-
-vec2 Smooth3(vec2 x) 
-{
-	x = Saturate(x);
-	return x * x * (3.0 - 2.0 * x);
-}
-
-vec3 Smooth3(vec3 x) 
-{
-	x = Saturate(x);
-	return x * x * (3.0 - 2.0 * x);
 }
 
 float LinearTosRGB(float x)
