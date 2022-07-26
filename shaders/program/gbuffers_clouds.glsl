@@ -43,7 +43,7 @@ float moonVisibility = clamp(dot(-sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 void main()
 {
 	vec4 albedo = texture2D(texture, texCoord);
-	albedo.rgb = pow(albedo.rgb,vec3(2.2));
+	albedo.rgb = SRGBToLinear(albedo.rgb);
 	
 	float quarterNdotU = clamp(0.25 * dot(normal, upVec) + 0.75,0.5,1.0);
 	albedo.rgb *= lightCol * (quarterNdotU * (0.3 * sunVisibility + 0.2));	

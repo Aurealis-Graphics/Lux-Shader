@@ -55,7 +55,7 @@ void main()
 
 	#ifdef OVERWORLD
 	albedo *= color;
-	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * SKYBOX_BRIGHTNESS * albedo.a;
+	albedo.rgb = SRGBToLinear(albedo.rgb) * SKYBOX_BRIGHTNESS * albedo.a;
 
 	#ifdef CLOUDS
 	if (albedo.a > 0.0)
@@ -67,13 +67,13 @@ void main()
 	#endif
 	
 	#ifdef SKY_DESATURATION
-    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight,vec3(1.6)) * 4.0;
+    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight, vec3(1.6)) * 4.0;
 	albedo.rgb = mix(desat, albedo.rgb, sunVisibility);
 	#endif
 	#endif
 
 	#ifdef END
-	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * SKYBOX_BRIGHTNESS * 0.01;
+	albedo.rgb = SRGBToLinear(albedo.rgb) * SKYBOX_BRIGHTNESS * 0.01;
 	#endif
 	
     /* DRAWBUFFERS:0 */

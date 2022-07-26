@@ -23,7 +23,7 @@ void main()
 {
 	// Texture
 	vec4 albedo = texture2D(texture, texCoord);
-	albedo.rgb = pow(albedo.rgb,vec3(2.2)) * 2.25;
+	albedo.rgb = SRGBToLinear(albedo.rgb) * 2.25;
 	
 	#ifdef WHITE_WORLD
 	albedo.a = 0.0;
