@@ -92,7 +92,7 @@ void main()
 
 	#ifdef LSB
 	const float fogEnd = 0.5 / VOLUMETRIC_FOG_STRENGTH;
-	float distVar = 1.0 - exp2(-length(viewPos.xyz) * 0.0002);
+	float distVar = 1.0 - exp2(-length(viewPos.xyz) * 0.00015);
 	float vlVisibilityFog = distVar / fogEnd * exp2(distVar - fogEnd);
 	vlVisibilityFog *= (1.0 + (1.0 - sunHeight + moonHeight * 8.0) * 0.5) * (1.0 + Max0(cosS * cosS * cosS * 0.025)) * 0.5;
 	
