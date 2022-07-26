@@ -170,7 +170,6 @@ void main()
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		#endif
 
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
 		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD

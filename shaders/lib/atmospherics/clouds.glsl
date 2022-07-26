@@ -33,7 +33,7 @@ float CloudCoverage(float noise, float cosT, float coverage)
 	float noiseCoverage = ((coverage * coverage) + CLOUD_AMOUNT);
 	float multiplier = 1.0 - 0.5 * rainStrength;
 
-	return max(noiseMix * noiseFade - noiseCoverage, 0.0) * multiplier;
+	return Max0(noiseMix * noiseFade - noiseCoverage) * multiplier;
 }
 
 vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
@@ -52,7 +52,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	float gradientMix = dither * 0.1667;
 	float colorMultiplier = CLOUD_BRIGHTNESS * (0.5 - 0.25 * (1.0 - sunVisibility) * (1.0 - rainStrength));
 	float noiseMultiplier = CLOUD_THICKNESS * 0.2;
-	float scattering = pow(abs(cosS * 0.6 * (2.0 * sunVisibility - 1.0) + 0.5), 4.0);
+	float scattering = Pow4(abs(cosS * 0.6 * (2.0 * sunVisibility - 1.0) + 0.5));
 
 	vec2 wind = vec2(
 		frametime * CLOUD_SPEED * 0.001,

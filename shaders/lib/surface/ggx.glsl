@@ -37,7 +37,7 @@ float GetNoHSquared(float radiusTan, float NoL, float NoV, float VoL)
     float newVoL = VoL * radiusCos + VoTr;
     float NoH = NoV + newNoL;
     float HoH = 2.0 * newVoL + 2.0;
-    return max(NoH * NoH / HoH, 0.0);
+    return Max0(NoH * NoH / HoH);
 }
 
 float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, float sunSize)
@@ -57,8 +57,8 @@ float GGX(vec3 normal, vec3 viewPos, vec3 lightVec, float smoothness, float f0, 
     float F = exp2((-5.55473 * dotLH - 6.98316) * dotLH) * (1.0 - f0) + f0;
     float k2 = roughness * 0.25;
 
-    float specular = max(dotNL * dotNL * D * F / (dotLH * dotLH * (1.0 - k2) + k2), 0.0);
-    specular = max(specular, 0.0) * (1.0 - roughness * (1.0 - 0.025 * f0));
+    float specular = Max0(dotNL * dotNL * D * F / (dotLH * dotLH * (1.0 - k2) + k2));
+    specular = specular * (1.0 - roughness * (1.0 - 0.025 * f0));
     specular = specular / (0.125 * specular + 1.0);
 
     return specular;

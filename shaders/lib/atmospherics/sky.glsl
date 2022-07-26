@@ -25,7 +25,7 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
     skyBaseColor = Saturation(skyBaseColor, saturationAmount) * (sunHeightVar * 0.3 + 0.7);
 
     float mieFactor = sunDot * (1.0 - sunHeight) * sunHeightVar;
-    mieFactor += exp(-(y + 0.03) * 6.0) * (dot(viewDir, sunVec) * 0.35 + 0.65) * sunHeightVar * pow(1.0 - sunHeight, 2.0);
+    mieFactor += exp(-(y + 0.03) * 6.0) * (dot(viewDir, sunVec) * 0.35 + 0.65) * sunHeightVar * Pow2(1.0 - sunHeight);
     mieFactor = min(mieFactor, 1.0);
 
     vec3 skyColor = skyBaseColor;

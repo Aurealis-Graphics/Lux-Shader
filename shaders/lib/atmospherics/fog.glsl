@@ -20,7 +20,7 @@ vec3 GetFogColor(vec3 viewPos, vec3 ambientCol)
 	float NdotS = dot(nViewPos, sunVec) * 0.5 + 0.5;
 
 	float lightmix = NdotS * NdotS * (1.0 - NdotU);
-	lightmix *= (pow(1.0 - 0.7 * timeBrightness, 3.0) * 0.9 + 0.1) * (1.0 - rainStrength) * lViewPos;
+	lightmix *= (Pow3(1.0 - 0.7 * timeBrightness) * 0.9 + 0.1) * (1.0 - rainStrength) * lViewPos;
 
 	float top = exp(-1.4 * halfNdotU * halfNdotU * (1.0 + sunVisibility) * (1.0 - rainStrength));
 
@@ -52,7 +52,7 @@ void NormalFog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
 	#ifdef NETHER
 	float viewLength = length(viewPos);
 	float fog = 2.0 * pow(viewLength * FOG_DENSITY / 256.0, 1.5) + 
-				6.0 * pow(viewLength * 1.5 / far, 4.0);
+				6.0 * Pow4(viewLength * 1.5 / far);
 	fog = 1.0 - exp(-fog);
 	vec3 fogColor = netherCol.rgb * 0.04;
 	#endif

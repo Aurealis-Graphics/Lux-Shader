@@ -24,7 +24,7 @@ vec4 weatherCol = mix(
 	weatherRain,
 	(	weatherCold  * isCold  + weatherDesert   * isDesert   + weatherBadlands * isMesa    +
 		weatherSwamp * isSwamp + weatherMushroom * isMushroom + weatherSavanna  * isSavanna
-	) / max(weatherWeight, 0.0001),
+	) / MaxEPS(weatherWeight),
 	weatherWeight
 );
 
@@ -57,7 +57,7 @@ const vec3 moonCol = vec3(0.2824, 0.7725, 1.0) * 0.055;
 float lightCol_heightCurve = 1.5 * (sunHeight / (0.5 + sunHeight));
 float lightCol_height = (1.0 - lightCol_heightCurve) * 0.5;
 vec3 lightCol_baseColGradient = mix(vec3(1.0, 0.651, 0.0), vec3(0.6824, 0.0, 1.0), lightCol_height);
-vec3 lightCol_sunCol = pow(exp(-(1.0 - lightCol_baseColGradient) * lightCol_height * 4.0), vec3(6.0)) * 2.0;
+vec3 lightCol_sunCol = Pow6(exp(-(1.0 - lightCol_baseColGradient) * lightCol_height * 4.0)) * 2.0;
 vec3 lightCol_result = mix(moonCol, lightCol_sunCol, sunVisibility);
 float lightCol_prevLuma = dot(lightCol_result, vec3(0.2125, 0.7154, 0.0721));
 vec3 lightCol_newResult = lightCol_result / lightCol_prevLuma * min(lightCol_prevLuma, 0.9);

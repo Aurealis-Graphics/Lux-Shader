@@ -77,7 +77,7 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 				if (testsample > 0.9)
 				{
 					colsample = texture2D(shadowcolor0, shadowPos.xy).rgb;
-					colsample = pow(colsample / max(colsample.r, max(colsample.g, colsample.b)), vec3(2.0));
+					colsample = Pow2(colsample / max(colsample.r, max(colsample.g, colsample.b)));
 					sample = colsample * (1.0 - sample) + sample;
 				}
 			}

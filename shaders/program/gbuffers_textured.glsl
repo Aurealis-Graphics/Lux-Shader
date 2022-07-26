@@ -105,7 +105,6 @@ void main()
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
 		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD

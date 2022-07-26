@@ -148,7 +148,7 @@ void main()
 		GetMaterials(smoothness, metalness, f0, skymapMod, normal, rawAlbedo, texCoord);
 		smoothness *= smoothness;
 
-		float fresnel = pow(clamp(1.0 + dot(normal, normalize(viewPos.xyz)), 0.0, 1.0), 5.0);
+		float fresnel = Pow5(clamp(1.0 + dot(normal, normalize(viewPos.xyz)), 0.0, 1.0));
 		#if MATERIAL_FORMAT == 0
 		vec3 fresnel3 = mix(mix(vec3(f0), rawAlbedo, metalness), vec3(1.0), fresnel);
 		if (f0 >= 0.9 && f0 < 1.0) fresnel3 = ComplexFresnel(fresnel, f0);
@@ -250,9 +250,6 @@ void main()
 	float wFogMult = 1.0 + eBS;
 	BlackOutline(color.rgb, depthtex0, wFogMult, skyEnvAmbientApprox);
 	#endif
-
-	// color += 1.0;
-
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
 

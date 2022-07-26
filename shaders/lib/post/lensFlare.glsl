@@ -28,7 +28,7 @@ float PointLens(vec2 lightPos, float size, float dist)
 
 float RingLensTransform(float lensFlare)
 {
-	return pow(1.0 - pow(1.0 - pow(lensFlare, 0.25), 10.0), 5.0);
+	return Pow5(1.0 - pow(1.0 - pow(lensFlare, 0.25), 10.0));
 }
 
 float RingLens(vec2 lightPos, float size, float distA, float distB)
@@ -73,7 +73,7 @@ vec3 LensTint(vec3 lens, float truePos)
 void LensFlare(inout vec3 color, vec2 lightPos, float truePos, float multiplier)
 {
 	float falloffBase = length(lightPos * vec2(aspectRatio, 1.0));
-	float falloffIn = pow(Saturate(falloffBase * 10.0), 2.0);
+	float falloffIn = Pow2(Saturate(falloffBase * 10.0));
 	float falloffOut = Saturate(falloffBase * 3.0 - 1.5);
 
 	if (falloffOut < 0.999)

@@ -334,7 +334,6 @@ void main()
 		}
 		#endif
 
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
 		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD
@@ -436,7 +435,7 @@ void main()
 		#endif
 		#endif
 
-		float fresnel = pow(clamp(1.0 + dot(newNormal, normalize(viewPos)), 0.0, 1.0), 5.0);
+		float fresnel = Pow5(clamp(1.0 + dot(newNormal, normalize(viewPos)), 0.0, 1.0));
 
 		#ifdef OVERWORLD
 		vec3 specularColor = lightCol;

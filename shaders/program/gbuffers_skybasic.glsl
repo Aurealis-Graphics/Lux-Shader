@@ -59,13 +59,14 @@ void RoundSunMoon(inout vec3 color, vec3 viewPos, vec3 lightCol, vec3 moonCol)
 	float sunDot = clamp(1.0 - dot(sunVec, viewDir), 0.0, 1.0);
 	float moonDot = clamp(1.0 - dot(-sunVec, viewDir), 0.0, 1.0);
 
-	vec3 sun = vec3(min(0.002 / max(sunDot - 0.0001, 0.0), 40.0 * (1.0 - rainStrength))) * lightCol;
-	vec3 moon = vec3(min(0.001 / max(moonDot - 0.0001, 0.0), 40.0 * (1.0 - rainStrength))) * clamp(dot(-sunVec, upVec), 0.0, 1.0) * 10.0 * moonCol / (moonCol + 0.3);
+	vec3 sun = vec3(min(0.002 / MaxEPS(sunDot - 0.0001), 40.0 * (1.0 - rainStrength))) * lightCol;
+	vec3 moon = vec3(min(0.001 / MaxEPS(moonDot - 0.0001), 40.0 * (1.0 - rainStrength)));
+	moon *= clamp(dot(-sunVec, upVec), 0.0, 1.0) * 10.0 * moonCol / (moonCol + 0.3);
 
 	float y = dot(viewDir, upVec);
-	float mult = smoothstep(0.0, 0.05, y + 0.02) * pow(1.0 - rainStrength, 5.0);
+	float horizonFade = smoothstep(0.0, 0.05, y + 0.02) * Pow5(1.0 - rainStrength);
 
-	color += (sun + moon) * mult;
+	color += (sun + moon) * horizonFade;
 }
 
 void SunGlare(inout vec3 color, vec3 viewPos, vec3 lightCol)

@@ -186,7 +186,6 @@ void main()
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		#endif
 
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
 		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		float ec = GetLuminance(albedo.rgb) * 1.7;
@@ -299,7 +298,7 @@ void main()
 		if (normalMap.x > -0.999 && normalMap.y > -0.999)
 		{
 			normalMap = mix(vec3(0.0, 0.0, 1.0), normalMap, smoothness);
-			newNormal = mix(normalMap * tbnMatrix, newNormal, 1.0 - pow(1.0 - puddles, 4.0));
+			newNormal = mix(normalMap * tbnMatrix, newNormal, 1.0 - Pow4(1.0 - puddles));
 			newNormal = clamp(normalize(newNormal), vec3(-1.0), vec3(1.0));
 		}
 		#endif

@@ -20,7 +20,7 @@ vec4 netherColSqrt = mix(
     netherNether,
     (   netherValley  * isValley  + netherCrimson * isCrimson +
         netherWarped  * isWarped  + netherBasalt  * isBasalt
-    ) / max(nBiomeWeight, 0.0001),
+    ) / MaxEPS(nBiomeWeight),
     nBiomeWeight
 );
 #else

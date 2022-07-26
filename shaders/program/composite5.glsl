@@ -102,13 +102,13 @@ void RetroDither(inout vec3 color, float dither)
 	dither = mix(dither, 0.5, exp(-2.0 * lenColor)) - 0.25;
 	color = normColor * floor(lenColor * 4.0 + dither * 1.7) / 4.0;
 
-	color = max(pow(color.rgb, vec3(4.0)), vec3(0.0));
+	color = max(Pow4(color.rgb), vec3(0.0));
 }
 
 vec3 GetBloomTile(float lod, vec2 coord, vec2 offset)
 {
 	vec3 bloom = texture2D(colortex1, coord / exp2(lod) + offset).rgb;
-	return pow(bloom, vec3(4.0)) * 128.0;
+	return Pow4(bloom) * 128.0;
 }
 
 void Bloom(inout vec3 color, vec2 coord)

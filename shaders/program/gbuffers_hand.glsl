@@ -166,8 +166,8 @@ void main()
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		#endif
 
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
 		albedo.rgb = SRGBToLinear(albedo.rgb);
+
 		float doRecolor = GetHandItem(89) + GetHandItem(213);
 		float ec = GetLuminance(albedo.rgb) * 1.7;
 

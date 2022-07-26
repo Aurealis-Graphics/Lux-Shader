@@ -30,7 +30,7 @@ float DirectionalLightmap(float lightmap, float lightmapRaw, vec3 normal, mat3 l
         pwr = pow(abs(pwr), DIRECTIONAL_LIGHTMAP_STRENGTH) * sign(pwr) * lightmap;
         
     if (length(deriv) > 0.001)
-        lightmap = pow(lightmap, max(1.0 - pwr, 0.001));
+        lightmap = pow(lightmap, MaxEPS(1.0 - pwr));
 
 	return lightmap;
 }

@@ -140,7 +140,7 @@ void main()
 	if(lightningBolt > 0.5)
 	{
 		#ifdef OVERWORLD
-		albedo.rgb = pow(weatherCol.rgb / weatherCol.a, vec3(3.0));
+		albedo.rgb = Pow3(weatherCol.rgb / weatherCol.a);
 		#endif
 		#ifdef NETHER
 		albedo.rgb = sqrt(netherCol.rgb / netherCol.a);
@@ -188,7 +188,7 @@ void main()
 		if (normalMap.x > -0.999 && normalMap.y > -0.999 && skipAdvMat < 0.5)
 			newNormal = clamp(normalize(normalMap * tbnMatrix), vec3(-1.0), vec3(1.0));
 		#endif
-    	// albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		
 		albedo.rgb = SRGBToLinear(albedo.rgb);
 
 		#ifdef WHITE_WORLD
