@@ -31,13 +31,6 @@ void DrawStars(inout vec3 color, vec3 viewPos)
     float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
     star *= horizonMultiplier;
 
-	// float multiplier = (1.0 - Pow4(1.0 - NdotU)) * 5.0 * (1.0 - rainStrength) * moonVisibility;
-
-	// float star = 1.1;
-	// if (NdotU > 0.0) star *= Pow2(texture2D(noisetex, coord.xy * 100.0).r);
-	
-	// star = Saturate(star - 0.8125) * multiplier;
-
 	color += star * pow(lightNight, vec3(0.8)) / GetLuminance(pow(lightNight, vec3(0.8)));
 }
 
