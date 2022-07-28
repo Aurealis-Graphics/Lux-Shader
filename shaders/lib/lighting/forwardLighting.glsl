@@ -113,7 +113,7 @@ void GetLighting(
     #ifdef OVERWORLD
     float fullBlockLight = min(lightmap.x + emissive, 1.0);
     float desatAmount = sqrt(max(sqrt(length(fullShadow / 3.0)) * lightmap.y, lightmap.y)) *
-                        sunVisibility * (1.0 - rainStrength * 0.4) + Smooth3(fullBlockLight);
+                        (1.0 - Pow2(1.0 - min(1.0, sunHeight * 7.2))) * (1.0 - rainStrength * 0.4) + Smooth3(fullBlockLight);
 
     vec3 desatNight   = lightNight / LIGHT_NI;
     vec3 desatWeather = weatherCol.rgb / weatherCol.a * 0.5;
