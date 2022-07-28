@@ -31,7 +31,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
     float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
     star *= horizonMultiplier;
 
-	color += star * pow(lightNight, vec3(0.8)) / GetLuminance(pow(lightNight, vec3(0.8)));
+	color += star * pow(lightNight, vec3(0.8)) / GetLuminance(pow(lightNight, vec3(0.8))) * Pow6(Smooth3(1.0 - rainStrength));
 }
 
 mat2 Rot(float _angle) 
