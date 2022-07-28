@@ -7,25 +7,38 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
+const float starAmount = 0.16;
 void DrawStars(inout vec3 color, vec3 viewPos)
 {
     vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
 	vec3 planeCoord = wpos / (wpos.y + length(wpos.xz));
 	vec2 wind = vec2(frametime, 0.0);
-	vec2 coord = planeCoord.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
-	coord = floor(coord * 1024.0) / 1024.0;
 
-	float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
-	float multiplier = sqrt(sqrt(NdotU)) * 5.0 * (1.0 - rainStrength) * moonVisibility;
+	vec2 gridCoord = planeCoord.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
+    vec2 gridID = gridCoord;
+    
+    gridID = floor(gridCoord * 1024.0) / 1024.0;
+    gridCoord = fract(gridCoord * 1024.0);
 
-	float star = 1.1;
-	if (NdotU > 0.0){
-		star *= Pow2(texture2D(noisetex, coord.xy * 100.0).r);
-	}
-	star = Saturate(star - 0.8125) * multiplier;
-    star *= Hash(coord);
+    vec3 star = vec3(1.0);
+    star *= Max0(1.0 - dot(gridCoord - 0.5, gridCoord - 0.5) * 4.0);
 
-	color += pow(star * 2.3, 3.3) * pow(lightNight, vec3(0.8));
+    float starMultiplier = Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
+    star *= starMultiplier;
+    star *= 1.0 + sqrt(moonHeight) * 4.0;
+
+    float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
+    float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
+    star *= horizonMultiplier;
+
+	// float multiplier = (1.0 - Pow4(1.0 - NdotU)) * 5.0 * (1.0 - rainStrength) * moonVisibility;
+
+	// float star = 1.1;
+	// if (NdotU > 0.0) star *= Pow2(texture2D(noisetex, coord.xy * 100.0).r);
+	
+	// star = Saturate(star - 0.8125) * multiplier;
+
+	color += star * pow(lightNight, vec3(0.8)) / GetLuminance(pow(lightNight, vec3(0.8)));
 }
 
 mat2 Rot(float _angle) 
