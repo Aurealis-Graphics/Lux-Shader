@@ -25,7 +25,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 
     float starMultiplier = Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
     star *= starMultiplier;
-    star *= 1.0 + sqrt(moonHeight) * 4.0;
+    star *= 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
 
     float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
     float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
