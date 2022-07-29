@@ -60,7 +60,7 @@ void GetLighting(
 
             if (foliage > 0.5)
             {
-                bias = 0.00003;
+                bias = 0.00002;
                 offset = max(offset, 0.005 * (1.0 - NdotL));
             }
             
