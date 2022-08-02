@@ -25,11 +25,18 @@ vec3 RadiationBlackbody(in float T)
 const float starAmount = 0.16;
 void DrawStars(inout vec3 color, vec3 viewPos)
 {
+    float starMultiplier = 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
+
+    if (starMultiplier < 1e-3) return;
+
     vec3 worldPos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
 	vec3 planeCoord = worldPos / (worldPos.y + length(worldPos.xz));
 	vec2 wind = vec2(frametime, 0.0);
 
     float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
+    float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
+
+    if (horizonMultiplier < 1e-3) return;
 
 	vec2 gridCoord = planeCoord.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
     vec2 gridID = gridCoord;
@@ -39,10 +46,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 
     vec3 star = vec3(Max0(1.0 - dot(gridCoord, gridCoord) * 4.0));
 
-    float starMultiplier = Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
-    starMultiplier *= 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
-    
-    float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
+    starMultiplier *= Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
     
     star *= starMultiplier;
     star *= horizonMultiplier;
