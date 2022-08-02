@@ -7,31 +7,48 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
+
+/* Based on: https://github.com/Jessie-LC/open-source-utility-code/blob/main/advanced/blackbody.glsl */
+vec3 PlancksLaw(in float T, in vec3 primaries) 
+{
+    vec3 frac1 = 2.0 * H * Pow2(C) / Pow5(primaries);
+    vec3 frac2 = exp(H * C / (primaries * K * T)) - 1.0;
+    return (frac1 / frac2) * Pow2(1e9);
+}
+
+vec3 RadiationBlackbody(in float T) 
+{
+    vec3 radiation = PlancksLaw(T, vec3(700.0, 546.1, 435.8));
+    return radiation / MaxOf(radiation);
+}
+
 const float starAmount = 0.16;
 void DrawStars(inout vec3 color, vec3 viewPos)
 {
-    vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
-	vec3 planeCoord = wpos / (wpos.y + length(wpos.xz));
+    vec3 worldPos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
+	vec3 planeCoord = worldPos / (worldPos.y + length(worldPos.xz));
 	vec2 wind = vec2(frametime, 0.0);
+
+    float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
 
 	vec2 gridCoord = planeCoord.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
     vec2 gridID = gridCoord;
     
     gridID = floor(gridCoord * 1024.0) / 1024.0;
-    gridCoord = fract(gridCoord * 1024.0);
+    gridCoord = fract(gridCoord * 1024.0) - 0.5;
 
-    vec3 star = vec3(1.0);
-    star *= Max0(1.0 - dot(gridCoord - 0.5, gridCoord - 0.5) * 4.0);
+    vec3 star = vec3(Max0(1.0 - dot(gridCoord, gridCoord) * 4.0));
 
     float starMultiplier = Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
-    star *= starMultiplier;
-    star *= 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
-
-    float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
+    starMultiplier *= 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
+    
     float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
+    
+    star *= starMultiplier;
     star *= horizonMultiplier;
+    star *= RadiationBlackbody(Hash(gridID * 1258.35) * 37000.0 + 3000.0);
 
-	color += star * pow(lightNight, vec3(0.8)) / GetLuminance(pow(lightNight, vec3(0.8))) * Pow6(Smooth3(1.0 - rainStrength));
+	color += star;
 }
 
 mat2 Rot(float _angle) 

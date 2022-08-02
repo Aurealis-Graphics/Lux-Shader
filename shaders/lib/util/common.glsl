@@ -34,6 +34,8 @@ vec4 Pow4(vec4 x) { x = Pow2(x); 	return x * x; 		}
 vec4 Pow5(vec4 x) { 				return Pow4(x) * x; }
 vec4 Pow6(vec4 x) { x = Pow3(x); 	return x * x; 		}
 
+float MaxOf(vec3 x) { return max(x.x, max(x.y, x.z)); }
+
 /* 3rd-degree smoothstep polynomial */
 float Smooth3(float x) 
 {
