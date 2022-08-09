@@ -53,9 +53,6 @@ float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/atmospherics/borderFog.glsl"
 
-#define LSA
-#define LSB
-
 // Program
 void main()
 {
@@ -75,7 +72,7 @@ void main()
 	float cosS = dot(normalize(viewPos.xyz), sunVec);
 	vec3 sky = GetSkyColor(viewPos.xyz, lightCol);
 
-	#ifdef LSA
+	
 	float globalMult = (1.0 - Max0(sunHeight)) * min(1.0, sunHeight * 5.0);
 	globalMult *= globalMult;
 	float vlVisibilitySun = max(0.0, cosS * 0.5 + 0.5);
@@ -85,12 +82,14 @@ void main()
 
 	vec3 vlSun = vl * vlVisibilitySun;
 	vlSun *= vlSun; vlSun *= vlSun;
+	#if VOLUMETRIC_FOG_TYPE == 0
 	vlSun *= lightCol * 2.0;
-
-	color.rgb += vlSun * vlVisibilityMult * VOLUMETRIC_FOG_STRENGTH;
+	#elif VOLUMETRIC_FOG_TYPE == 1
+	vlSun *= sky * 2.0;
 	#endif
 
-	#ifdef LSB
+	color.rgb += vlSun * vlVisibilityMult * VOLUMETRIC_FOG_STRENGTH;
+
 	const float fogEnd = 0.5 / VOLUMETRIC_FOG_STRENGTH;
 	float distVar = 1.0 - exp2(-length(viewPos.xyz) * 0.00015);
 	float vlVisibilityFog = distVar / fogEnd * exp2(distVar - fogEnd);
@@ -99,7 +98,6 @@ void main()
 	vec3 vlFog = vl * vlVisibilityFog * vlVisibilityMult;
 
 	color.rgb = mix(color.rgb, sky, min(vlFog, 0.8));
-	#endif
 
 	#endif
 

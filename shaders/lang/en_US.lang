@@ -65,6 +65,8 @@ screen.WORLD=World
 screen.DOF=Depth of Field Config
 screen.CHROMATIC_ABBERATION=Chromatic Abberation Config
 
+screen.VOLUMETRICS=Volumetric Fog Config
+
 # Settings
 option.ABOUT=Lux Shaders
 option.ABOUT.comment=§a[+]§r Made by Tech (github.com/TechDevOnGitHub).     §e[*]§r Base by Capt Tatsu (bitslablab.com)
@@ -78,6 +80,11 @@ option.AO_STRENGTH.comment=Adjusts ambient occlusion strength.
 
 option.VOLUMETRIC_FOG=Volumetric Fog
 option.VOLUMETRIC_FOG.comment=Adds volumetric fog rays. §a[+]§r This effect benefits from TAA. §e[*]§r Performance depends on Shadowmap Resolution.
+
+option.VOLUMETRIC_FOG_TYPE=Volumetric Fog Type
+option.VOLUMETRIC_FOG_TYPE.comment=Changes between the legacy volumetrics and their updated newer look.
+value.VOLUMETRIC_FOG_TYPE.0=Hybrid
+value.VOLUMETRIC_FOG_TYPE.1=Legacy
 
 option.VOLUMETRIC_FOG_STRENGTH=Volumetric Fog Strength
 option.VOLUMETRIC_FOG_STRENGTH.comment=Adjusts volumetric fog strength.

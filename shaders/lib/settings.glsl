@@ -11,6 +11,7 @@ See AGREEMENT.txt for more information.
 #define AO
 #define AO_STRENGTH 1.00                                        // [0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 #define VOLUMETRIC_FOG
+#define VOLUMETRIC_FOG_TYPE 0                                   // [0 1]
 #define VOLUMETRIC_FOG_STRENGTH 1.00                            // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 #define BORDER_FOG
 #define DESATURATION
