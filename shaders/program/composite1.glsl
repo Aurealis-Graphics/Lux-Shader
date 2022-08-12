@@ -82,6 +82,7 @@ void main()
 
 	vec3 vlSun = vl * vlVisibilitySun;
 	vlSun *= vlSun; vlSun *= vlSun;
+
 	#if VOLUMETRIC_FOG_TYPE == 0
 	vlSun *= lightCol * 2.0;
 	#elif VOLUMETRIC_FOG_TYPE == 1
