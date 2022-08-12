@@ -16,7 +16,7 @@ float GetPuddles(vec3 pos)
 	noise += texture2D(noisetex, pos.xz * 0.125 ).r * 8.0;
 	noise += texture2D(noisetex, pos.xz * 0.0625).r * 16.0;
 	noise = Max0(abs(noise - 15.5) * 0.8 - 1.2) * wetness;
-	noise /= sqrt(noise * noise + 1.0);
+	noise /= abs(noise) + 1.0 / (abs(noise) + 1.0);
 	
 	return clamp(noise, 0.0, 0.95);
 }
