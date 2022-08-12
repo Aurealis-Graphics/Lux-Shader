@@ -34,7 +34,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 	vec2 wind = vec2(frametime, 0.0);
 
     float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
-    float horizonMultiplier = 1.0 - Pow2(1.0 - NdotU);
+    float horizonMultiplier = NdotU * (2.0 - NdotU);
 
     if (horizonMultiplier < 1e-3) return;
 

@@ -9,10 +9,12 @@ See AGREEMENT.txt for more information.
 #if defined OVERWORLD || defined END
 #include "/lib/lighting/shadows.glsl"
 
-vec3 DistortShadow(inout vec3 worldPos, float distortFactor){
-	worldPos.xy /= distortFactor;
-	worldPos.z *= 0.2;
-	return worldPos * 0.5 + 0.5;
+vec3 DistortShadow(inout vec3 coord, float distortFactor)
+{
+    
+    coord.xy /= distortFactor;
+    coord.z *= 0.2;
+    return coord.xyz * 0.5 + 0.5;
 }
 #endif
 
@@ -112,8 +114,10 @@ void GetLighting(
     #ifdef DESATURATION
     #ifdef OVERWORLD
     float fullBlockLight = min(lightmap.x + emissive, 1.0);
+    float sunHeightDesat = min(1.0, sunHeight * 7.2);
+    sunHeightDesat = sunHeightDesat * (2.0 - sunHeightDesat);
     float desatAmount = sqrt(max(sqrt(length(fullShadow / 3.0)) * lightmap.y, lightmap.y)) *
-                        (1.0 - Pow2(1.0 - min(1.0, sunHeight * 7.2))) * (1.0 - rainStrength * 0.4) + Smooth3(fullBlockLight);
+                        sunHeightDesat * (1.0 - rainStrength * 0.4) + Smooth3(fullBlockLight);
 
     vec3 desatNight   = lightNight / LIGHT_NI;
     vec3 desatWeather = weatherCol.rgb / weatherCol.a * 0.5;

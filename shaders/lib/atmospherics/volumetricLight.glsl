@@ -20,21 +20,19 @@ vec4 DistortShadow(vec4 shadowpos, float distortFactor)
 	return shadowpos;
 }
 
-vec4 getShadowSpace(float shadowdepth, vec2 texCoord)
+vec4 GetShadowSpace(float shadowZ, vec2 texCoord)
 {
-	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord, shadowdepth, 1.0) * 2.0 - 1.0);
+	vec4 viewPos = gbufferProjectionInverse * (vec4(texCoord, shadowZ, 1.0) * 2.0 - 1.0);
 	viewPos /= viewPos.w;
 
-	vec4 wpos = gbufferModelViewInverse * viewPos;
-	wpos = shadowModelView * wpos;
-	wpos = shadowProjection * wpos;
-	wpos /= wpos.w;
+	vec4 worldPos = gbufferModelViewInverse * viewPos;
+	worldPos = shadowModelView * worldPos;
+	worldPos = shadowProjection * worldPos;
+	worldPos /= worldPos.w;
 
-	float distb = sqrt(wpos.x * wpos.x + wpos.y * wpos.y);
-	float distortFactor = 1.0 - shadowMapBias + distb * shadowMapBias;
-	wpos = DistortShadow(wpos,distortFactor);
+	float distortFactor = 1.0 - shadowMapBias + length(worldPos.xy) * shadowMapBias;
 
-	return wpos;
+	return DistortShadow(worldPos, distortFactor);
 }
 
 // Volumetric light from Robobo1221 (modified)
@@ -61,7 +59,7 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 		if (minDist >= maxDist) break;
 		if (depth1 < minDist || (depth0 < minDist && color == vec3(0.0))) break;
 
-		shadowPos = getShadowSpace(LinearizeDepth(minDist, far, near), texCoord.st);
+		shadowPos = GetShadowSpace(LinearizeDepth(minDist, far, near), texCoord.st);
 		// shadowPos.z += 0.00002;
 
 		if (length(shadowPos.xy * 2.0 - 1.0) < 1.0)
