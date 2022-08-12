@@ -92,7 +92,7 @@ void GetLighting(
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
     #endif
     
-    float newLightmap  = pow(lightmap.x, 10.0) * (EMISSIVE_BRIGHTNESS + 0.5) + lightmap.x * 0.7;
+    float newLightmap  = pow(lightmap.x, 10.0) * (EMISSIVE_BRIGHTNESS + 0.5) + Pow2(lightmap.x);
     vec3 blockLighting = blocklightCol * newLightmap * newLightmap;
 
     float minLighting = 0.06 * (1.0 - eBS);
