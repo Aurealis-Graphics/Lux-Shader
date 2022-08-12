@@ -52,9 +52,9 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 	float depth0 = GetDepth(z0);
 	float depth1 = GetDepth(z1);
 	vec4 shadowPos = vec4(0.0);
-	vec3 watercol = waterColor.rgb * sqrt(waterColor.a / waterAlpha);
+	vec3 waterCol = waterColor.rgb * sqrt(waterColor.a / waterAlpha);
 
-	for(int i = 0; i < 7; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		float minDist = exp2(i + dither) - 0.9;
 
@@ -68,23 +68,23 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 		{
 			vec3 sample = vec3(shadow2D(shadowtex0, shadowPos.xyz).z);
 
-			vec3 colsample = vec3(0.0);
-
 			#ifdef SHADOW_COLOR
-			if (sample.r < 0.9)
+			vec3 colSample = vec3(0.0);
+
+			if (sample.r < shadowPos.z)
 			{
 				float testsample = shadow2D(shadowtex1, shadowPos.xyz).z;
-				if (testsample > 0.9)
+				if (testsample > shadowPos.z)
 				{
-					colsample = texture2D(shadowcolor0, shadowPos.xy).rgb;
-					colsample = Pow2(colsample / max(colsample.r, max(colsample.g, colsample.b)));
-					sample = colsample * (1.0 - sample) + sample;
+					colSample = texture2D(shadowcolor0, shadowPos.xy).rgb;
+					colSample = Pow2(colSample / max(colSample.r, max(colSample.g, colSample.b)));
+					sample = colSample * (1.0 - sample) + sample;
 				}
 			}
 			#endif
 
 			if (depth0 < minDist) sample *= color;
-			else if (isEyeInWater == 1.0) sample *= watercol;
+			else if (isEyeInWater == 1.0) sample *= waterCol;
 
 			vl += sample;
 		}
