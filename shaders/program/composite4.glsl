@@ -68,7 +68,7 @@ void main()
 		 blur += BloomTile(7.0, vec2(0.2075   , 0.3325));
 
     /* DRAWBUFFERS:1 */
-	gl_FragData[0] = vec4(blur, 1.0);
+	gl_FragData[0] = vec4(Max0(blur), 1.0);
 }
 
 #endif
