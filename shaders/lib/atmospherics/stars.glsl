@@ -46,6 +46,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
     vec3 star = vec3(Max0(1.0 - dot(gridCoord, gridCoord) * 4.0));
 
     starMultiplier *= Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
+    starMultiplier *= Pow5(Smooth3(1.0 - rainStrength));
     
     star *= starMultiplier;
     star *= horizonMultiplier;

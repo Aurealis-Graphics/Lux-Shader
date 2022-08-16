@@ -6,20 +6,19 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-const float persistance = 0.7;
-const float lacunarity = 1.5;
+const float cloudPersistance = 0.7;
+const float cloudLacunarity = 1.5;
 float CloudNoise(vec2 coord, vec2 wind)
 {
 	float retValue = 0.0;
-
 	float amplitude = 1.0;
 	float frequency = 0.45;
 
 	for (int i = 0; i < 7; i++)
 	{
 		retValue += texture2D(noisetex, (coord + wind * 0.4 * pow(frequency, 0.3)) * frequency).r * amplitude;
-		frequency *= lacunarity;
-		amplitude *= persistance;
+		frequency *= cloudLacunarity;
+		amplitude *= cloudPersistance;
 	}
 
 	return retValue * 9.0;
@@ -29,7 +28,7 @@ float CloudCoverage(float noise, float cosT, float coverage)
 {
 	float noiseMix = mix(noise, 21.0, 0.33 * rainStrength);
 	float noiseFade = Saturate(sqrt(cosT * 10.0));
-	float noiseCoverage = ((coverage * coverage) + CLOUD_AMOUNT);
+	float noiseCoverage = (Pow2(coverage) + CLOUD_AMOUNT);
 	float multiplier = 1.0 - 0.5 * rainStrength;
 
 	return Max0(noiseMix * noiseFade - noiseCoverage) * multiplier;
