@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 #include "/lib/color/colorgrading/transforms.glsl"
 
 /* Main Colorgrading Function */

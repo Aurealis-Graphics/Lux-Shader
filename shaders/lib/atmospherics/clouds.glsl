@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 const float persistance = 0.7;
 const float lacunarity = 1.5;
 float CloudNoise(vec2 coord, vec2 wind)

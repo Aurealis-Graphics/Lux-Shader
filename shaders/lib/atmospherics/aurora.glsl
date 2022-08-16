@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 // Simplex Noise 2D by Inigo Quillez
 const float K1 = 0.366025404; 	// (sqrt(3) - 1) / 2;
 const float K2 = 0.211324865; 	// (3 - sqrt(3)) / 6;

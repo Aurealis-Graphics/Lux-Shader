@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 vec2 blackOutlineOffsets[12] = vec2[12](
     vec2( -2.0,  2.0 ),
     vec2( -1.0,  2.0 ),

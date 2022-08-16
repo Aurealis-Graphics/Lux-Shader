@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 #ifdef SKY_VANILLA
 uniform vec3 skyColor;
 uniform vec3 fogColor;

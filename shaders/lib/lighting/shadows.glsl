@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 uniform sampler2DShadow shadowtex0;
 
 #ifdef SHADOW_COLOR

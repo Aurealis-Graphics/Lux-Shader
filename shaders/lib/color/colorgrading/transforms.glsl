@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 /* RGB/HSV conversion based on https://gist.github.com/983/e170a24ae8eba2cd174f */
 const vec4 HsvK = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
 vec3 RGBToHSV(vec3 c)

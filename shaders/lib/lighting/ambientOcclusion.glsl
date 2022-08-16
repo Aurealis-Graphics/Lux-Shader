@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 vec2 OffsetDist(float x, int s)
 {
 	float n = fract(x * 1.414) * PI;

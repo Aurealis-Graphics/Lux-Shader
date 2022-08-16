@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 vec2 promoOutlineOffsets[4] = vec2[4](
 	vec2( -1.0,  1.0 ),
 	vec2(  0.0,  1.0 ),

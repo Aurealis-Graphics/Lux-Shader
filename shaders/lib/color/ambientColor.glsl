@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 vec3 GetAmbientColor(vec3 normal, vec3 lightCol, float quarterNdotU)
 {
     #ifdef OVERWORLD

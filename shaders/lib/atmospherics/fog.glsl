@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 #ifdef OVERWORLD
 vec3 GetFogColor(vec3 viewPos, vec3 ambientCol)
 {

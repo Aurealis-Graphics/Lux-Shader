@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 #include "/lib/outline/blackOutlineOffset.glsl"
 
 void DepthOutline(inout float z)

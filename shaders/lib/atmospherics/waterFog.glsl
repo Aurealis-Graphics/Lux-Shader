@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 void WaterFog(inout vec3 color, vec3 viewPos, float fogrange)
 {
     float fog = length(viewPos) / fogrange;

@@ -6,7 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 #include "/lib/outline/blackOutlineOffset.glsl"
 
 void BlackOutline(inout vec3 color, sampler2D depth, float wFogMult, vec3 ambientCol)

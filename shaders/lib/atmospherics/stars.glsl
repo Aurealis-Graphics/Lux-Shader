@@ -7,7 +7,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-
 /* Based on: https://github.com/Jessie-LC/open-source-utility-code/blob/main/advanced/blackbody.glsl */
 vec3 PlancksLaw(in float T, in vec3 primaries) 
 {
