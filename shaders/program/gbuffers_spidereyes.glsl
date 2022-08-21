@@ -22,8 +22,7 @@ uniform sampler2D texture;
 void main()
 {
     vec4 albedo = texture2D(texture, texCoord);
-	albedo.rgb /= GetLuminance(albedo.rgb) * 2.0;		// Entity Eye Recoloring
-	albedo.rgb = SRGBToLinear(albedo.rgb);
+	albedo.rgb = SRGBToLinear(albedo.rgb * 2.6);
 	
     #ifdef WHITE_WORLD
 	albedo.rgb = vec3(2.0);
