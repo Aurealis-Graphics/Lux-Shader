@@ -39,6 +39,8 @@ See AGREEMENT.txt for more information.
 // #define DIRECTIONAL_LIGHTMAP
 #define DIRECTIONAL_LIGHTMAP_STRENGTH 1.0                       // [2.0 1.4 1.0 0.7 0.5]
 
+#define CAMERA_FOCUS_MODE 0 			                        // [0 1]
+#define CAMERA_FOCUS_DISTANCE 3.0				                // [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0 10.0 12.0 14.0 16.0 18.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 120.0 140.0 160.0 180.0 200.0 250.0 300.0]
 // #define DOF
 #define DOF_STRENGTH 3.0                                        // [0.1 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 7.0 8.0 9.0 10.0 12.0 14.0 16.0 18.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 110.0 120.0]
 #define DOF_SAMPLE_REJECTION

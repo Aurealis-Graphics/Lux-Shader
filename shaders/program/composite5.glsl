@@ -27,6 +27,7 @@ uniform float rainStrength;
 uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
 uniform float centerDepthSmooth;
+uniform float far, near;
 
 uniform vec3 cameraPosition;
 uniform vec3 previousCameraPosition;

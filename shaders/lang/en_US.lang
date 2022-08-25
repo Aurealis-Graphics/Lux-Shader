@@ -172,6 +172,14 @@ value.DIRECTIONAL_LIGHTMAP_STRENGTH.1.0=Medium
 value.DIRECTIONAL_LIGHTMAP_STRENGTH.0.7=High
 value.DIRECTIONAL_LIGHTMAP_STRENGTH.0.5=Very High
 
+option.CAMERA_FOCUS_MODE=Camera Focus Mode
+option.CAMERA_FOCUS_MODE.comment=Adjusts the camera focus mode.
+value.CAMERA_FOCUS_MODE.0=Automatic
+value.CAMERA_FOCUS_MODE.1=Manual
+
+option.CAMERA_FOCUS_DISTANCE=Focus Distance
+option.CAMERA_FOCUS_DISTANCE.comment=Adjusts the camera focus distance. §e[*]§r Only works when "Camera Focus Mode" is set to "Manual".
+
 option.DOF=Depth of Field
 option.DOF.comment=Enables camera focus effect.
 
