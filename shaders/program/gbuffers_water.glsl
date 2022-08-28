@@ -91,7 +91,6 @@ vec2 dcdy = dFdy(texCoord);
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
 // Common Functions
-
 float GetWaveLayer(vec2 coord, float wavelength, vec2 direction, float speed) 
 {
     float k = TAU / wavelength;
@@ -136,15 +135,14 @@ float ComputeWaterWaves(
 		noiseAmplitude *= noisePersistance;
 	}
 
-	return noise * mult * mult;
+	return noise * Pow2(mult);
 }
 
 float GetWaterHeightMap(vec3 worldPos, vec3 viewPos)
 {
     float noise = 0.0;
-    float mult = clamp(-dot(normalize(normal), normalize(viewPos)) * 8.0, 0.0, 1.0) / sqrt(sqrt(max(dist, 4.0)));	// TODO: Optimize this? cuz sqrt()
-    vec2 wind = vec2(frametime) * 0.35;
-    float verticalOffset = worldPos.y * 0.2;
+    float mult = Saturate(-dot(normalize(normal), normalize(viewPos)) * 8.0) / pow(max(dist, 4.0), 0.25);
+    // vec2 wind = vec2(frametime) * 0.35;
 
     if (mult > 0.01)
 	{
@@ -156,13 +154,13 @@ float GetWaterHeightMap(vec3 worldPos, vec3 viewPos)
 			1.0,		// WAVE_SPEED
 			16.0,		// GERSTNER_WAVE_LENGTH
 			1.4,		// GERSTNER_WAVE_LACUNARITY
-			0.9,		// GERSTNER_WAVE_PERSISTANCE
-			0.36,		// GERSTNER_WAVE_AMPLITUDE
+			0.93,		// GERSTNER_WAVE_PERSISTANCE
+			0.34,		// GERSTNER_WAVE_AMPLITUDE
 			0.42,		// GERSTNER_WAVE_DIR_SPREAD
 			5,			// GERSTNER_WAVE_ITERATIONS
 			0.007,		// NOISE_WAVE_SCALE
 			0.7,		// NOISE_WAVE_LACUNARITY
-			0.4,		// NOISE_WAVE_AMPLITUDE
+			0.45,		// NOISE_WAVE_AMPLITUDE
 			0.75,		// NOISE_WAVE_PERSISTANCE
 			4			// NOISE_WAVE_ITERATIONS
 		);
@@ -196,7 +194,7 @@ vec3 GetParallaxWaves(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 {
 	vec3 parallaxPos = worldPos;
 
-	for(int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		float height = (GetWaterHeightMap(parallaxPos, viewPos) - 0.5) * 0.24;
 		parallaxPos.xz += height * viewVector.xy / dist;
