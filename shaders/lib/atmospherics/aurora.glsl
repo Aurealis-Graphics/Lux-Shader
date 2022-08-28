@@ -38,9 +38,9 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 	return Smooth3(noise) * (1.0 - localY);
 }
 
-const vec3 auroraBlue = vec3(0.1, 0.2, 1.0);
-const vec3 auroraRed = vec3(1.0, 0.1, 0.4);
-const vec3 auroraGreen = vec3(0.1, 1.0, 0.2);
+const vec3 auroraBlue 	= vec3(0.1, 0.2, 1.0);
+const vec3 auroraRed 	= vec3(1.0, 0.1, 0.4);
+const vec3 auroraGreen 	= vec3(0.1, 1.0, 0.2);
 vec3 GetAuroraColor(in vec2 coord, float scale)
 {
 	#if AURORA_COLORING_TYPE == 0
@@ -63,7 +63,7 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 		#endif
 	#endif
 
-	return pow(finalColor, vec3(1.7));
+	return finalColor * finalColor;
 }
 
 float GetAuroraNoiseSharpness(in float cosT) 
@@ -91,7 +91,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	float noiseSharpness = GetAuroraNoiseSharpness(cosT);
     vec3 worldPos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 	float fIterations = float(iterations);
-	float iMult = 11.0 / fIterations;
+	float iMult = 12.0 / fIterations;
 
 	for (int i = 0; i < iterations; i++)
 	{
