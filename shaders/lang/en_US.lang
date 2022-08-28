@@ -290,6 +290,11 @@ option.SHADOW_COLOR.comment=Enables tinted shadow from translucents. §a[+]§r U
 option.SHADOW_FILTER=Shadow Filtering
 option.SHADOW_FILTER.comment=Enables shadow filtering. §a[+]§r This effect benefits from TAA.
 
+option.SHADOW_ADVANCED_FILTER=Filter Type
+option.SHADOW_ADVANCED_FILTER.comment=Adjusts shadow filtering type.
+value.SHADOW_ADVANCED_FILTER.0=Simple
+value.SHADOW_ADVANCED_FILTER.1=VPS
+
 option.sunPathRotation=Sun Path Rotation
 option.sunPathRotation.comment=Adjusts sun angle.
 

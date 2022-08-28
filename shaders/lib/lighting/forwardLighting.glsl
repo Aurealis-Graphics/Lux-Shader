@@ -11,7 +11,6 @@ See AGREEMENT.txt for more information.
 
 vec3 DistortShadow(inout vec3 coord, float distortFactor)
 {
-    
     coord.xy /= distortFactor;
     coord.z *= 0.2;
     return coord.xyz * 0.5 + 0.5;
@@ -59,14 +58,14 @@ void GetLighting(
             
             float bias = (distortBias * biasFactor + 0.02) / shadowMapResolution;
             float offset = 1.0 / shadowMapResolution;
-
+            
             if (foliage > 0.5)
             {
                 bias = 0.00002;
                 offset = max(offset, 0.005 * (1.0 - NdotL));
             }
-            
-            shadow = GetShadow(shadowPos, bias, offset);
+
+            shadow = GetShadow(shadowPos, bias, offset, foliage);
 
         } else shadow = vec3(lightmap.y);
     }
