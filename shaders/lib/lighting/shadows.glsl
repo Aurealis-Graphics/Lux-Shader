@@ -153,8 +153,8 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
             avgBlockerDistance += Max0(shadowPos.z - texture2D(shadowtex0, shadowPos.xy + offset).x);
         }
         
-        // avgBlockerDistance *= 1.0 / float(shadowFilterSamples);
-        offset = max(offset, avgBlockerDistance * 0.04);
+        avgBlockerDistance *= 1.0 / float(shadowFilterSamples);
+        offset = max(offset, avgBlockerDistance * 0.32);
     }
     #endif
 
