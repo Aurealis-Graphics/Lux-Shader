@@ -110,18 +110,6 @@ vec3 SampleBasicShadow(vec3 shadowPos)
     return shadowCol * (1.0 - shadow0) + shadow0;
 }
 
-vec3 SampleFilteredShadow(vec3 shadowPos, float offset)
-{
-    vec3 shadow = SampleBasicShadow(vec3(shadowPos.st, shadowPos.z));
-
-    for (int i = 0; i < shadowFilterSamples; i++)
-    {
-        shadow += SampleBasicShadow(vec3(offset * shadowOffsets[i] + shadowPos.st, shadowPos.z));
-    }
-    
-    return shadow * (1.0 / float(shadowFilterSamples));
-}
-
 vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset)
 {
     float dither = InterleavedGradientNoise(gl_FragCoord.xy);
@@ -159,11 +147,9 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
     #endif
 
     #ifdef SHADOW_FILTER
-    #if AA == 2
-    vec3 shadow = SampleTAAFilteredShadow(shadowPos, offset);
-    #else
-    vec3 shadow = SampleTAAFilteredShadow(shadowPos, offset);
-    #endif
+    vec3 shadow = vec3(0.0);
+    if (offset > 1e-6)  shadow = SampleTAAFilteredShadow(shadowPos, offset);
+    else                shadow = SampleBasicShadow(shadowPos);
     #else
     vec3 shadow = SampleBasicShadow(shadowPos);
     #endif
