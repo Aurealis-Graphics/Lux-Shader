@@ -183,6 +183,11 @@ option.CAMERA_FOCUS_DISTANCE.comment=Adjusts the camera focus distance. §e[*]§
 option.DOF=Depth of Field
 option.DOF.comment=Enables camera focus effect.
 
+option.DOF_TYPE=DOF Type
+option.DOF_TYPE.comment=Determines the DOF type.
+value.DOF_TYPE.0=Realistic
+value.DOF_TYPE.1=Toon
+
 option.DOF_STRENGTH=DOF Strength
 option.DOF_STRENGTH.comment=Adjusts the focus strength, higher value blurs quicker.
 

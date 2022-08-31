@@ -99,6 +99,8 @@ const vec2 samples[60] = vec2[60](
 #include "/lib/outline/depthOutline.glsl"
 #endif
 
+#define TOON_DOF
+
 // Common Functions
 vec3 DepthOfField(vec3 color, float z)
 {
@@ -131,23 +133,32 @@ vec3 DepthOfField(vec3 color, float z)
 
 		offset /= vec2(aspectRatio, 1.0);
 
+		vec3 tapSample = texture2DLod(colortex0, texCoord + offset, 0.0).rgb;
+
 		#ifdef DOF_SAMPLE_REJECTION
 		float tapDepth = texture2D(depthtex1, texCoord + offset, 0.0).x;
 		float tapCoc = GetCircleOfConfusion(tapDepth, centerDepthSmooth, gbufferProjection, DOF_STRENGTH);
 		float tapWeight = exp2(-distance(coc, tapCoc) * DOF_SAMPLE_REJECTION_RESPONSE);
 		totalWeight += tapWeight;
 
-		dof += texture2DLod(colortex0, texCoord + offset, 0.0).rgb * tapWeight;
+		tapSample *= tapWeight;
+		#endif
+
+		#if DOF_TYPE == 0
+		dof += tapSample;
 		#else
-		dof += texture2DLod(colortex0, texCoord + offset, 0.0).rgb;
+		dof = max(dof, tapSample);
 		#endif
 	}
 
-	// return dof;
+	#if DOF_TYPE == 0
 	#ifdef DOF_SAMPLE_REJECTION
 	return dof / totalWeight;
 	#else
 	return dof / 60.0;
+	#endif
+	#else
+	return dof;
 	#endif
 }
 
