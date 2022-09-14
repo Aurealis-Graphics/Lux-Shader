@@ -128,3 +128,9 @@ bool IsHand(float z)
 {
 	return z < 0.56;
 }
+
+// TODO: Check for possible expression replacements in various files
+float Lift(float x, float amount)
+{
+	return (1.0 + amount) * x / (x + amount);
+}

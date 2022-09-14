@@ -72,21 +72,19 @@ void main()
 	float cosS = dot(normalize(viewPos.xyz), sunVec);
 	vec3 sky = GetSkyColor(viewPos.xyz, lightCol);
 
+	float globalMult = Pow2((1.0 - Max0(sunHeight)) * min(1.0, sunHeight * 5.0));
 	
-	float globalMult = (1.0 - Max0(sunHeight)) * min(1.0, sunHeight * 5.0);
-	globalMult *= globalMult;
-	float vlVisibilitySun = max(0.0, cosS * 0.5 + 0.5);
+	float vlVisibilitySun = Max0(cosS * 0.5 + 0.5);
 	vlVisibilitySun *= globalMult;
-	vlVisibilitySun = 1.2 * vlVisibilitySun / (vlVisibilitySun + 0.2);
+	vlVisibilitySun = Lift(vlVisibilitySun, 0.2);
 	vlVisibilitySun *= 0.12;
 
-	vec3 vlSun = vl * vlVisibilitySun;
-	vlSun *= vlSun; vlSun *= vlSun;
+	vec3 vlSun = Pow4(vl * vlVisibilitySun);
 
 	#if VOLUMETRIC_FOG_TYPE == 0
-	vlSun *= lightCol * 2.0;
+	vlSun *= lightCol;
 	#elif VOLUMETRIC_FOG_TYPE == 1
-	vlSun *= sky * 2.0;
+	vlSun *= sky;
 	#endif
 
 	color.rgb += vlSun * vlVisibilityMult * VOLUMETRIC_FOG_STRENGTH;
