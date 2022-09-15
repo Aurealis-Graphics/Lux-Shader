@@ -110,17 +110,13 @@ vec3 SampleBasicShadow(vec3 shadowPos)
     return shadowCol * (1.0 - shadow0) + shadow0;
 }
 
-vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset)
+vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset, mat2 rotMat)
 {
-    float dither = InterleavedGradientNoise(gl_FragCoord.xy);
-    dither = fract(dither + frameTimeCounter * 8.0);
-
-    mat2 offsetRot = Rotate(dither * TAU);
     vec3 shadow = vec3(0.0);
 
     for (int i = 0; i < shadowFilterSamples; i++)
     {
-        shadow += SampleBasicShadow(vec3(shadowPos.st + offsetRot * shadowOffsets[i] * offset, shadowPos.z));
+        shadow += SampleBasicShadow(vec3(shadowPos.st + rotMat * shadowOffsets[i] * offset, shadowPos.z));
     }
     
     return shadow * (1.0 / float(shadowFilterSamples));
@@ -130,6 +126,10 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
 {
     shadowPos.z -= bias;
 
+    float dither = InterleavedGradientNoise(gl_FragCoord.xy);
+    dither = fract(dither + frameTimeCounter * 8.0);
+    mat2 ditherRotMat = Rotate(dither * TAU);
+
     #if SHADOW_ADVANCED_FILTER == 1
     if (foliage < 0.5) 
     {
@@ -137,7 +137,7 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
         
         for (int i = 0; i < shadowFilterSamples; i++)
         {
-            vec2 offset = shadowOffsets[i] * 0.015;
+            vec2 offset = ditherRotMat * shadowOffsets[i] * 0.015;
             avgBlockerDistance += Max0(shadowPos.z - texture2D(shadowtex0, shadowPos.xy + offset).x);
         }
         
@@ -148,7 +148,7 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float foliage)
 
     #ifdef SHADOW_FILTER
     vec3 shadow = vec3(0.0);
-    if (offset > 1e-6)  shadow = SampleTAAFilteredShadow(shadowPos, offset);
+    if (offset > 1e-6)  shadow = SampleTAAFilteredShadow(shadowPos, offset, ditherRotMat);
     else                shadow = SampleBasicShadow(shadowPos);
     #else
     vec3 shadow = SampleBasicShadow(shadowPos);
