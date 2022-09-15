@@ -119,6 +119,12 @@ void main()
 	}
 	#endif
 
+	if (isEyeInWater == 1) 
+	{
+		vec3 a = exp2((vec3(0.6196, 0.9098, 1.0) - 1.0) * GetLinearDepth(z0) * 120.0);
+		color.rgb *= a * (1.0 - rainStrength) + 1.0 * rainStrength;
+	}
+
 	#ifdef FOG
 	if (isEyeInWater == 1.0)
 	{
