@@ -129,8 +129,13 @@ bool IsHand(float z)
 	return z < 0.56;
 }
 
-// TODO: Check for possible expression replacements in various files
+/* amount := lifting amount [-1, inf] */
 float Lift(float x, float amount)
 {
-	return (1.0 + amount) * x / (x + amount);
+	return (1.0 + amount) * x / (amount * x + 1.0);
+}
+
+vec3 Lift(vec3 x, float amount)
+{
+	return (1.0 + amount) * x / (amount * x + 1.0);
 }

@@ -136,7 +136,7 @@ void main()
 	viewPos /= viewPos.w;
 
 	#ifdef OVERWORLD
-	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
+	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
 	#endif
 
 	if (z < 1.0)

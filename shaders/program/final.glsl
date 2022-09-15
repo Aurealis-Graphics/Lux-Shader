@@ -70,8 +70,8 @@ void main()
 	{
 		vec3 gradedColor = color * 0.9 * vec3(0.6549, 0.9412, 1.0);
 		gradedColor.b *= 0.8 + abs(gradedColor.b - gradedColor.g * 0.3 * gradedColor.r);
-		gradedColor.r *= 1. - abs(gradedColor.b - gradedColor.r);
-		color = mix(color, gradedColor, 0.35 * (1. - rainStrength));
+		gradedColor.r *= 1.0 - abs(gradedColor.b - gradedColor.r);
+		color = mix(color, gradedColor, 0.35 * (1.0 - rainStrength));
 	}
 
 	gl_FragColor = vec4(color, 1.0);

@@ -387,7 +387,7 @@ void main()
 		vec3 shadow = vec3(0.0);
 
 		#ifdef OVERWORLD
-		vec3 skyEnvAmbientApprox = GetAmbientColor(newNormal, lightCol, quarterNdotU);
+		vec3 skyEnvAmbientApprox = GetAmbientColor(newNormal, lightCol);
 		#else
 		vec3 skyEnvAmbientApprox = vec3(0.0);
 		#endif
@@ -581,7 +581,7 @@ void main()
 
 		#ifdef FOG
 		#ifdef OVERWORLD
-		vec3 skyEnvAmbientApproxFog = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
+		vec3 skyEnvAmbientApproxFog = GetAmbientColor(vec3(0, 1, 0), lightCol);
 		#endif
 
 		#ifdef END

@@ -131,7 +131,7 @@ void main()
 	#endif
 
 	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE
-	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
+	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
 	#endif
 
 	#ifdef BLACK_OUTLINE

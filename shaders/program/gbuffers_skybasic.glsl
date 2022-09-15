@@ -113,7 +113,7 @@ void main()
 	viewPos /= viewPos.w;
 
 	vec3 albedo = GetSkyColor(viewPos.xyz, lightCol);
-	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol, 1.0);
+	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
 
 	#ifdef ROUND_SUN_MOON
 	RoundSunMoon(albedo, viewPos.xyz, lightCol, moonCol);

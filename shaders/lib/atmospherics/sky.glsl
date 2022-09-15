@@ -13,18 +13,18 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
     #ifdef OVERWORLD
     vec3 viewDir = normalize(viewPos);
 
-    float sunHeightVar = smoothstep(0.0, 0.5, sunHeight / (sunHeight + 0.6) * 1.6);
-    float sunDot = exp(-distance(viewDir, sunVec) * (sunHeightVar + 0.8)) * (1.0 - rainStrength * sunHeightVar);
+    float sunHeightLifted = smoothstep(0.0, 0.5, Lift(sunHeight, 1.6));
+    float sunDot = exp(-distance(viewDir, sunVec) * (sunHeightLifted + 0.8)) * (1.0 - rainStrength * sunHeightLifted);
     float y = max(dot(viewDir, upVec), 0.0);
 
     vec3 skyBaseColor = mix(vec3(0.2235, 0.702, 0.8588), vec3(0.2784, 0.5961, 0.8588), sunVisibility);
     skyBaseColor = mix(skyBaseColor, GetLuminance(skyBaseColor) * weatherCol.rgb, rainStrength);
 
     float saturationAmount = 0.18 * (3.0 - sunVisibility * (rainStrength - 2.0));
-    skyBaseColor = Saturation(skyBaseColor, saturationAmount) * (sunHeightVar * 0.3 + 0.7);
+    skyBaseColor = Saturation(skyBaseColor, saturationAmount) * (sunHeightLifted * 0.3 + 0.7);
 
-    float mieFactor = sunDot * (1.0 - sunHeight) * sunHeightVar;
-    mieFactor += exp(-(y + 0.02) * 7.0) * (dot(viewDir, sunVec) * 0.25 + 0.75) * sunHeightVar * Pow2(1.0 - sunHeight);
+    float mieFactor = sunDot * (1.0 - sunHeight) * sunHeightLifted;
+    mieFactor += exp(-(y + 0.02) * 7.0) * (dot(viewDir, sunVec) * 0.25 + 0.75) * sunHeightLifted * Pow2(1.0 - sunHeight);
     mieFactor = min(mieFactor, 1.0);
 
     vec3 skyColor = skyBaseColor;

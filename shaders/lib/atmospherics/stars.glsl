@@ -28,14 +28,14 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 
     if (starMultiplier < 1e-3) return;
 
-    vec3 worldPos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
-	vec3 planeCoord = worldPos / (worldPos.y + length(worldPos.xz));
-	vec2 wind = vec2(frametime, 0.0);
-
     float NdotU = max(dot(normalize(viewPos), normalize(upVec)), 0.0);
     float horizonMultiplier = NdotU * (2.0 - NdotU);
 
     if (horizonMultiplier < 1e-3) return;
+
+    vec3 worldPos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
+	vec3 planeCoord = worldPos / (worldPos.y + length(worldPos.xz));
+	vec2 wind = vec2(frametime, 0.0);
 
 	vec2 gridCoord = planeCoord.xz * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125;
     vec2 gridID = gridCoord;

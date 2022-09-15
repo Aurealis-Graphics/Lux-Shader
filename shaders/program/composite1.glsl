@@ -76,7 +76,7 @@ void main()
 	
 	float vlVisibilitySun = Max0(cosS * 0.5 + 0.5);
 	vlVisibilitySun *= globalMult;
-	vlVisibilitySun = Lift(vlVisibilitySun, 0.2);
+	vlVisibilitySun = Lift(vlVisibilitySun, 5.0);
 	vlVisibilitySun *= 0.12;
 
 	vec3 vlSun = Pow4(vl * vlVisibilitySun);
