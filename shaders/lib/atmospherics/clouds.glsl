@@ -16,7 +16,7 @@ float CloudNoise(vec2 coord, vec2 wind)
 
 	for (int i = 0; i < 7; i++)
 	{
-		retValue += texture2D(noisetex, (coord + wind * 0.4 * pow(frequency, 0.3)) * frequency).r * amplitude;
+		retValue += texture2D(noisetex, (coord + wind * 0.4 * Lift(frequency, 4.34)) * frequency).r * amplitude;
 		frequency *= cloudLacunarity;
 		amplitude *= cloudPersistance;
 	}

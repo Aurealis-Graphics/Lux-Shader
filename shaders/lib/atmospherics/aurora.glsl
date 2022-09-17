@@ -109,7 +109,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 
 	if (auroraAlpha < 0.005) return vec4(0.0);
 
-	auroraAlpha = auroraAlpha * auroraAlpha * 0.05 * pow((1. - rainStrength) * (1. - sunVisibility), 2.0);
+	auroraAlpha = auroraAlpha * auroraAlpha * 0.05 * Pow2((1. - rainStrength) * (1. - sunVisibility));
 
 	vec3 colorAlbedo = GetAuroraColor(worldPos.xz, 1.7);
 

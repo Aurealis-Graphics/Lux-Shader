@@ -67,7 +67,7 @@ void main()
 	#endif
 	
 	#ifdef SKY_DESATURATION
-    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight, vec3(1.6)) * 4.0;
+    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight, vec3(-0.48)) * 4.0;
 	albedo.rgb = mix(desat, albedo.rgb, sunVisibility);
 	#endif
 	#endif
