@@ -96,7 +96,11 @@ void GetLighting(
     float newLightmap  = pow(lightmap.x, 10.0) * (EMISSIVE_BRIGHTNESS + 0.5) + Pow2(lightmap.x);
     vec3 blockLighting = blocklightCol * newLightmap * newLightmap;
 
-    float minLighting = 0.06 * (1.0 - eBS);
+    vec3 minLighting = vec3(0.06) * (1.0 - eBS);
+    
+    #ifdef END
+    minLighting *= ambientCol;
+    #endif 
 
     #ifdef TOON_LIGHTMAP
     minLighting *= floor(smoothLighting * 8.0 + 1.001) / 4.0;
@@ -107,7 +111,7 @@ void GetLighting(
 
     float nightVisionLighting = nightVision * 0.25;
     
-    albedo *= max(sceneLighting + blockLighting + emissiveLighting + nightVisionLighting, ambientCol * minLighting);
+    albedo *= max(sceneLighting + blockLighting + emissiveLighting + nightVisionLighting, minLighting);
     albedo *= quarterNdotU * smoothLighting * smoothLighting;
 
     #ifdef DESATURATION
