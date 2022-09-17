@@ -75,8 +75,7 @@ vec2 HashVec2(vec2 p)
 
 mat2 Rotate(float angle) 
 {
-    float s = sin(angle);
-    float c = cos(angle);
+    float s = sin(angle), c = cos(angle);
     return mat2(c, -s, s, c);
 }
 

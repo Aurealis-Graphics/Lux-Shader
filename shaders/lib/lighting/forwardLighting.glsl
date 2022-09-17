@@ -80,7 +80,7 @@ void GetLighting(
     #endif
 
     #ifdef END
-    vec3 sceneLighting = endCol.rgb * (0.075 * fullShadow + 0.025);
+    vec3 sceneLighting = endCol.rgb * 2.0 * (0.065 * fullShadow + 0.035);
     #endif
 
     if (foliage > 0.5)
@@ -107,7 +107,7 @@ void GetLighting(
 
     float nightVisionLighting = nightVision * 0.25;
     
-    albedo *= max(sceneLighting + blockLighting + emissiveLighting + nightVisionLighting, minLighting);
+    albedo *= max(sceneLighting + blockLighting + emissiveLighting + nightVisionLighting, ambientCol * minLighting);
     albedo *= quarterNdotU * smoothLighting * smoothLighting;
 
     #ifdef DESATURATION

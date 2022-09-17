@@ -123,6 +123,10 @@ float GetLinearDepth(float depth)
 #endif
 #endif
 
+#ifdef END
+#include "/lib/atmospherics/endSky.glsl"
+#endif
+
 // Program
 void main()
 {
@@ -134,6 +138,10 @@ void main()
 	vec4 screenPos = vec4(texCoord, z, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
+
+	#ifdef END
+	if (z == 1.0) color.rgb = GetEndSkyColor(viewPos.xyz);
+	#endif
 
 	#ifdef OVERWORLD
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
@@ -238,7 +246,7 @@ void main()
 		#endif
 
 		#if defined END && !defined LIGHT_SHAFT
-		color.rgb += endCol.rgb * 0.025;
+		// color.rgb += endCol.rgb * 0.025;
 		#endif
 
 		if (isEyeInWater == 2) color.rgb = vec3(1.0, 0.3, 0.01);

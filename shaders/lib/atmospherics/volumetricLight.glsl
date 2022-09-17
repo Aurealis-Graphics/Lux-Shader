@@ -40,7 +40,9 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 {
 	vec3 vl = vec3(0.0);
 
+	#ifdef OVERWORLD
 	if (z0 == 1.0) return vl;
+	#endif
 
 	#if AA == 2
 	dither = fract(dither + frameTimeCounter / PHI * 13.333);

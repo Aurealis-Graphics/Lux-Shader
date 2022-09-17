@@ -61,12 +61,10 @@ void main()
 
 	float vlVisibilityMult = (1.0 - rainStrength * eBS * 0.875) * shadowFade * (1.0 - blindFactor);
 
-	#if defined(OVERWORLD) || defined(BORDER_FOG)
 	float z0 = texture2D(depthtex0, texCoord).r;
 	vec4 screenPos = vec4(texCoord, z0, 1.0);
 	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
 	viewPos /= viewPos.w;
-	#endif
 
 	#ifdef OVERWORLD
 	float cosS = dot(normalize(viewPos.xyz), sunVec);
@@ -101,7 +99,11 @@ void main()
 	#endif
 
 	#ifdef END
-    vl *= endCol.rgb * 0.005;
+	const float fogEnd = 0.7 / VOLUMETRIC_FOG_STRENGTH;
+	float distVar = 1.0 - exp2(-length(viewPos.xyz) * 0.00015);
+	float vlVisibilityFog = min(distVar / fogEnd * exp2(distVar - fogEnd) * (float(z0 != 1.0) * 0.99 + 0.01), 0.001);
+
+    vl *= endCol.rgb * vlVisibilityFog;
 	color.rgb += vl * vlVisibilityMult;
 	#endif
 
