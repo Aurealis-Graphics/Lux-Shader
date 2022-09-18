@@ -179,8 +179,11 @@ void main()
 
 			if (reflection.a < 1.0)
 			{
-				#ifdef OVERWORLD
+				#if defined OVERWORLD || defined END
 				vec3 skyRefPos = reflect(normalize(viewPos.xyz), normal);
+				#endif
+				
+				#ifdef OVERWORLD
 				skyReflection = GetSkyColor(skyRefPos, lightCol);
 				
 				#ifdef REFLECTION_ROUGH
@@ -214,7 +217,8 @@ void main()
 				#endif
 				
 				#ifdef END
-				skyReflection = endCol.rgb * 0.025;
+				skyReflection = GetEndSkyColor(skyRefPos);
+				skyReflection += endCol.rgb * 0.01;	// End fog
 				#endif
 			}
 
