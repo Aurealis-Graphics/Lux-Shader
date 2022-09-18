@@ -249,10 +249,6 @@ void main()
 		color.rgb = netherCol.rgb * 0.04;
 		#endif
 
-		#if defined END && !defined LIGHT_SHAFT
-		// color.rgb += endCol.rgb * 0.025;
-		#endif
-
 		if (isEyeInWater == 2) color.rgb = vec3(1.0, 0.3, 0.01);
 
 		if (blindFactor > 0.0) color.rgb *= 1.0 - blindFactor;
