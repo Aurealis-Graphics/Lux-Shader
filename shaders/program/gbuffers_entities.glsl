@@ -159,7 +159,7 @@ void main()
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 		#endif
 			  
-		float emissive = float(entityColor.a > 0.05) * 0.125;
+		float emissive = float(entityColor.a > 0.05) * 0.05;
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
 		#if AA == 2
