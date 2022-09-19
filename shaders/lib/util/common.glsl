@@ -15,24 +15,28 @@ float Pow3(float x) { 				return Pow2(x) * x; }
 float Pow4(float x) { x = Pow2(x); 	return x * x; 		}
 float Pow5(float x) { 				return Pow4(x) * x; }
 float Pow6(float x) { x = Pow3(x); 	return x * x; 		}
+float Pow8(float x) { x = Pow4(x); 	return x * x; 		}
 
 vec2 Pow2(vec2 x) { 				return x * x; 		}
 vec2 Pow3(vec2 x) { 				return Pow2(x) * x; }
 vec2 Pow4(vec2 x) { x = Pow2(x); 	return x * x; 		}
 vec2 Pow5(vec2 x) { 				return Pow4(x) * x; }
 vec2 Pow6(vec2 x) { x = Pow3(x); 	return x * x; 		}
+vec2 Pow8(vec2 x) { x = Pow4(x); 	return x * x; 		}
 
 vec3 Pow2(vec3 x) { 				return x * x; 		}
 vec3 Pow3(vec3 x) { 				return Pow2(x) * x; }
 vec3 Pow4(vec3 x) { x = Pow2(x); 	return x * x; 		}
 vec3 Pow5(vec3 x) { 				return Pow4(x) * x; }
 vec3 Pow6(vec3 x) { x = Pow3(x); 	return x * x; 		}
+vec3 Pow8(vec3 x) { x = Pow4(x); 	return x * x; 		}
 
 vec4 Pow2(vec4 x) { 				return x * x; 		}
 vec4 Pow3(vec4 x) { 				return Pow2(x) * x; }
 vec4 Pow4(vec4 x) { x = Pow2(x); 	return x * x; 		}
 vec4 Pow5(vec4 x) { 				return Pow4(x) * x; }
 vec4 Pow6(vec4 x) { x = Pow3(x); 	return x * x; 		}
+vec4 Pow8(vec4 x) { x = Pow4(x); 	return x * x; 		}
 
 float MaxOf(vec3 x) { return max(x.x, max(x.y, x.z)); }
 

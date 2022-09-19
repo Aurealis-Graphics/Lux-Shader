@@ -26,7 +26,7 @@ vec4 SimpleReflection(vec3 viewPos, vec3 normal, float dither, float far, vec3 c
 	float borderFogMixFactor = GetBorderFogMixFactor(hitEyePlayerPos, far, hitDepth, hasBorderFog);
 	#endif
 
-	float border = clamp(1.0 - pow(cdist(hitPos.st), 60.0), 0.0, 1.0);	// TODO: Better (or disable) falloff
+	float border = clamp(1.0 - Pow8(Max0(10.0 * cdist(hitPos.st) - 9.0)), 0.0, 1.0);
 	
 	if (hitPos.z < 1.0 - 1e-5) 
 	{
