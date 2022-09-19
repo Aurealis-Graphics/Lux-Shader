@@ -127,42 +127,4 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
     }
 
     return result * 1.4;
-
-    // float cosT = dot(normalize(viewPos), upVec);
-	
-    // vec3 shootingStars;
-	
-    // if (cosT > 0.1)
-    // {
-    //     vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
-    //     vec2 wind = vec2(frametime, 0.0);
-    //     vec2 coord = (wpos.xz / (wpos.y + length(wpos.xz) * 0.6) * 0.4 + cameraPosition.xz * 0.0001 + wind * 0.00125) * 100.0;
-	
-    //     vec2 ratio = vec2(0.05, 1.6);
-	
-    //     coord *= ratio;
-	
-    //     vec2 gridUv = fract(coord);
-    //     vec2 gridID = floor(coord);
-	
-    //     float idHash = Hash(gridID);
-	
-    //     float time = frameTimeCounter * (step(idHash, 0.5) * 6.0 - 3.0) * 2.0;
-	
-    //     vec2 trailCoord = gridUv.xx + time + idHash * 123.4287;
-    //     vec2 trailUv = fract(trailCoord);
-    //     vec2 trailID = floor(trailCoord);
-	
-    //     float trailMult = trailUv.x * trailUv.x;
-    //     float mult = pow(sin(gridUv.x * PI), 2.0 / ratio.y) * pow(sin(gridUv.y * PI), 2.0 / ratio.x / trailMult) * pow(sin(trailUv.x * PI), 2.0 / ratio.y);
-    //     mult *= trailMult * trailMult;
-	
-    //     float noise = Hash(trailID * 137.33);
-	
-    //     shootingStars += (1.0 - step(1.0, noise * 1000.0));
-    //     shootingStars *= mult;
-    //     shootingStars *= (1. - rainStrength) * smoothstep(0.2, 1.0, cosT);
-    // }
-	
-    // return shootingStars;
 }
