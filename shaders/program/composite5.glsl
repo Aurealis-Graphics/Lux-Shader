@@ -143,7 +143,7 @@ void AutoExposure(inout vec3 color, inout float exposure, float tempExposure)
 	exposure = length(texture2DLod(colortex0, vec2(0.5), exposureLod).rgb);
 	exposure = clamp(exposure, 0.0001, 10.0);
 
-	color /= 2.5 * clamp(tempExposure, 0.05, 10.0) + 0.125;
+	color /= 2.2 * clamp(tempExposure, 0.2, 10.0) + 0.125;
 }
 
 void ColorGrading(inout vec3 color)
