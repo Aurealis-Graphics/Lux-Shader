@@ -65,7 +65,7 @@ void GetLighting(
                 offset = max(offset, 0.005 * (1.0 - NdotL));
             }
 
-            shadow = GetShadow(shadowPos, bias, offset, foliage);
+            shadow = GetShadow(shadowPos, bias, offset, NdotL);
 
         } else shadow = vec3(lightmap.y);
     }
