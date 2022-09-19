@@ -64,16 +64,27 @@ float GetLuminance(vec3 color)
  	return dot(color, vec3(0.2125, 0.7154, 0.0721));
 }
 
-float Hash(vec2 p)
+float Hash11(float x)
+{
+	x = fract(x * 0.3183099);
+	x += dot(x, x + 19.19);
+	return fract(x * 0.3183099);
+}
+
+float Hash21(vec2 p)
 {
 	vec3 p3  = fract(vec3(p.xyx) * .1031);
 	p3 += dot(p3, p3.yzx + 33.33);
 	return fract((p3.x + p3.y) * p3.z);
 }
 
-vec2 HashVec2(vec2 p)
+vec2 Hash22(vec2 p)
 {
-	p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+	p = vec2(
+		dot(p, vec2(127.1, 311.7)),
+		dot(p, vec2(269.5, 183.3))
+	);
+
 	return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 

@@ -13,10 +13,10 @@ float Noise2D(vec2 pos)
     vec2 frc = fract(pos);
     frc = Smooth3(frc);
 
-    float n00 = Hash(flr);
-    float n01 = Hash(flr + vec2(0.0, 1.0));
-    float n10 = Hash(flr + vec2(1.0, 0.0));
-    float n11 = Hash(flr + vec2(1.0, 1.0));
+    float n00 = Hash21(flr);
+    float n01 = Hash21(flr + vec2(0.0, 1.0));
+    float n10 = Hash21(flr + vec2(1.0, 0.0));
+    float n11 = Hash21(flr + vec2(1.0, 1.0));
 
     float n0 = mix(n00, n01, frc.y);
     float n1 = mix(n10, n11, frc.y);

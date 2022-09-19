@@ -50,7 +50,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
     
     star *= starMultiplier;
     star *= horizonMultiplier;
-    star *= RadiationBlackbody(Hash(gridID * 1258.35) * 37000.0 + 3000.0);
+    star *= RadiationBlackbody(Hash21(gridID * 1258.35) * 37000.0 + 3000.0);
 
 	color += star;
 }
@@ -71,7 +71,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
         coord *= 0.8;
         coord = Rot(rotationAngle) * coord;
 
-        float speedMultiplier = 0.8 + Hash(vec2(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5))) * 0.5;
+        float speedMultiplier = 0.8 + Hash11(floor((coord.x + coord.y) * 0.3 / SHOOTING_STARS_SCALE + 0.5)) * 0.5;
         time *= speedMultiplier * SHOOTING_STARS_SPEED * SHOOTING_STARS_SCALE;
 
         coord += vec2(-time, time);
@@ -80,7 +80,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
 
         // Trail
         vec2 trailGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE);
-        float trailIdHash = Hash(trailGridId);
+        float trailIdHash = Hash21(trailGridId);
         float trailBrightness = step(trailIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
         if(trailBrightness != 0.0)
@@ -96,7 +96,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
 
         // Glare
         vec2 glareGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE + vec2(-0.5, 0.5));
-        float glareIdHash = Hash(glareGridId);
+        float glareIdHash = Hash21(glareGridId);
         float glareBrightness = step(glareIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
 
         if(glareBrightness != 0.0)
@@ -122,7 +122,7 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
     for (int i = 0; i < SHOOTING_STARS_ROTATION_ITERATIONS; i++)
     {
         float rotation = float(i) / float(SHOOTING_STARS_ROTATION_ITERATIONS) * PI;
-        float n = Hash(vec2(rotation));
+        float n = Hash11(rotation);
         result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
     }
 

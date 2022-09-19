@@ -119,7 +119,7 @@ float ComputeWaterWaves(
 
 	for (int i = 0; i < gWaveIterations; i++) 
 	{
-		vec2 direction = vec2(Hash(vec2(float(i))), Hash(-vec2(float(i)))) * 2.0 - 1.0;
+		vec2 direction = vec2(Hash11(float(i)), Hash11(-float(i))) * 2.0 - 1.0;
 		direction = mix(vec2(1.0), direction, gWaveDirSpread);
 		noise += GetWaveLayer(planeCoord * 8.4, gWaveLength, direction, waveSpeed) * gWaveAmplitude;
 		gWaveLength *= gWaveLacunarity;

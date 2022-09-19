@@ -18,7 +18,7 @@ float SimplexNoise(in vec2 p)
     vec2 b = a - o + K2;
 	vec2 c = a - 1.0 + 2.0 * K2;
     vec3 h = max(0.5 - vec3(dot(a, a), dot(b, b), dot(c, c)), 0.0);
-	vec3 n = h * h * h * h * vec3(dot(a, HashVec2(i)), dot(b, HashVec2(i + o)), dot(c, HashVec2(i + 1.0)));
+	vec3 n = h * h * h * h * vec3(dot(a, Hash22(i)), dot(b, Hash22(i + o)), dot(c, Hash22(i + 1.0)));
     return dot(n, vec3(70.0));
 }
 ////////////////////////////////
