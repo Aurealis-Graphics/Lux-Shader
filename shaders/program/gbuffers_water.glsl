@@ -345,7 +345,7 @@ void main()
 			#elif WATER_MODE == 1
 			albedo.rgb *= albedo.a;
 			#elif WATER_MODE == 2
-			float waterLuma = length(albedo.rgb / SRGBToLinear(color.rgb)) * 2.0; // TODO: Could throw NaNs (div 0)
+			float waterLuma = length(albedo.rgb / MaxEPS(SRGBToLinear(color.rgb))) * 2.0;
 			albedo.rgb = waterLuma * waterColor.rgb * waterColor.a * albedo.a;
 			#endif
 			albedo.a = waterAlpha;
