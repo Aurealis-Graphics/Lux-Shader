@@ -34,7 +34,7 @@ float GetWarpedRidgedMultifractalNoise(in vec2 coord, float scale, float time, f
 float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, float localY)
 {
 	float noise = GetWarpedRidgedMultifractalNoise(coord, scale, time, sharpness);
-	noise *= mix(texture2D(noisetex, coord * 2.5 + time * 5.0).r, 1.0, 0.6);
+	noise *= texture2D(noisetex, coord * 2.5 + time * 5.0).r * 0.4 + 0.6;
 	return Smooth3(noise) * (1.0 - localY);
 }
 
@@ -73,6 +73,8 @@ float GetAuroraNoiseSharpness(in float cosT)
 
 vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 {
+	iterations *= 2;
+
 	if (1.0 - max(sunVisibility, rainStrength) == 0.0) return vec4(0.0);
 
 	#ifdef AURORA_PERBIOME

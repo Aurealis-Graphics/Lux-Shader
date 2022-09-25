@@ -31,7 +31,7 @@ float weight[7] = float[7](1.0, 6.0, 15.0, 20.0, 15.0, 6.0, 1.0);
 // Common Functions
 vec3 BloomTile(float lod, vec2 offset)
 {
-	vec3 bloom = vec3(0.0), temp = vec3(0.0);
+	vec3 bloom = vec3(0.0);
 	float scale = exp2(lod);
 	vec2 coord = (texCoord - offset) * scale;
 	float padding = 0.5 + 0.005 * scale;
