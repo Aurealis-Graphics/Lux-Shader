@@ -50,7 +50,7 @@ body:
         - Installed mods (if any)
   - type: markdown
     attributes:
-      value: "> Bugs introduced by 3rd-parte game clients **are not** being fixed"
+      value: "> Bugs introduced by 3rd-party game clients **are not** being fixed"
   - type: textarea
     id: bug-additional-context
     attributes:
