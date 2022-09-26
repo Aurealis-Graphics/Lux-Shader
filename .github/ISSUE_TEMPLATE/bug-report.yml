@@ -39,7 +39,7 @@ body:
     id: bug-hardware-specs
     attributes:
       label: Hardware specification
-      placeholder: - GPU and/or installed graphics driver *(with driver version)*
+      placeholder: "- GPU and/or installed graphics driver *(with driver version)*"
   - type: textarea
     id: bug-software-specs
     attributes:
@@ -47,7 +47,7 @@ body:
       placeholder: |
         - Minecraft Version
         - Shader Engine + Version (e.g Opitifine HD U H9, Iris 2.0.4)
-        - Instaeed mods (if any)
+        - Installed mods (if any)
   - type: markdown
     attributes:
       value: > Bugs introduced by 3rd-parte game clients **are not** being fixed
