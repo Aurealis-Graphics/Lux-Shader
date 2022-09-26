@@ -86,7 +86,7 @@ void GetLighting(
     if (foliage > 0.5)
     {
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
-        float subsurface = exp(14.0 * (VdotL - 1.0)) * 3.4 * (1.0 - rainStrength);
+        float subsurface = exp(14.0 * (VdotL - 1.0)) * 4.0 * (1.0 - rainStrength);
         sceneLighting *= Smooth3(fullShadow) * subsurface + 1.0;
     }
     #else
