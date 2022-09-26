@@ -126,9 +126,14 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float NdotL, float foli
 {
     shadowPos.z -= bias;
 
+    #if AA == 2
     float dither = InterleavedGradientNoise(gl_FragCoord.xy);
     dither = fract(dither + frameTimeCounter * 8.0);
+
     mat2 ditherRotMat = Rotate(dither * TAU);
+    #else
+    mat2 ditherRotMat = Rotate(0.0);
+    #endif
 
     #if SHADOW_ADVANCED_FILTER == 1
     if (NdotL > 0.0 || foliage > 0.5) 
