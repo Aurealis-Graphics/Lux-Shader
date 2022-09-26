@@ -65,7 +65,7 @@ void GetLighting(
                 offset = max(offset, 0.005 * (1.0 - NdotL));
             }
 
-            shadow = GetShadow(shadowPos, bias, offset, NdotL);
+            shadow = GetShadow(shadowPos, bias, offset, NdotL, foliage);
 
         } else shadow = vec3(lightmap.y);
     }
@@ -86,7 +86,7 @@ void GetLighting(
     if (foliage > 0.5)
     {
         float VdotL = clamp(dot(normalize(viewPos.xyz), lightVec), 0.0, 1.0);
-        float subsurface = (pow(VdotL, 15.0) + pow(VdotL, 220.0)) * 2.0 * (1.0 - rainStrength); // TODO: Replace with true phase function
+        float subsurface = exp(14.0 * (VdotL - 1.0)) * 3.4 * (1.0 - rainStrength);
         sceneLighting *= Smooth3(fullShadow) * subsurface + 1.0;
     }
     #else
