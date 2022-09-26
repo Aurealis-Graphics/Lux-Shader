@@ -109,8 +109,6 @@ float GetLinearDepth(float depth)
 #include "/lib/reflections/roughReflections.glsl"
 #else
 #include "/lib/atmospherics/borderFog.glsl"
-#include "/lib/vertex/jitter.glsl"
-#include "/lib/util/spaceConversion.glsl"
 #include "/lib/reflections/simpleReflections.glsl"
 #endif
 
@@ -127,6 +125,11 @@ float GetLinearDepth(float depth)
 #include "/lib/atmospherics/endSky.glsl"
 #endif
 
+#if AA == 2
+#include "/lib/vertex/jitter.glsl"
+#include "/lib/util/spaceConversion.glsl"
+#endif
+
 // Program
 void main()
 {
@@ -140,7 +143,11 @@ void main()
 	viewPos /= viewPos.w;
 
 	#ifdef END
+	#if AA == 2
+	if (z == 1.0) color.rgb = GetEndSkyColor(ToNDC(vec3(TAAJitter(screenPos.xy, -0.5), screenPos.z)));
+	#else
 	if (z == 1.0) color.rgb = GetEndSkyColor(viewPos.xyz);
+	#endif
 	#endif
 
 	#ifdef OVERWORLD
