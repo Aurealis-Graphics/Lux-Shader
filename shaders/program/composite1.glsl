@@ -117,8 +117,6 @@ void main()
 		if (hasBorderFog) 
 		{
 			#ifdef OVERWORLD
-			// TODO: Does not work at night time
-			// vec3 borderFogColor = mix(sky, vec3(max(eBS, 0.007)), 1.0 - eBS * eBS);
 			color.rgb = mix(color.rgb, sky, borderFogFactor);
 			#endif
 
