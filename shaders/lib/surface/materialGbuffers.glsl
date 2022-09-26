@@ -59,8 +59,6 @@ void GetMaterials(
     smoothness = specularMap.r;
     metalness = specularMap.g;
 
-    if (metalness > 0.5) smoothness = 1.0;   // TODO: ?
-    
     f0 = 0.78 * metalness + 0.02;
     metalData = metalness;
     emissive = mix(specularMap.b, 1.0, emissive);
