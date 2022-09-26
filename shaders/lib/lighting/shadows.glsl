@@ -122,7 +122,7 @@ vec3 SampleTAAFilteredShadow(vec3 shadowPos, float offset, mat2 rotMat)
     return shadow * (1.0 / float(shadowFilterSamples));
 }
 
-vec3 GetShadow(vec3 shadowPos, float bias, float offset, float NdotL)
+vec3 GetShadow(vec3 shadowPos, float bias, float offset, float NdotL, float foliage)
 {
     shadowPos.z -= bias;
 
@@ -131,10 +131,10 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float NdotL)
     mat2 ditherRotMat = Rotate(dither * TAU);
 
     #if SHADOW_ADVANCED_FILTER == 1
-    if (NdotL > 0.0) 
+    if (NdotL > 0.0 || foliage > 0.5) 
     {
         float avgBlockerDistance = 0.0;
-    
+        
         for (int i = 0; i < shadowFilterSamples; i++)
         {
             vec2 offset = ditherRotMat * shadowOffsets[i] * 0.015;
