@@ -85,6 +85,7 @@ float GetLinearDepth(float depth)
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/atmospherics/fog.glsl"
 #include "/lib/color/ambientColor.glsl"
+#include "/lib/atmospherics/borderFog.glsl"
 
 #ifdef AO
 #include "/lib/lighting/ambientOcclusion.glsl"
@@ -92,6 +93,7 @@ float GetLinearDepth(float depth)
 
 #ifdef BLACK_OUTLINE
 #include "/lib/atmospherics/waterFog.glsl"
+#include "/lib/atmospherics/powderSnowFog.glsl"
 #include "/lib/outline/blackOutline.glsl"
 #endif
 
@@ -108,7 +110,6 @@ float GetLinearDepth(float depth)
 #ifdef REFLECTION_ROUGH
 #include "/lib/reflections/roughReflections.glsl"
 #else
-#include "/lib/atmospherics/borderFog.glsl"
 #include "/lib/reflections/simpleReflections.glsl"
 #endif
 
@@ -243,10 +244,12 @@ void main()
 		#endif
 
 		#ifdef FOG
+		float viewDist = length(viewPos.xyz);
+		vec3 viewDir = viewPos.xyz / viewDist;
 		#ifdef OVERWORLD
-		Fog(color.rgb, viewPos.xyz, skyEnvAmbientApprox);
+		Fog(color.rgb, viewDist, viewDir, skyEnvAmbientApprox);
 		#else
-		Fog(color.rgb, viewPos.xyz, vec3(0.0));
+		Fog(color.rgb, viewDist, viewDir, vec3(0.0));
 		#endif
 		#endif
 	}

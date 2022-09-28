@@ -7,19 +7,18 @@ See AGREEMENT.txt for more information.
 */ 
 
 #ifdef OVERWORLD
-vec3 GetFogColor(vec3 viewPos, vec3 ambientCol)
+vec3 GetFogColor(float viewDist, vec3 viewDir, vec3 ambientCol)
 {
 	vec3 fogCol = fogCol;
-	vec3 nViewPos = normalize(viewPos);
-	float lViewPos = length(viewPos) / 64.0;
-	lViewPos = 1.0 - exp(-lViewPos * lViewPos);
+	float fog = viewDist / 64.0;
+	fog = 1.0 - exp(-fog * fog);
 
-	float NdotU = clamp(dot(nViewPos, upVec), 0.0, 1.0);
-    float halfNdotU = clamp(dot(nViewPos, upVec) * 0.5 + 0.5, 0.0, 1.0);
-	float NdotS = dot(nViewPos, sunVec) * 0.5 + 0.5;
+	float NdotU = clamp(dot(viewDir, upVec), 0.0, 1.0);
+    float halfNdotU = clamp(dot(viewDir, upVec) * 0.5 + 0.5, 0.0, 1.0);
+	float NdotS = dot(viewDir, sunVec) * 0.5 + 0.5;
 
 	float lightmix = NdotS * NdotS * (1.0 - NdotU);
-	lightmix *= (Pow3(1.0 - 0.7 * timeBrightness) * 0.9 + 0.1) * (1.0 - rainStrength) * lViewPos;
+	lightmix *= (Pow3(1.0 - 0.7 * timeBrightness) * 0.9 + 0.1) * (1.0 - rainStrength) * fog;
 
 	float top = exp(-1.4 * halfNdotU * halfNdotU * (1.0 + sunVisibility) * (1.0 - rainStrength));
 
@@ -38,26 +37,25 @@ vec3 GetFogColor(vec3 viewPos, vec3 ambientCol)
 }
 #endif
 
-void NormalFog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
-{
+void NormalFog(inout vec3 color, float viewDist, vec3 viewDir, vec3 ambientCol)
+{	
 	#ifdef OVERWORLD
-	float fog = length(viewPos) * FOG_DENSITY / 256.0;
+	float fog = viewDist * FOG_DENSITY / 256.0;
 	float clearDay = sunVisibility * (1.0 - rainStrength);
 	fog *= (0.5 * rainStrength + 1.0) / (3.0 * clearDay + 1.0);
 	fog = 1.0 - exp(-2.0 * pow(fog, 0.25 * clearDay + 1.25) * eBS);
-	vec3 fogColor = GetFogColor(viewPos, ambientCol);
+	vec3 fogColor = GetFogColor(viewDist, viewDir, ambientCol);
 	#endif
 
 	#ifdef NETHER
-	float viewLength = length(viewPos);
-	float fog = 2.0 * Lift(viewLength * FOG_DENSITY / 256.0, -0.44) + 
-				6.0 * Pow4(viewLength * 1.5 / far);
+	float fog = 2.0 * Lift(viewDist * FOG_DENSITY / 256.0, -0.44) + 
+				6.0 * Pow4(viewDist * 1.5 / far);
 	fog = 1.0 - exp(-fog);
 	vec3 fogColor = netherCol.rgb * 0.04;
 	#endif
 
 	#ifdef END
-	float fog = length(viewPos) * FOG_DENSITY / 128.0;
+	float fog = viewDist * FOG_DENSITY / 128.0;
 	fog = 1.0 - exp(-0.8 * fog * fog);
 	vec3 fogColor = endCol.rgb * 0.025;
 	#endif
@@ -65,23 +63,23 @@ void NormalFog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
 	color = mix(color, fogColor, fog);
 }
 
-void BlindFog(inout vec3 color, vec3 viewPos)
+void BlindFog(inout vec3 color, float viewDist)
 {
-	float fog = length(viewPos) * (5.0 / blindFactor);
+	float fog = viewDist * (5.0 / blindFactor);
 	fog = (1.0 - exp(-6.0 * fog * fog * fog)) * blindFactor;
 	color = mix(color, vec3(0.0), fog);
 }
 
-void LavaFog(inout vec3 color, vec3 viewPos)
+void LavaFog(inout vec3 color, float viewDist)
 {
-	float fog = length(viewPos) * 0.5;
+	float fog = viewDist * 0.5;
 	fog = (1.0 - exp(-4.0 * fog * fog * fog));
 	color = mix(color, vec3(1.0, 0.3, 0.01), fog);
 }
 
-void Fog(inout vec3 color, vec3 viewPos, vec3 ambientCol)
+void Fog(inout vec3 color, float viewDist, vec3 viewDir, vec3 ambientCol)
 {
-	NormalFog(color, viewPos, ambientCol);
-	if (isEyeInWater == 2) LavaFog(color, viewPos);
-	if (blindFactor > 0.0) BlindFog(color, viewPos);
+	NormalFog(color, viewDist, viewDir, ambientCol);
+	if (isEyeInWater == 2) LavaFog(color, viewDist);
+	if (blindFactor > 0.0) BlindFog(color, viewDist);
 }

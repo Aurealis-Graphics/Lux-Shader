@@ -6,14 +6,8 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-float GetBorderFogMixFactor(in vec3 eyePlayerPos, in float far, in float z0, inout bool hasBorderFog) 
+float GetBorderFogMixFactor(in vec3 eyePlayerPos, in float far, inout bool hasBorderFog) 
 {
-    if (z0 == 1.0) 
-    {
-        hasBorderFog = false;
-        return 0.0;
-    }
-
 	float eyeDist = length(eyePlayerPos);
 	if (eyeDist > far * 0.6)
 	{
@@ -25,4 +19,15 @@ float GetBorderFogMixFactor(in vec3 eyePlayerPos, in float far, in float z0, ino
 	
 	hasBorderFog = false;
 	return 0.0;
+}
+
+float GetBorderFogMixFactor(in vec3 eyePlayerPos, in float far, in float z0, inout bool hasBorderFog) 
+{
+    if (z0 == 1.0) 
+    {
+        hasBorderFog = false;
+        return 0.0;
+    }
+
+	return GetBorderFogMixFactor(eyePlayerPos, far, hasBorderFog);
 }

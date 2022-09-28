@@ -69,25 +69,30 @@ float GetLinearDepth(float depth)
 // Includes
 #include "/lib/color/waterColor.glsl"
 #include "/lib/util/dither.glsl"
-#include "/lib/atmospherics/waterFog.glsl"
 #include "/lib/lighting/ambientOcclusion.glsl"
 #include "/lib/color/dimensionColor.glsl"
 
-#ifdef VOLUMETRIC_FOG
-#include "/lib/atmospherics/volumetricLight.glsl"
+#if defined FOG || defined BLACK_OUTLINE
+#include "/lib/atmospherics/waterFog.glsl"
+#include "/lib/atmospherics/powderSnowFog.glsl"
 #endif
 
-#ifdef BLACK_OUTLINE
-#include "/lib/color/skyColor.glsl"
-#include "/lib/color/blocklightColor.glsl"
-#include "/lib/atmospherics/fog.glsl"
-#include "/lib/outline/blackOutline.glsl"
+#ifdef VOLUMETRIC_FOG
+#include "/lib/atmospherics/volumetricLight.glsl"
 #endif
 
 #if defined BORDER_FOG || defined PROMO_OUTLINE
 #include "/lib/outline/promoOutline.glsl"
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/color/ambientColor.glsl"
+#endif
+
+#ifdef BLACK_OUTLINE
+#include "/lib/color/skyColor.glsl"
+#include "/lib/color/blocklightColor.glsl"
+#include "/lib/atmospherics/fog.glsl"
+#include "/lib/atmospherics/borderFog.glsl"
+#include "/lib/outline/blackOutline.glsl"
 #endif
 
 // Program
@@ -126,13 +131,12 @@ void main()
 	}
 
 	#ifdef FOG
-	if (isEyeInWater == 1.0)
+	if (isEyeInWater != 0.0) 
 	{
-        vec4 screenPos = vec4(texCoord.x, texCoord.y, z0, 1.0);
-		vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
-		viewPos /= viewPos.w;
+		float viewDist = length(viewPos.xyz);
 
-		WaterFog(color.rgb, viewPos.xyz, waterFog * (1.0 + 0.4 * eBS));
+		if (isEyeInWater == 1.0) WaterFog(color.rgb, viewDist, waterFog * (1.0 + 0.4 * eBS));
+		if (isEyeInWater == 3.0) PowderSnowFog(color.rgb, viewDist);
 	}
 	#endif
 

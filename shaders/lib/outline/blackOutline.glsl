@@ -31,13 +31,27 @@ void BlackOutline(inout vec3 color, sampler2D depth, float wFogMult, vec3 ambien
 	viewPos /= viewPos.w;
 
 	vec3 fog = vec3(0.0);
+
+	#ifdef BORDER_FOG
+	vec3 eyePlayerPos = mat3(gbufferModelViewInverse) * viewPos.xyz;
+	bool hasBorderFog = false;
+	float borderFogFactor = GetBorderFogMixFactor(eyePlayerPos, far, hasBorderFog);
+
+	vec3 sky = GetSkyColor(viewPos.xyz, lightCol);
+
+	fog = mix(fog, sky, borderFogFactor);
+	#endif
+
 	#ifdef FOG
 	if (outline < 1.0)
 	{
-		Fog(fog, viewPos.xyz, ambientCol);
+		float viewDist = length(viewPos.xyz);
+		vec3 viewDir = viewPos.xyz / viewDist;
+
+		Fog(fog, viewDist, viewDir, ambientCol);
 		
-		if (isEyeInWater == 1.0)
-			WaterFog(fog, viewPos.xyz, waterFog * wFogMult);
+		if (isEyeInWater == 1.0) WaterFog(fog, viewDist, waterFog * wFogMult);
+		if (isEyeInWater == 3.0) PowderSnowFog(fog, viewDist);
 	}
 	#endif
 
