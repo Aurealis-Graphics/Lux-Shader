@@ -126,7 +126,7 @@ void main()
 
 	if (isEyeInWater == 1) 
 	{
-		vec3 a = exp2((vec3(0.6196, 0.9098, 1.0) - 1.0) * (4.0 + GetLinearDepth(z0) * 120.0));
+		vec3 a = exp2(((vec3(0.6196, 0.8667, 1.0) * 0.9 + lightCol * 0.1) - 1.0) * (6.0 + GetLinearDepth(z0) * 80.0));
 		color.rgb *= a * (1.0 - rainStrength) + 1.0 * rainStrength;
 	}
 
