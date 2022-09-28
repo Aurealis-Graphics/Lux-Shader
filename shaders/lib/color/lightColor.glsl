@@ -55,7 +55,7 @@ const vec3 moonCol = vec3(0.2824, 0.7725, 1.0) * 0.055;
 // vec3 lightCol = GetDirectColor(sunHeight);
 
 float lightCol_heightCurve = 1.5 * (sunHeight / (0.5 + sunHeight));
-float lightCol_height = (1.0 - lightCol_heightCurve) * 0.5;
+float lightCol_height = max((1.0 - lightCol_heightCurve) * 0.5, 0.006);
 vec3 lightCol_baseColGradient = mix(vec3(1.0, 0.651, 0.0), vec3(0.6824, 0.0, 1.0), lightCol_height);
 vec3 lightCol_sunCol = pow(exp(-(1.0 - lightCol_baseColGradient) * lightCol_height * 4.0), vec3(6.0)) * 2.2;
 vec3 lightCol_result = mix(moonCol, lightCol_sunCol, sunVisibility);
