@@ -663,9 +663,9 @@ float WavingWater(vec3 worldPos)
 	float fractY = fract(worldPos.y + cameraPosition.y + 0.005);
 
 	#ifdef WAVING_WATER
-	float wave = sin(6.28 * (frametime * 0.7 + worldPos.x * 0.14 + worldPos.z * 0.07)) +
-				 sin(6.28 * (frametime * 0.5 + worldPos.x * 0.10 + worldPos.z * 0.20));
-	if (fractY > 0.01) return wave * 0.0125;
+	float wave = sin(8.28 * (-frametime * 0.4 + worldPos.x * 0.14 + worldPos.z * 0.07)) +
+				 sin(8.28 * (-frametime * 0.3 + worldPos.x * 0.10 + worldPos.z * 0.20));
+	if (fractY > 0.01) return wave * 0.025;
 	#endif
 
 	return 0.0;
