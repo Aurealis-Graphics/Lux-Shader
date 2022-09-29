@@ -58,8 +58,6 @@ uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 #endif
 
-uniform sampler2D depthtex0;
-
 // Includes
 #ifdef WORLD_CURVATURE
 #include "/lib/vertex/worldCurvature.glsl"
@@ -80,8 +78,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	// TODO: Use velocity based jittering on terrain only (aka not on the hand) and not on everything
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
 	#endif
 }
 
