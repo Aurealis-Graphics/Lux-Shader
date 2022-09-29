@@ -249,6 +249,10 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 #endif
 #endif
 
+#ifdef END
+#include "/lib/atmospherics/endSky.glsl"
+#endif
+
 #ifdef MATERIAL_SUPPORT
 #include "/lib/surface/directionalLightmap.glsl"
 #include "/lib/reflections/complexFresnel.glsl"
@@ -458,7 +462,9 @@ void main()
 
 			if (reflection.a < 1.0)
 			{
+				#if defined OVERWORLD || defined END
 				vec3 skyRefPos = reflect(normalize(viewPos), newNormal);
+				#endif
 
 				#ifdef OVERWORLD
 				skyReflection += GetSkyColor(skyRefPos, lightCol);
@@ -494,11 +500,7 @@ void main()
 
 				#ifdef END
 				skyReflection = endCol.rgb * 0.01;
-
-				float specular = GGX(newNormal, normalize(viewPos), lightVec,
-				                	 0.4, 0.02, 0.025 * sunVisibility + 0.05);
-
-				skyReflection += (specular / fresnel) * specularColor * shadow;
+				skyReflection += GetEndSkyColor(skyRefPos);
 				#endif
 
 				skyReflection *= Saturate(1.0 - isEyeInWater);
@@ -533,8 +535,11 @@ void main()
 
 				if (reflection.a < 1.0)
 				{
-					#ifdef OVERWORLD
+					#if defined OVERWORLD || defined END
 					vec3 skyRefPos = reflect(normalize(viewPos.xyz), newNormal);
+					#endif
+
+					#ifdef OVERWORLD
 					skyReflection = GetSkyColor(skyRefPos, lightCol);
 
 					#ifdef CLOUDS
@@ -563,6 +568,7 @@ void main()
 
 					#ifdef END
 					skyReflection = endCol.rgb * 0.01;
+					skyReflection += GetEndSkyColor(skyRefPos);
 					#endif
 				}
 
