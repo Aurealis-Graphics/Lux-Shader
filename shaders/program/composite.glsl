@@ -126,8 +126,17 @@ void main()
 
 	if (isEyeInWater == 1) 
 	{
-		vec3 a = exp2(((vec3(0.6196, 0.8667, 1.0) * 0.9 + lightCol * 0.1) - 1.0) * (6.0 + GetLinearDepth(z0) * 80.0));
-		color.rgb *= a * (1.0 - rainStrength) + 1.0 * rainStrength;
+		#if defined OVERWORLD
+		vec3 absorptionBase = vec3(0.6196, 0.8667, 1.0) * 0.9 + lightCol * 0.1;
+		#elif defined NETHER
+		vec3 absorptionBase = Lift(netherColSqrt.rgb, 10.0);
+		#elif defined END
+		vec3 absorptionBase = Lift(endColSqrt.rgb, 10.0);
+		#endif
+
+		vec3 absorption = exp2((absorptionBase - 1.0) * (6.0 + GetLinearDepth(z0) * 80.0));
+		
+		color.rgb *= absorption * (1.0 - rainStrength) + 1.0 * rainStrength;
 	}
 
 	#ifdef FOG
