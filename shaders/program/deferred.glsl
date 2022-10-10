@@ -153,6 +153,8 @@ void main()
 
 	#ifdef OVERWORLD
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
+	#else
+	vec3 skyEnvAmbientApprox = vec3(0.0);
 	#endif
 
 	if (z < 1.0)

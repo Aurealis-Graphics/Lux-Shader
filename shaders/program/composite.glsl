@@ -142,7 +142,11 @@ void main()
 	}
 
 	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE || defined FOG
+	#ifdef OVERWORLD
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
+	#else
+	vec3 skyEnvAmbientApprox = vec3(0.0);
+	#endif
 	#endif
 
 	#ifdef FOG
@@ -151,7 +155,16 @@ void main()
 		float viewDist = length(viewPos.xyz);
 
 		if (isEyeInWater == 1.0) WaterFog(color.rgb, viewDist, waterFog * (1.0 + 0.4 * eBS));
-		if (isEyeInWater == 3.0) PowderSnowFog(color.rgb, viewDist, skyEnvAmbientApprox);
+		if (isEyeInWater == 3.0)
+		{
+			#ifdef OVERWORLD
+			PowderSnowFog(color.rgb, viewDist, skyEnvAmbientApprox);
+			#elif defined END
+			PowderSnowFog(color.rgb, viewDist, endCol.rgb);
+			#elif defined NETHER
+			PowderSnowFog(color.rgb, viewDist, netherCol.rgb);
+			#endif
+		}
 	}
 	#endif
 
