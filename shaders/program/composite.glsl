@@ -135,8 +135,10 @@ void main()
 		#endif
 
 		vec3 absorption = exp2((absorptionBase - 1.0) * (6.0 + GetLinearDepth(z0) * 80.0));
+		float mult = 1.0 / GetLuminance(exp2((absorptionBase - 1.0) * 6.0));
 		
 		color.rgb *= absorption * (1.0 - rainStrength) + 1.0 * rainStrength;
+		color.rgb *= mult;
 	}
 
 	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE || defined FOG
