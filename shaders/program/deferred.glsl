@@ -268,6 +268,7 @@ void main()
 	float wFogMult = 1.0 + eBS;
 	BlackOutline(color.rgb, depthtex0, wFogMult, skyEnvAmbientApprox);
 	#endif
+
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;
 

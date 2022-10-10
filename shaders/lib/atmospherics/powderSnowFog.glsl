@@ -12,3 +12,12 @@ void PowderSnowFog(inout vec3 color, float viewDist)
 	fog = (1.0 - exp(-0.08 * fog * fog));
 	color = mix(color, vec3(0.6, 0.85, 0.9), fog);
 }
+
+void PowderSnowFog(inout vec3 color, float viewDist, vec3 ambientCol) 
+{
+	float fog = viewDist;
+	fog = (1.0 - exp(-0.08 * fog * fog));
+	vec3 fogCol = vec3(0.6, 0.85, 0.9);
+	fogCol *= mix(vec3(eBS) + 0.16, ambientCol + lightCol * 0.5 + moonCol * moonVisibility, eBS);
+	color = mix(color, fogCol, fog);
+}

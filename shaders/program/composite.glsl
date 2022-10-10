@@ -139,18 +139,18 @@ void main()
 		color.rgb *= absorption * (1.0 - rainStrength) + 1.0 * rainStrength;
 	}
 
+	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE || defined FOG
+	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
+	#endif
+
 	#ifdef FOG
 	if (isEyeInWater != 0.0) 
 	{
 		float viewDist = length(viewPos.xyz);
 
 		if (isEyeInWater == 1.0) WaterFog(color.rgb, viewDist, waterFog * (1.0 + 0.4 * eBS));
-		if (isEyeInWater == 3.0) PowderSnowFog(color.rgb, viewDist);
+		if (isEyeInWater == 3.0) PowderSnowFog(color.rgb, viewDist, skyEnvAmbientApprox);
 	}
-	#endif
-
-	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE
-	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
 	#endif
 
 	#ifdef BLACK_OUTLINE

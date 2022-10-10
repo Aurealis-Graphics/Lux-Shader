@@ -51,7 +51,7 @@ void BlackOutline(inout vec3 color, sampler2D depth, float wFogMult, vec3 ambien
 		Fog(fog, viewDist, viewDir, ambientCol);
 		
 		if (isEyeInWater == 1.0) WaterFog(fog, viewDist, waterFog * wFogMult);
-		if (isEyeInWater == 3.0) PowderSnowFog(fog, viewDist);
+		if (isEyeInWater == 3.0) PowderSnowFog(fog, viewDist, ambientCol);
 	}
 	#endif
 
