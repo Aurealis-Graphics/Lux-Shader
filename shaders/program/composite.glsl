@@ -127,7 +127,7 @@ void main()
 	if (isEyeInWater == 1) 
 	{
 		#if defined OVERWORLD
-		vec3 absorptionBase = vec3(0.6196, 0.8667, 1.0) * 0.9 + lightCol * 0.1;
+		vec3 absorptionBase = mix(vec3(0.6196, 0.8667, 1.0), lightCol, 0.1 * eBS);
 		#elif defined NETHER
 		vec3 absorptionBase = Lift(netherColSqrt.rgb, 10.0);
 		#elif defined END
