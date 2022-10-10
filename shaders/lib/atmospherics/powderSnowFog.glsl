@@ -6,13 +6,6 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-void PowderSnowFog(inout vec3 color, float viewDist) 
-{
-	float fog = viewDist;
-	fog = (1.0 - exp(-0.08 * fog * fog));
-	color = mix(color, vec3(0.6, 0.85, 0.9), fog);
-}
-
 void PowderSnowFog(inout vec3 color, float viewDist, vec3 ambientCol) 
 {
 	float fog = viewDist;
