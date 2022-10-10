@@ -40,17 +40,17 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 
 const vec3 auroraBlue 	= vec3(0.1, 0.2, 1.0);
 const vec3 auroraRed 	= vec3(1.0, 0.1, 0.4);
-const vec3 auroraGreen 	= vec3(0.1, 1.0, 0.2);
+const vec3 auroraGreen 	= vec3(0.1, 1.0, 0.3);
 vec3 GetAuroraColor(in vec2 coord, float scale)
 {
 	#if AURORA_COLORING_TYPE == 0
 		float n1 = SimplexNoise(coord * scale * 0.7) * 0.5 + 0.5;
 		float n2 = SimplexNoise(coord.yx * scale * 0.7) * 0.5 + 0.5;
-		float mixFactor = SimplexNoise((coord - frameTimeCounter * 0.12) * scale * 0.15) * 0.5 + 0.5;
+		float mixFactor = SimplexNoise((coord - frameTimeCounter * 0.12) * scale * 0.2) * 0.5 + 0.5;
 
 		vec3 finalColor = mix(mix(auroraBlue, auroraGreen, n1), mix(auroraBlue, auroraRed, n2), mixFactor);
 	#else
-		float mixFactor = SimplexNoise(coord.yx * scale * 0.7) * 0.5 + 0.5;
+		float mixFactor = SimplexNoise((coord.yx - frameTimeCounter * 0.02) * scale * 0.7) * 0.5 + 0.5;
 		
 		#if AURORA_COLORING_TYPE == 1
 			vec3 finalColor = mix(auroraBlue, auroraGreen, mixFactor);
@@ -63,7 +63,7 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 		#endif
 	#endif
 
-	return finalColor * finalColor;
+	return Pow2(finalColor);
 }
 
 float GetAuroraNoiseSharpness(in float cosT) 
