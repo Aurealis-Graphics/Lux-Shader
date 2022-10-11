@@ -40,7 +40,7 @@ float GetAuroraNoise(in vec2 coord, float scale, float time, float sharpness, fl
 
 const vec3 auroraBlue 	= vec3(0.1, 0.2, 1.0);
 const vec3 auroraRed 	= vec3(1.0, 0.1, 0.4);
-const vec3 auroraGreen 	= vec3(0.1, 1.0, 0.3);
+const vec3 auroraGreen 	= vec3(0.1, 1.0, 0.2);
 vec3 GetAuroraColor(in vec2 coord, float scale)
 {
 	#if AURORA_COLORING_TYPE == 0
