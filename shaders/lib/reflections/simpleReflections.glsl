@@ -26,11 +26,12 @@ vec4 SimpleReflection(vec3 viewPos, vec3 normal, float dither, float far, vec3 c
 	float borderFogMixFactor = GetBorderFogMixFactor(hitEyePlayerPos, far, hitDepth, hasBorderFog);
 	#endif
 
-	float border = clamp(1.0 - Pow8(Max0(10.0 * cdist(hitPos.st) - 9.0)), 0.0, 1.0);
+	float border = Saturate(1.0 - Pow8(Max0(10.0 * cdist(hitPos.st) - 9.0)));
 	
-	if (hitPos.z < 1.0 - 1e-5) 
+	if (hitPos.z < 1.0 - EPS)
 	{
 		color.a = texture2D(gaux2, hitPos.st).a;
+		
 		if (color.a > 0.001) color.rgb = texture2D(gaux2, hitPos.st).rgb;
 		
 		#if defined(OVERWORLD) && defined(BORDER_FOG)

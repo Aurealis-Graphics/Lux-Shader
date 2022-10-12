@@ -32,9 +32,11 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 	
 	float roughness = Pow2(1.0 - smoothness);
 	float roughness2 = min(roughness * roughness, 0.1);
+	
 	vec3 tangent = normalize(cross(normal, gbufferModelViewInverse[1].xyz));
 	mat3 tbn = mat3(tangent, cross(normal, tangent), normal);
 	vec3 viewDir = normalize(viewPos);
+	
 	float lod = sqrt(8.0 * roughness);
 
 	for (int i = 0; i < 6; i++) 
@@ -52,16 +54,16 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 
 		vec4 pos = Raytrace(depthtex0, viewPos, hsample, dither, 4, 1.0, 0.1, 2.0);
 
-		if (abs(pos.y - 0.5) < 0.4999 && abs(pos.x - 0.5) < 0.4999 && pos.z < 1.0 - 1e-5)
+		if (abs(pos.y - 0.5) < 0.5 - EPS &&
+			abs(pos.x - 0.5) < 0.5 - EPS &&
+			pos.z < 1.0 - EPS) 
+		{
 			if (texture2D(depthtex0, pos.xy).r == 1.0)	
 				continue;
 			else
-			{
-				vec4 tap = texture2DLod(colortex0, pos.xy, lod);
-				color += tap;
-			}
+				color += texture2DLod(colortex0, pos.xy, lod);
+		}
 	}
-	color /= 6.0;
 
-    return color;
+    return color / 6.0;
 }

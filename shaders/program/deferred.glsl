@@ -43,13 +43,11 @@ uniform sampler2D colortex3;
 uniform sampler2D colortex5;
 uniform sampler2D colortex6;
 uniform sampler2D colortex7;
+uniform sampler2D depthtex1;
 uniform sampler2D noisetex;
 
 uniform sampler2D gaux2;
 
-#ifndef REFLECTION_ROUGH
-uniform sampler2D depthtex1;
-#endif
 #endif
 
 // Optifine Constants
@@ -87,6 +85,11 @@ float GetLinearDepth(float depth)
 #include "/lib/color/ambientColor.glsl"
 #include "/lib/atmospherics/borderFog.glsl"
 
+#if AA == 2
+#include "/lib/vertex/jitter.glsl"
+#include "/lib/util/spaceConversion.glsl"
+#endif
+
 #ifdef AO
 #include "/lib/lighting/ambientOcclusion.glsl"
 #endif
@@ -109,9 +112,9 @@ float GetLinearDepth(float depth)
 
 #ifdef REFLECTION_ROUGH
 #include "/lib/reflections/roughReflections.glsl"
-#else
-#include "/lib/reflections/simpleReflections.glsl"
 #endif
+
+#include "/lib/reflections/simpleReflections.glsl"
 
 #ifdef OVERWORLD
 #include "/lib/atmospherics/clouds.glsl"
@@ -124,11 +127,6 @@ float GetLinearDepth(float depth)
 
 #ifdef END
 #include "/lib/atmospherics/endSky.glsl"
-#endif
-
-#if AA == 2
-#include "/lib/vertex/jitter.glsl"
-#include "/lib/util/spaceConversion.glsl"
 #endif
 
 // Program
@@ -181,7 +179,15 @@ void main()
 			vec3 skyReflection = vec3(0.0);
 			
 			#ifdef REFLECTION_ROUGH
-			reflection = RoughReflection(viewPos.xyz, normal, dither, smoothness);
+			if (smoothness != 1.0)
+			{
+				reflection = RoughReflection(viewPos.xyz, normal, dither, smoothness);
+			}
+			else
+			{
+				reflection = SimpleReflection(viewPos.xyz, normal, dither, far, cameraPosition, previousCameraPosition);
+				reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
+			}
 			#else
 			reflection = SimpleReflection(viewPos.xyz, normal, dither, far, cameraPosition, previousCameraPosition);
 			reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
