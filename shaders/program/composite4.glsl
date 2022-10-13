@@ -47,7 +47,7 @@ vec3 BloomTile(float lod, vec2 offset)
 				vec2 bloomCoord = (texCoord - offset + pixelOffset) * scale;
 				vec3 sample = texture2D(colortex0, bloomCoord).rgb;
 				float tapLuminance = GetLuminance(sample);
-				bloom += sample * tapLuminance * tapLuminance * wg;
+				bloom += sample * min(Pow2(tapLuminance), 20.0) * wg;
 			}
 		}
 		bloom /= 4096.0;
