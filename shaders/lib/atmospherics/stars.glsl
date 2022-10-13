@@ -64,7 +64,7 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
 {
     float cosT = dot(normalize(viewPos), upVec);
 
-    if(cosT > 0.2)
+    if(cosT > 0.3)
     {
         vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
         vec2 coord = wpos.xz + cameraPosition.xz * 0.01 / (wpos.y + length(wpos.xz));
@@ -94,21 +94,6 @@ vec3 GetShootingStarLayer(in vec3 viewPos, in float time, in float rotationAngle
             result += smoothstep(0.04, 0.01, density) * trailLength * trailLength * trailBrightness * (trailIdHash * 0.75 + 0.25);
         }
 
-        // Glare
-        vec2 glareGridId = floor(coord * 0.3 / SHOOTING_STARS_SCALE + vec2(-0.5, 0.5));
-        float glareIdHash = Hash21(glareGridId);
-        float glareBrightness = step(glareIdHash, 0.0001 * SHOOTING_STARS_AMOUNT / float(SHOOTING_STARS_ROTATION_ITERATIONS));
-
-        if(glareBrightness != 0.0)
-        {
-            vec2 glareGridUv = fract(coord * 0.3 / SHOOTING_STARS_SCALE + 0.5) - 0.5;
-            float glare = Pow2(Saturate(0.012 / length(glareGridUv) * smoothstep(0.5, 0.0, length(glareGridUv))));
-            glare *= cosT * (glareIdHash * 0.75 + 0.25);
-
-            result *= 1. - glare;
-            result += glare;
-        }
-
         return result * (1. - rainStrength) * smoothstep(0.3, 1.0, cosT) * Lift(lightNight, 0.36);
     }
 
@@ -126,5 +111,5 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
         result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
     }
 
-    return result * 1.4;
+    return result * 2.5;
 }
