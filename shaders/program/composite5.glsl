@@ -337,8 +337,8 @@ void main()
     #ifdef VIGNETTE
 	float luminance = GetLuminance(color);
 	float vignette = sin(texCoord.x * PI) * sin(texCoord.y * PI);
-	vignette = pow(vignette, VIGNETTE_STRENGTH / (5.0 * luminance + 1.0));
-	vignette = mix(vignette, 1.0, 0.6 / (VIGNETTE_STRENGTH + 1.75));
+	vignette = pow(vignette, VIGNETTE_STRENGTH / (8.0 * luminance + 1.0));
+	vignette = mix(vignette, 1.0, 0.6 / (VIGNETTE_STRENGTH + 2.25));
 	
 	color *= vignette;
 	#endif
