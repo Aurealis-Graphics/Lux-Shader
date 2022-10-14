@@ -66,9 +66,18 @@ vec3 GetAuroraColor(in vec2 coord, float scale)
 	return Pow2(finalColor);
 }
 
-float GetAuroraNoiseSharpness(in float cosT) 
+float GetAuroraHorizonIntensity(in float cosT)
 {
-	return 12.0 * (1.05 - exp(-cosT * 3.0));
+	return 1.0 - exp2(-cosT * 20.0);
+}
+
+float GetAuroraNoiseSharpness(in float cosT, in float horizonIntensity) 
+{
+	/*
+		TODO: Use Ray Box Intersection to calculate the distance through the imaginary volume,
+		not a hemisphere projection.
+	*/ 
+	return mix(1.0, 16.0, sqrt(1.0 - Pow2(cosT - 1.0)) * horizonIntensity);
 }
 
 vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
@@ -88,7 +97,8 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 	#endif
 
 	float auroraAlpha = 0.0;
-	float noiseSharpness = GetAuroraNoiseSharpness(cosT);
+	float horizonIntensity = GetAuroraHorizonIntensity(cosT);
+	float noiseSharpness = GetAuroraNoiseSharpness(cosT, horizonIntensity);
     vec3 worldPos = normalize((gbufferModelViewInverse * vec4(viewPos, 1.0)).xyz);
 	float fIterations = float(iterations);
 	float iMult = 12.0 / fIterations;
@@ -105,7 +115,7 @@ vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 		auroraAlpha = mix(auroraAlpha, 1.0, noise / fIterations * 6.0);
 	}
 	
-	auroraAlpha *= Saturate(1. - exp2(-cosT * 20.0)) * (1.0 - 0.6 * rainStrength);
+	auroraAlpha *= horizonIntensity * (1.0 - 0.6 * rainStrength);
 
 	if (auroraAlpha < 0.005) return vec4(0.0);
 
