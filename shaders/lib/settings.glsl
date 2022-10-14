@@ -106,6 +106,11 @@ const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
 #define SHADOW_FILTER
 #define SHADOW_SUBSURFACE
 #define SHADOW_ADVANCED_FILTER 1                                // [0 1]
+#define ENTITY_SHADOWS
+
+#ifdef ENTITY_SHADOWS
+// Define doesn't show up in settings otherwise
+#endif
 
 #define LIGHT_MR 255                                            // [0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
 #define LIGHT_MG 160                                            // [0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]

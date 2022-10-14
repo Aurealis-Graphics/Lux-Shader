@@ -306,6 +306,9 @@ option.sunPathRotation.comment=Adjusts sun angle.
 option.SHADOW_SUBSURFACE=Subsurface Scattering
 option.SHADOW_SUBSURFACE.comment=Allows light to penetrate and scatter through foliages.
 
+option.ENTITY_SHADOWS=Entity Shadows
+option.ENTITY_SHADOWS.comment=Toggles shadows from entities. §e[*]§r Improved performance drastically in scenes with a lot of entites if disabled
+
 option.BLOCKLIGHT_R=Red
 option.BLOCKLIGHT_G=Green
 option.BLOCKLIGHT_B=Blue
