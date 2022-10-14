@@ -50,7 +50,14 @@ void main()
 	vec4 albedo;
 	
 	#ifndef ROUND_SUN_MOON
+	vec4 screenPos = vec4(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z, 1.0);
+	vec4 viewPos = gbufferProjectionInverse * (screenPos * 2.0 - 1.0);
+	viewPos /= viewPos.w;
+
 	albedo = texture2D(texture, texCoord);
+
+	if (dot(sunVec, viewPos.xyz) < 0.0)	albedo.rgb *= 1.6 * sqrt(albedo.rgb) * moonCol / GetLuminance(moonCol);
+	else									   albedo.rgb *= 1.6 * Lift(lightCol, 2.0);
 	#endif
 
 	#ifdef OVERWORLD
@@ -67,8 +74,7 @@ void main()
 	#endif
 	
 	#ifdef SKY_DESATURATION
-    vec3 desat = GetLuminance(albedo.rgb) * pow(lightNight, vec3(-0.48)) * 4.0;
-	albedo.rgb = mix(desat, albedo.rgb, sunVisibility);
+	albedo.rgb = mix(vec3(GetLuminance(albedo.rgb)), albedo.rgb, sunVisibility * 0.3 + 0.7);
 	#endif
 	#endif
 
