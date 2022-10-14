@@ -221,7 +221,7 @@ const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
 #define SHOOTING_STARS_AMOUNT 30.0                              // [1.0 10.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 110.0 120.0 130.0 140.0 150.0 200.0 250.0 300.0 400.0 500.0 600.0 700.0 800.0 900.0 1000.0]
 #define SHOOTING_STARS_ROTATION_ITERATIONS 3                    // [1 2 3 4 5 6 7 9 10 11 12]
 #define AURORA
-#define AURORA_SAMPLES_SKY 6                                    // [4 6 8 10 12 14 16 18 20 22 24 26]
+#define AURORA_SAMPLES_SKY 8                                    // [4 6 8 10 12 14 16 18 20 22 24 26]
 #define AURORA_SAMPLES_REFLECTION 6                             // [4 6 8 10 12 14 16 18 20 22 24 26]
 #define AURORA_BRIGHTNESS 4.0                                   // [0.5 0.75 1.0 1.25 1.5 1.75 2.0 2.25 2.5 2.75 3.0 3.25 3.5 3.75 4.0 4.25 4.5 4.75 5.0 5.25 5.5 6.0 6.5 7.0 7.5 8.0]
 #define AURORA_HEIGHT 12.5                                      // [2.5 7.5 12.5 17.5 22.5]
