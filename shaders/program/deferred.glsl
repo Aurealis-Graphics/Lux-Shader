@@ -84,10 +84,10 @@ float GetLinearDepth(float depth)
 #include "/lib/atmospherics/fog.glsl"
 #include "/lib/color/ambientColor.glsl"
 #include "/lib/atmospherics/borderFog.glsl"
+#include "/lib/util/spaceConversion.glsl"
 
 #if AA == 2
 #include "/lib/vertex/jitter.glsl"
-#include "/lib/util/spaceConversion.glsl"
 #endif
 
 #ifdef AO
