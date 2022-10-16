@@ -71,7 +71,7 @@ void GetLighting(
     }
     shadow *= parallaxShadow;
 
-    vec3 fullShadow = shadow * max(NdotL, foliage);
+    vec3 fullShadow = shadow * (NdotL * (1.0 - foliage) + foliage);
     
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
@@ -89,6 +89,7 @@ void GetLighting(
         float subsurface = exp(14.0 * (VdotL - 1.0)) * 4.0 * (1.0 - rainStrength);
         sceneLighting *= Smooth3(fullShadow) * subsurface + 1.0;
     }
+
     #else
     vec3 sceneLighting = netherColSqrt.rgb * 0.1;
     #endif
@@ -135,13 +136,11 @@ void GetLighting(
 
     #ifdef NETHER
     float desatAmount = sqrt(lightmap.x + emissive);
-
     vec3 desatColor = netherColSqrt.rgb / netherColSqrt.a;
     #endif
 
     #ifdef END
     float desatAmount = sqrt(lightmap.x + emissive);
-
     vec3 desatColor = endCol.rgb * 1.25;
     #endif
 

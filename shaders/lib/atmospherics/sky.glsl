@@ -13,7 +13,7 @@ vec3 GetSkyColor(vec3 viewPos, vec3 lightCol)
     #ifdef OVERWORLD
     vec3 viewDir = normalize(viewPos);
 
-    float sunHeightLifted = smoothstep(0.0, 0.5, Lift(sunHeight, 1.6));
+    float sunHeightLifted = smoothstep(0.0, 0.5, Lift(sunHeight, 2.0));
     float sunDot = exp(-distance(viewDir, sunVec) * (sunHeightLifted + 0.8)) * (1.0 - rainStrength * sunHeightLifted);
     float y = max(dot(viewDir, upVec), 0.0);
 
