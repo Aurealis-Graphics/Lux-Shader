@@ -56,8 +56,8 @@ void NormalFog(inout vec3 color, float viewDist, vec3 viewDir, vec3 ambientCol)
 
 	#ifdef END
 	float fog = viewDist * FOG_DENSITY / 128.0;
-	fog = 1.0 - exp(-0.8 * fog * fog);
-	vec3 fogColor = endCol.rgb * 0.025;
+	fog = (1.0 - exp(-1.8 * fog * sqrt(fog))) * 0.5;
+	vec3 fogColor = endCol.rgb * 0.016;
 	#endif
 
 	color = mix(color, fogColor, fog);
