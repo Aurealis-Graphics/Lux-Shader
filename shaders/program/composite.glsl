@@ -137,6 +137,8 @@ void main()
 		vec3 absorption = exp2((absorptionBase - 1.0) * (6.0 + GetLinearDepth(z0) * 80.0));
 		float mult = 1.0 / GetLuminance(exp2((absorptionBase - 1.0) * 6.0));
 		
+		absorption = mix(vec3(GetLuminance(absorption)), absorption, 1.0 - Max0(dot(sunVec, upVec)) * 0.4);
+
 		color.rgb *= absorption * (1.0 - rainStrength) + 1.0 * rainStrength;
 		color.rgb *= mult;
 	}
