@@ -16,7 +16,7 @@ vec3 ColorGrade(vec3 rgb)
     /* Greens */
     RotateSaturationAroundHue(hsv, 90.0, 20.0, 0.04, 12.0);
     RotateHueAroundHue(hsv, 110.0, 20.0, 4.0, 22.0);
-    RotateSaturationAroundHue(hsv, 106.0, 20.0, 0.07, 22.0);
+    RotateSaturationAroundHue(hsv, 106.0, 20.0, 0.10, 22.0);
 
     /* Cyan */
     RotateSaturationAroundHue(hsv, 170.0, 8.0, 0.15, 22.0);

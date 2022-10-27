@@ -309,7 +309,7 @@ void main()
 	ColorGrading(color);
 	#endif
 
-	color = TechTonemap(color * 3.1 * TONEMAP_EXPOSURE);
+	color = TechTonemap(color * 2.8 * TONEMAP_EXPOSURE);
 	// color = BurgessModified(color * 3.8 * TONEMAP_EXPOSURE);
 
 	#ifdef LENS_FLARE
