@@ -77,8 +77,8 @@ const vec3 metalAlbedos[8] = vec3[8](
 
 vec3 GetMetalCol(int metalIndex)
 {
-    if (clamp(metalIndex, 0, 7) == metalIndex)  return metalAlbedos[metalIndex];
-    else                                        return vec3(1.0);
+    if (clamp(float(metalIndex), 0.0, 7.0) == metalIndex)   return metalAlbedos[metalIndex];
+    else                                                    return vec3(1.0);
 }
 
 vec3 GetSpecularHighlight(

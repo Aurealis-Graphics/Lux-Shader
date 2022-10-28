@@ -30,14 +30,14 @@ const vec3[8] metalK = vec3[8](
 
 vec3 GetN(int metalIndex)
 {
-    if (clamp(metalIndex, 0, 7) == metalIndex)  return metalN[metalIndex];
-    else                                        return vec3(0.0);
+    if (clamp(float(metalIndex), 0.0, 7.0) == metalIndex)   return metalN[metalIndex];
+    else                                                    return vec3(1.0);
 }
 
 vec3 GetK(int metalIndex)
 {
-    if (clamp(metalIndex, 0, 7) == metalIndex)  return metalK[metalIndex];
-    else                                        return vec3(0.0);
+    if (clamp(float(metalIndex), 0.0, 7.0) == metalIndex)   return metalK[metalIndex];
+    else                                                    return vec3(1.0);
 }
 
 vec3 ComplexFresnel(float fresnel, float f0)
