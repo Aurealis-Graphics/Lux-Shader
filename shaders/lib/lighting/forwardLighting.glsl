@@ -71,7 +71,7 @@ void GetLighting(
     }
     shadow *= parallaxShadow;
 
-    vec3 fullShadow = shadow * (NdotL * (1.0 - foliage) + foliage);
+    vec3 fullShadow = Max0(shadow * (NdotL * (1.0 - foliage) + foliage));
     
     #ifdef OVERWORLD
     float shadowMult = (1.0 - 0.95 * rainStrength) * shadowFade;
