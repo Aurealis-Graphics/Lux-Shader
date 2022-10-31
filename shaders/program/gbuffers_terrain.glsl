@@ -157,6 +157,7 @@ void main()
 		float foliage  = float(mat > 0.98 && mat < 1.02);
 		float emissiveIntensity = 0.5 * EMISSIVE_BRIGHTNESS;
 		float emissive = float(mat > 1.98 && mat < 2.02) * emissiveIntensity;
+		if (mat > 3.98 && mat < 4.02) emissive = 0.25 * emissiveIntensity;
 		float lava     = float(mat > 2.98 && mat < 3.02) * emissiveIntensity;
 		
 		#ifndef SHADOW_SUBSURFACE
@@ -454,6 +455,11 @@ void main()
 		mat = 2.0;
 	}
 
+	if (mc_Entity.x == 10254)
+	{
+		mat = 4.0;
+	}
+
 	if (mc_Entity.x == 10248) 
 	{
 		mat = 3.0;
@@ -464,7 +470,8 @@ void main()
 		mc_Entity.x == 10231 || 
 		mc_Entity.x == 10250 ||
 		mc_Entity.x == 10251 || 
-		mc_Entity.x == 10253) 
+		mc_Entity.x == 10253 ||
+		mc_Entity.x == 10254) 
 	{
 		recolor = 1.0;	
 	}
