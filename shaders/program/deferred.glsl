@@ -47,7 +47,6 @@ uniform sampler2D depthtex1;
 uniform sampler2D noisetex;
 
 uniform sampler2D gaux2;
-
 #endif
 
 // Optifine Constants
