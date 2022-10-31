@@ -63,7 +63,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 	{
 		if (cloudAlpha > 0.99) break;
 
-		vec3 planeCoord = worldPos * ((CLOUD_HEIGHT + (i + dither) * 1.3) / worldPos.y) * 0.004;
+		vec3 planeCoord = worldPos * ((CLOUD_HEIGHT + (i + dither) * 1.6) / worldPos.y) * 0.004;
 		vec2 coord = cameraPosition.xz * 0.00025 + planeCoord.xz;
 		float coverage = float(i - 3.0 + dither) * 0.6;
 
