@@ -133,7 +133,8 @@ void Bloom(inout vec3 color, vec2 coord)
 
 	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5 + blur6) * 0.125;
 
-	color += blur * 0.03 * BLOOM_STRENGTH;
+	if (isEyeInWater == 1) 	color = mix(color, blur, 0.65) * 1.6;
+	else					color += blur * 0.03 * BLOOM_STRENGTH;
 }
 
 void AutoExposure(inout vec3 color, inout float exposure, float tempExposure)

@@ -16,7 +16,9 @@ See AGREEMENT.txt for more information.
 varying vec2 texCoord;
 
 // Uniforms
-uniform float viewWidth, viewHeight, aspectRatio;
+uniform float viewWidth, viewHeight;
+
+uniform int isEyeInWater;
 
 uniform sampler2D colortex0;
 
@@ -47,7 +49,7 @@ vec3 BloomTile(float lod, vec2 offset)
 				vec2 bloomCoord = (texCoord - offset + pixelOffset) * scale;
 				vec3 sample = texture2D(colortex0, bloomCoord).rgb;
 				float tapLuminance = GetLuminance(sample);
-				bloom += sample * min(Pow2(tapLuminance), 20.0) * wg;
+				bloom += sample * wg * (isEyeInWater == 1 ? 1.0 : min(Pow2(tapLuminance), 20.0));
 			}
 		}
 		bloom /= 4096.0;
