@@ -99,12 +99,10 @@ const vec2 samples[60] = vec2[60](
 #include "/lib/outline/depthOutline.glsl"
 #endif
 
-#define TOON_DOF
-
 // Common Functions
 vec3 DepthOfField(vec3 color, float z)
 {
-	if(IsHand(z)) return texture2D(colortex0, texCoord).rgb;
+	if (IsHand(z)) return texture2D(colortex0, texCoord).rgb;
 	
 	float coc = GetCircleOfConfusion(z, centerDepthSmooth, gbufferProjection, DOF_STRENGTH);
 	
@@ -131,7 +129,7 @@ vec3 DepthOfField(vec3 color, float z)
 		offset = rotation * offset;
 		#endif
 
-		offset /= vec2(aspectRatio, 1.0);
+		offset.x /= aspectRatio;
 
 		vec3 tapSample = texture2DLod(colortex0, texCoord + offset, 0.0).rgb;
 
