@@ -38,6 +38,7 @@ uniform sampler2D colortex0;
 uniform sampler2D colortex1;
 uniform sampler2D colortex2;
 uniform sampler2D noisetex;
+uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 
 #ifdef DIRTY_LENS
@@ -112,6 +113,11 @@ vec3 GetBloomTile(float lod, vec2 coord, vec2 offset)
 	return Pow4(bloom) * 128.0;
 }
 
+float GetLinearDepth(float depth)
+{
+   	return (2.0 * near) / (far + near - depth * (far - near));
+}
+
 void Bloom(inout vec3 color, vec2 coord)
 {
 	vec3 blur1 = GetBloomTile(2.0, coord, vec2(0.0      , 0.0   ));
@@ -133,8 +139,17 @@ void Bloom(inout vec3 color, vec2 coord)
 
 	vec3 blur = (blur1 + blur2 + blur3 + blur4 + blur5 + blur6) * 0.125;
 
-	if (isEyeInWater == 1) 	color = mix(color, blur, 0.65) * 1.6;
-	else					color += blur * 0.03 * BLOOM_STRENGTH;
+	if (isEyeInWater == 1) 	color = mix(color, blur, 0.65 * BLOOM_STRENGTH) * (1.0 + 0.6 * BLOOM_STRENGTH);
+	else
+	{
+		#ifndef NETHER
+		color += blur * 0.2 * BLOOM_STRENGTH;
+		#else
+		float linZ = GetLinearDepth(texture2D(depthtex0, coord).r);
+		color = mix(mix(color, blur, 0.4 * BLOOM_STRENGTH) * (1.0 + 0.6 * BLOOM_STRENGTH), color + blur * 0.2 * BLOOM_STRENGTH, exp(-linZ * 4.0));
+		#endif
+	}
+
 }
 
 void AutoExposure(inout vec3 color, inout float exposure, float tempExposure)

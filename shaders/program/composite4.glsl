@@ -17,9 +17,11 @@ varying vec2 texCoord;
 
 // Uniforms
 uniform float viewWidth, viewHeight;
+uniform float far, near;
 
 uniform int isEyeInWater;
 
+uniform sampler2D depthtex0;
 uniform sampler2D colortex0;
 
 // Optifine Constants
@@ -31,12 +33,18 @@ float ph = 1.0 / viewHeight;
 float weight[7] = float[7](1.0, 6.0, 15.0, 20.0, 15.0, 6.0, 1.0);
 
 // Common Functions
+float GetLinearDepth(float depth)
+{
+   	return (2.0 * near) / (far + near - depth * (far - near));
+}
+
 vec3 BloomTile(float lod, vec2 offset)
 {
 	vec3 bloom = vec3(0.0);
 	float scale = exp2(lod);
 	vec2 coord = (texCoord - offset) * scale;
 	float padding = 0.5 + 0.005 * scale;
+	float linZ = GetLinearDepth(texture2D(depthtex0, coord).r);
 
 	if (abs(coord.x - 0.5) < padding && abs(coord.y - 0.5) < padding)
 	{
@@ -49,7 +57,15 @@ vec3 BloomTile(float lod, vec2 offset)
 				vec2 bloomCoord = (texCoord - offset + pixelOffset) * scale;
 				vec3 sample = texture2D(colortex0, bloomCoord).rgb;
 				float tapLuminance = GetLuminance(sample);
-				bloom += sample * wg * (isEyeInWater == 1 ? 1.0 : min(Pow2(tapLuminance), 20.0));
+				float lumWeight = 1.0;
+
+				if (isEyeInWater != 1) lumWeight *= min((tapLuminance), 20.0);
+
+				#ifdef NETHER
+				lumWeight = mix(1.0, lumWeight, exp(-linZ * 4.0));
+				#endif
+
+				bloom += sample * wg * lumWeight;
 			}
 		}
 		bloom /= 4096.0;
