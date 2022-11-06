@@ -153,7 +153,7 @@ vec3 GetShadow(vec3 shadowPos, float bias, float offset, float NdotL, float foli
 
     #ifdef SHADOW_FILTER
     vec3 shadow = vec3(0.0);
-    if (offset > 1e-6)  shadow = SampleTAAFilteredShadow(shadowPos, offset, ditherRotMat);
+    if (offset > EPS)   shadow = SampleTAAFilteredShadow(shadowPos, offset, ditherRotMat);
     else                shadow = SampleBasicShadow(shadowPos);
     #else
     vec3 shadow = SampleBasicShadow(shadowPos);
