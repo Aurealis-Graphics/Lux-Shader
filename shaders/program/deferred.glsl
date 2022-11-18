@@ -172,7 +172,11 @@ void main()
 		#endif
 		fresnel3 *= smoothness;
 
-		if (GetLuminance(fresnel3) > 0.001)
+		#ifndef FORCE_REFLECTION
+		if (GetLuminance(fresnel3) > 1e-3 && Lift(f0, 12.0) * Pow2(smoothness) > 0.05)
+		#else
+		if (GetLuminance(fresnel3) > 1e-3)
+		#endif
 		{
 			vec4 reflection = vec4(0.0);
 			vec3 skyReflection = vec3(0.0);
@@ -187,6 +191,7 @@ void main()
 				reflection = SimpleReflection(viewPos.xyz, normal, dither, far, cameraPosition, previousCameraPosition);
 				reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));
 			}
+			
 			#else
 			reflection = SimpleReflection(viewPos.xyz, normal, dither, far, cameraPosition, previousCameraPosition);
 			reflection.rgb = pow(reflection.rgb * 2.0, vec3(8.0));

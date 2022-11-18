@@ -67,6 +67,9 @@ screen.CHROMATIC_ABBERATION=Chromatic Abberation Config
 
 screen.VOLUMETRICS=Volumetric Fog Config
 
+screen.MATERIAL_NORMAL_SUPPORT=Material Normal Config
+screen.MATERIAL_REFLECTION_SUPPORT=Material Reflection Config
+
 # Settings
 option.ABOUT=Lux Shaders
 option.ABOUT.comment=§a[+]§r Made by Tech (github.com/TechDevOnGitHub).     §e[*]§r Base by Capt Tatsu (bitslablab.com)
@@ -105,6 +108,9 @@ option.REFLECTION.comment=Enables screen space reflection. §e[*]§r This toggle
 
 option.REFLECTION_TRANSLUCENT=Translucent Reflections
 option.REFLECTION_TRANSLUCENT.comment=Allows reflection to be rendered on translucent surfaces, such as stained glass, ice, slime blocks, and more.
+
+option.FORCE_REFLECTION=Force Reflection
+option.FORCE_REFLECTION.comment=Forces reflection to be rendered on all surfaces, including rough & low-reflectivity ones.
 
 option.MATERIAL_SUPPORT=Material Support
 option.MATERIAL_SUPPORT.comment=Enables the use of PBR resource packs.  §e[*]§r This option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
@@ -611,6 +617,3 @@ option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH.comment=Hides visual artifacts in 
 
 option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE=Adaption Response
 option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE.comment=Adjusts response of the adaptive strength.
-
-screen.MATERIAL_NORMAL_SUPPORT=Material Normal Config
-screen.MATERIAL_REFLECTION_SUPPORT=Material Reflection Config

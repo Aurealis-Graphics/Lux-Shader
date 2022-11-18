@@ -18,6 +18,7 @@ See AGREEMENT.txt for more information.
 #define DESATURATION_FACTOR 1.0                                 // [2.0 1.5 1.0 0.5 0.0]
 #define REFLECTION
 #define REFLECTION_TRANSLUCENT
+// #define FORCE_REFLECTION
 // #define MATERIAL_SUPPORT
 // #define BLACK_OUTLINE
 // #define PROMO_OUTLINE
