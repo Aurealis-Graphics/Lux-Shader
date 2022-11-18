@@ -60,7 +60,7 @@ void RoundSunMoon(inout vec3 color, vec3 viewPos, vec3 lightCol, vec3 moonCol)
 	float moonDot = clamp(1.0 - dot(-sunVec, viewDir), 0.0, 1.0);
 
 	vec3 sun = vec3(min(0.002 / MaxEPS(sunDot - 0.0001), 40.0 * (1.0 - rainStrength))) * lightCol;
-	vec3 moon = vec3(min(0.001 / MaxEPS(moonDot - 0.0001), 40.0 * (1.0 - rainStrength)));
+	vec3 moon = vec3(min(0.001 / MaxEPS(moonDot - 0.0001), 20.0 * (1.0 - rainStrength)));
 	moon *= clamp(dot(-sunVec, upVec), 0.0, 1.0) * 10.0 * moonCol / (moonCol + 0.3);
 
 	float y = dot(viewDir, upVec);
