@@ -38,6 +38,7 @@ void BlackOutline(inout vec3 color, sampler2D depth, float wFogMult, vec3 ambien
 	float borderFogFactor = GetBorderFogMixFactor(eyePlayerPos, far, hasBorderFog);
 
 	vec3 sky = GetSkyColor(viewPos.xyz, lightCol);
+	sky *= (4.0 - 3.0 * eBS) * (1.0 + nightVision);
 
 	fog = mix(fog, sky, borderFogFactor);
 	#endif

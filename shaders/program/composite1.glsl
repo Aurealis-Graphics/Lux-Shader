@@ -27,6 +27,7 @@ uniform float shadowFade;
 uniform float timeAngle, timeBrightness;
 uniform float far;
 uniform float near;
+uniform float nightVision;
 
 uniform ivec2 eyeBrightnessSmooth;
 
@@ -69,6 +70,7 @@ void main()
 	#ifdef OVERWORLD
 	float cosS = dot(normalize(viewPos.xyz), sunVec);
 	vec3 sky = GetSkyColor(viewPos.xyz, lightCol);
+	sky *= (4.0 - 3.0 * eBS) * (1.0 + nightVision);
 
 	float globalMult = Pow2((1.0 - Max0(sunHeight)) * min(1.0, sunHeight * 5.0));
 	

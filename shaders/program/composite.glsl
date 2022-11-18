@@ -28,6 +28,7 @@ uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float timeAngle, timeBrightness;
 uniform float viewWidth, viewHeight, aspectRatio;
+uniform float nightVision;
 
 uniform ivec2 eyeBrightnessSmooth;
 
