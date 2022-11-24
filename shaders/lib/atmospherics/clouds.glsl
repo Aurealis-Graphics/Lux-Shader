@@ -73,7 +73,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 
 		cloudGradient = mix(
 			cloudGradient,
-			mix(gradientMix * gradientMix, 1.0 - noise, 0.25),
+			mix(Pow2(gradientMix), 1.0 - noise, 0.25),
 			noise * (1.0 - cloudAlpha * cloudAlpha)
 		);
 		
@@ -85,12 +85,12 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 
 	cloudColor = mix(
 		ambientCol * 0.5 * (0.5 * sunVisibility + 0.5),
-		lightCol * (1.0 + scattering),
+		mix(lightCol, ambientCol / GetLuminance(ambientCol), Pow2(dot(sunVec, upVec))) * (1.0 + scattering),
 		cloudGradient * cloudAlpha
 	);
 	
 	cloudColor *= 1.0 - 0.6 * rainStrength;
-	cloudAlpha *= Saturate(1. - exp2(-(cosT - 0.1) * 30.0)) * (1.0 - 0.6 * rainStrength);
+	cloudAlpha *= Saturate(1. - exp2(-(cosT - 0.1) * 40.0)) * (1.0 - 0.6 * rainStrength);
 
-	return vec4(cloudColor * colorMultiplier, cloudAlpha * cloudAlpha * CLOUD_OPACITY);
+	return vec4(cloudColor * colorMultiplier, Pow2(cloudAlpha) * CLOUD_OPACITY);
 }
