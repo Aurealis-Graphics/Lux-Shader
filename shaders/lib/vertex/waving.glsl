@@ -28,7 +28,7 @@ vec3 CalcMove(vec3 pos, float density, float speed, vec2 mult)
 {
     pos = pos * density + frametime * speed;
     vec3 wave = vec3(Noise2D(pos.yz), Noise2D(pos.xz + 0.333), Noise2D(pos.xy + 0.667));
-    return wave * vec3(mult, mult.x) * 0.7;
+    return wave * vec3(mult, mult.x) * 0.4;
 }
 
 float CalcLilypadMove(vec3 worldpos)
