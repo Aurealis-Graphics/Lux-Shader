@@ -12,7 +12,7 @@ See AGREEMENT.txt for more information.
 #define AO_STRENGTH 1.00                                        // [0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 #define VOLUMETRIC_FOG
 #define VOLUMETRIC_FOG_TYPE 0                                   // [0 1]
-#define VOLUMETRIC_FOG_STRENGTH 1.00                            // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
+#define VOLUMETRIC_FOG_STRENGTH 0.75                            // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 #define BORDER_FOG
 #define DESATURATION
 #define DESATURATION_FACTOR 1.0                                 // [2.0 1.5 1.0 0.5 0.0]
