@@ -175,18 +175,29 @@ void ColorGrading(inout vec3 color)
 	color = mix(color, cgTint, CG_TM);
 }
 
-vec3 BurgessModified(vec3 color)
+/* Modified Burgess tonemap, by yours truly */
+vec3 TonemapBurgessModified(vec3 color)
 {
     vec3 maxColor = color * min(vec3(1.0), 1.0 - exp(-1.0 / 0.004 * color)) * 0.8;
     vec3 retColor = (maxColor * (6.2 * maxColor + 0.5)) / (maxColor * (6.2 * maxColor + 1.7) + 0.06);
     return retColor;
 }
 
-vec3 TechTonemap(vec3 color)
+vec3 TonemapTech2021(vec3 color)
 {
     vec3 a = color * min(vec3(1.0), 1.0 - exp(-1.0 / 0.038 * color));
     a = mix(a, color, color * color);
     return a / (a + 0.6);
+}
+
+/*
+    Tl: Tonemap Toe Length
+    Ts: Tonemap Toe Strength
+    S:  Tonemap Slope
+*/
+vec3 TonemapTech2022(vec3 color, const float Tl, const float Ts, const float S)
+{
+	return (1.0 - exp(-color / Tl) * Ts) * color / (color + S);
 }
 
 void ColorSaturation(inout vec3 color)
@@ -325,8 +336,7 @@ void main()
 	ColorGrading(color);
 	#endif
 
-	color = TechTonemap(color * 2.8 * TONEMAP_EXPOSURE);
-	// color = BurgessModified(color * 3.8 * TONEMAP_EXPOSURE);
+    color = TonemapTech2022(color * 2.8 * TONEMAP_EXPOSURE, 0.038, 1.0, 0.6);
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();
