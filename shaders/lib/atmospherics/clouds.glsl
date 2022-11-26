@@ -85,7 +85,7 @@ vec4 DrawCloud(vec3 viewPos, float dither, vec3 lightCol, vec3 ambientCol)
 
 	cloudColor = mix(
 		ambientCol * 0.5 * (0.5 * sunVisibility + 0.5),
-		mix(lightCol, ambientCol / GetLuminance(ambientCol), Pow2(dot(sunVec, upVec))) * (1.0 + scattering),
+		mix(lightCol, ambientCol / GetLuminance(ambientCol), Pow2(Max0(dot(sunVec, upVec)))) * (1.0 + scattering),
 		cloudGradient * cloudAlpha
 	);
 	
