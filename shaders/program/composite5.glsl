@@ -73,10 +73,6 @@ float ph = 1.0 / viewHeight;
 #include "/lib/post/lensFlare.glsl"
 #endif
 
-#ifdef RETRO_FILTER
-#include "/lib/util/dither.glsl"
-#endif
-
 // Common Functions
 void UnderwaterDistort(inout vec2 texCoord)
 {
@@ -93,18 +89,6 @@ void UnderwaterDistort(inout vec2 texCoord)
 	);
 
 	if (mask < 0.5) texCoord = originalTexCoord;
-}
-
-void RetroDither(inout vec3 color, float dither)
-{
-	color.rgb = pow(color.rgb, vec3(0.25));
-	float lenColor = length(color);
-	vec3 normColor = color / lenColor;
-
-	dither = mix(dither, 0.5, exp(-2.0 * lenColor)) - 0.25;
-	color = normColor * floor(lenColor * 4.0 + dither * 1.7) / 4.0;
-
-	color = max(Pow4(color.rgb), vec3(0.0));
 }
 
 vec3 GetBloomTile(float lod, vec2 coord, vec2 offset)
@@ -316,11 +300,6 @@ void main()
 	vec3 temporalColor = vec3(0.0);
 	#if AA == 2
 	temporalColor = texture2D(colortex2, texCoord).gba;
-	#endif
-
-	#ifdef RETRO_FILTER
-	float dither = Bayer64(gl_FragCoord.xy);
-	RetroDither(color.rgb, dither);
 	#endif
 
 	#ifdef BLOOM

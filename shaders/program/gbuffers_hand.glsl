@@ -134,12 +134,8 @@ void main()
 
 	if (albedo.a > 0.001)
 	{
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
-		#else
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
-
+		vec2 lightmap = Saturate(lmCoord);
+		
 		float emissive = (GetHandItem(50) + GetHandItem(83) + GetHandItem(213)) * 0.1;
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z + 0.38);

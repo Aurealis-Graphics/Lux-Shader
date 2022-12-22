@@ -51,7 +51,6 @@ const bool colortex1MipmapEnabled = true;
 // Program
 void main()
 {
-    #ifndef RETRO_FILTER
     vec3 color = texture2DLod(colortex1, texCoord, 0).rgb;
 
     #if AA == 1
@@ -60,17 +59,13 @@ void main()
     vec4 prev = vec4(texture2DLod(colortex2, texCoord, 0.0).r, 0.0, 0.0, 0.0);
     TAA(color, prev);
     #endif
-    #else
-    vec2 view = vec2(viewWidth, viewHeight) * 0.5;
-    vec3 color = texture2DLod(colortex1, floor(texCoord * view) / view, 0.0).rgb;
-    #endif
 
     color = ColorGrade(color);
 
     /* DRAWBUFFERS:1 */
 	gl_FragData[0] = vec4(color, 1.0);
     
-	#if AA == 2 && !defined RETRO_FILTER
+	#if AA == 2
     /* DRAWBUFFERS:12 */
 	gl_FragData[1] = vec4(prev);
 	#endif

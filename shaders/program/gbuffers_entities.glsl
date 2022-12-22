@@ -153,11 +153,7 @@ void main()
 
 	if (albedo.a > 0.001 && lightningBolt < 0.5)
 	{
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
-		#else
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
+		vec2 lightmap = Saturate(lmCoord);
 			  
 		float emissive = float(entityColor.a > 0.05) * 0.05;
 

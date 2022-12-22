@@ -82,12 +82,8 @@ void main()
 
 	if (albedo.a > 0.001)
 	{
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
-		#else
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
-
+		vec2 lightmap = Saturate(lmCoord);
+		
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z);
 		#if AA == 2
 		vec3 viewPos = ToNDC(vec3(TAAJitter(screenPos.xy, -0.5, cameraPosition, previousCameraPosition), screenPos.z));

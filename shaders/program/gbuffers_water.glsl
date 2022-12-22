@@ -205,14 +205,15 @@ vec3 GetParallaxWaves(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector)
 {
 	vec3 waterPos = worldPos + cameraPosition;
-	#ifdef WATER_PARALLAX
+	
+    #ifdef WATER_PARALLAX
 	waterPos = GetParallaxWaves(waterPos, viewPos, viewVector);
 	#endif
 
-	float h0 = GetWaterHeightMap(waterPos, viewPos);
-	float h1 = GetWaterHeightMap(waterPos + vec3( 0.1, 0.0, 0.0), viewPos);
+    float h1 = GetWaterHeightMap(waterPos + vec3( 0.1, 0.0, 0.0), viewPos);
 	float h2 = GetWaterHeightMap(waterPos + vec3(-0.1, 0.0, 0.0), viewPos);
-	float h3 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0,  0.1), viewPos);
+	
+    float h3 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0,  0.1), viewPos);
 	float h4 = GetWaterHeightMap(waterPos + vec3(0.0, 0.0, -0.1), viewPos);
 
 	float xDelta = (h1 - h2) / 0.1;
@@ -288,12 +289,8 @@ void main()
 
 	if (albedo.a > 0.001)
 	{
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
-		#else
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
-
+		vec2 lightmap = Saturate(lmCoord);
+		
 		float water       = float(mat > 0.98 && mat < 1.02);
 		float translucent = float(mat > 1.98 && mat < 2.02);
 

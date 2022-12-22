@@ -95,10 +95,6 @@ const vec2 samples[60] = vec2[60](
 #include "/lib/util/circleOfConfusion.glsl"
 #include "/lib/util/dither.glsl"
 
-#ifdef BLACK_OUTLINE
-#include "/lib/outline/depthOutline.glsl"
-#endif
-
 // Common Functions
 vec3 DepthOfField(vec3 color, float z)
 {
@@ -168,10 +164,6 @@ void main()
 
 	#ifdef DOF
 	color = DepthOfField(color, z);
-	#endif
-
-	#ifdef BLACK_OUTLINE
-	DepthOutline(z);
 	#endif
 	
     /* DRAWBUFFERS:0 */

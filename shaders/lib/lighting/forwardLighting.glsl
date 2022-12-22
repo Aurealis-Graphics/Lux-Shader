@@ -102,11 +102,6 @@ void GetLighting(
     #ifdef END
     minLighting *= ambientCol;
     #endif 
-
-    #ifdef TOON_LIGHTMAP
-    minLighting *= floor(smoothLighting * 8.0 + 1.001) / 4.0;
-    smoothLighting = 1.0;
-    #endif
     
     vec3 emissiveLighting = albedo.rgb * (emissive * 6.5 / quarterNdotU);
 

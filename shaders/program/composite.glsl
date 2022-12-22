@@ -82,18 +82,9 @@ float GetLinearDepth(float depth)
 #include "/lib/atmospherics/volumetricLight.glsl"
 #endif
 
-#if defined BORDER_FOG || defined PROMO_OUTLINE || defined FOG
-#include "/lib/outline/promoOutline.glsl"
+#ifdef FOG
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/color/ambientColor.glsl"
-#endif
-
-#ifdef BLACK_OUTLINE
-#include "/lib/color/skyColor.glsl"
-#include "/lib/color/blocklightColor.glsl"
-#include "/lib/atmospherics/fog.glsl"
-#include "/lib/atmospherics/borderFog.glsl"
-#include "/lib/outline/blackOutline.glsl"
 #endif
 
 // Program
@@ -144,7 +135,7 @@ void main()
 		color.rgb *= mult;
 	}
 
-	#if defined BLACK_OUTLINE || defined PROMO_OUTLINE || defined FOG
+	#ifdef FOG
 	#ifdef OVERWORLD
 	vec3 skyEnvAmbientApprox = GetAmbientColor(vec3(0, 1, 0), lightCol);
 	#else
@@ -170,19 +161,6 @@ void main()
 		}
 	}
 	#endif
-
-	#ifdef BLACK_OUTLINE
-	float outlineMask = BlackOutlineMask(depthtex0, depthtex1);
-	float wFogMult = 1.0 + eBS;
-	if (outlineMask > 0.5 || isEyeInWater > 0.5)
-		BlackOutline(color.rgb, depthtex0, wFogMult, skyEnvAmbientApprox);
-	#endif
-	
-	#ifdef PROMO_OUTLINE
-	if (z1 - z0 > 0.0)
-		PromoOutline(color.rgb, depthtex0);
-	#endif
-	
 	
 	#ifdef VOLUMETRIC_FOG
 	vec3 vl = GetVolumetricLight(z0, z1, translucent, dither) + (dither - 0.5) / 255.0;

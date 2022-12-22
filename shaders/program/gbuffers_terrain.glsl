@@ -148,11 +148,7 @@ void main()
 
 	if (albedo.a > 0.001)
 	{
-		#ifdef TOON_LIGHTMAP
-		vec2 lightmap = Saturate(floor(lmCoord * 14.999 * (0.75 + 0.25 * color.a)) / 14.0);
-		#else
-		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
-		#endif
+		vec2 lightmap = Saturate(lmCoord);
 		
 		float foliage  = float(mat > 0.98 && mat < 1.02);
 		float emissiveIntensity = 0.5 * EMISSIVE_BRIGHTNESS;

@@ -93,16 +93,6 @@ float GetLinearDepth(float depth)
 #include "/lib/lighting/ambientOcclusion.glsl"
 #endif
 
-#ifdef BLACK_OUTLINE
-#include "/lib/atmospherics/waterFog.glsl"
-#include "/lib/atmospherics/powderSnowFog.glsl"
-#include "/lib/outline/blackOutline.glsl"
-#endif
-
-#ifdef PROMO_OUTLINE
-#include "/lib/outline/promoOutline.glsl"
-#endif
-
 #if defined MATERIAL_SUPPORT && defined REFLECTION_SPECULAR
 #include "/lib/util/encode.glsl"
 #include "/lib/reflections/raytrace.glsl"
@@ -251,10 +241,6 @@ void main()
 		color.rgb *= AmbientOcclusion(depthtex0, dither);
 		#endif
 
-		#ifdef PROMO_OUTLINE
-		PromoOutline(color.rgb, depthtex0);
-		#endif
-
 		#ifdef FOG
 		float viewDist = length(viewPos.xyz);
 		vec3 viewDir = viewPos.xyz / viewDist;
@@ -275,11 +261,6 @@ void main()
 
 		if (blindFactor > 0.0) color.rgb *= 1.0 - blindFactor;
 	}
-
-	#ifdef BLACK_OUTLINE
-	float wFogMult = 1.0 + eBS;
-	BlackOutline(color.rgb, depthtex0, wFogMult, skyEnvAmbientApprox);
-	#endif
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = color;

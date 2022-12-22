@@ -115,15 +115,6 @@ option.FORCE_REFLECTION.comment=Forces reflection to be rendered on all surfaces
 option.MATERIAL_SUPPORT=Material Support
 option.MATERIAL_SUPPORT.comment=Enables the use of PBR resource packs.  §e[*]§r This option requires a resource pack which contains specular and/or normal maps, disable this if you don't use one.
 
-option.BLACK_OUTLINE=Black Outline
-option.BLACK_OUTLINE.comment=Enables black outline.
-
-option.PROMO_OUTLINE=Promo Outline
-option.PROMO_OUTLINE.comment=Enables Minecraft's promo art style's outline. §e[*]§r This effect is less effective on higher resolution due to the lack of scaling.
-
-option.TOON_LIGHTMAP=Toon Lightmap
-option.TOON_LIGHTMAP.comment=Reduces the quality of vanilla lighting for cel shading. §e[*]§r This option is notorious for making your game "look bad", only enable this when you need it.
-
 option.WHITE_WORLD=White World
 option.WHITE_WORLD.comment=Replaces textures with flat white color.
 
@@ -241,9 +232,6 @@ option.VIGNETTE_STRENGTH.comment=Controls the strength of the vignette effect.
 
 option.DIRTY_LENS=Dirty Lens
 option.DIRTY_LENS.comment=Adds dusty particle effect to bloom. §e[*]§r Requires bloom.
-
-option.RETRO_FILTER=Retro Filter
-option.RETRO_FILTER.comment=Adds pixelation and dithering. §e[*]§r Lower render quality for stronger pixelation. §c[-]§r Incompatible with anti-aliasing.
 
 option.COLOR_GRADING=Color Grading
 option.COLOR_GRADING.comment=Enables color grading. §e[*]§r This option doesn't need to be enabled to change tonemap, saturation, and vibrance sliders.
