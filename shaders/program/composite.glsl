@@ -82,7 +82,7 @@ float GetLinearDepth(float depth)
 #include "/lib/atmospherics/volumetricLight.glsl"
 #endif
 
-#if defined BORDER_FOG || defined PROMO_OUTLINE
+#if defined BORDER_FOG || defined PROMO_OUTLINE || defined FOG
 #include "/lib/outline/promoOutline.glsl"
 #include "/lib/atmospherics/sky.glsl"
 #include "/lib/color/ambientColor.glsl"
