@@ -67,10 +67,6 @@ vec3 MotionBlur(vec3 color, float z, float dither)
 // Includes
 #include "/lib/util/dither.glsl"
 
-#ifdef BLACK_OUTLINE
-#include "/lib/outline/depthOutline.glsl"
-#endif
-
 // Program
 void main()
 {
@@ -79,10 +75,6 @@ void main()
 	#ifdef MOTION_BLUR
 	float z = texture2D(depthtex1, texCoord.st).x;
 	float dither = Bayer64(gl_FragCoord.xy);
-
-	#ifdef BLACK_OUTLINE
-	DepthOutline(z);
-	#endif
 
 	color = MotionBlur(color, z, dither);
 	#endif
