@@ -16,7 +16,7 @@ const vec4 weatherSwamp    = vec4(vec3(WEATHER_SR, WEATHER_SG, WEATHER_SB) / 255
 const vec4 weatherMushroom = vec4(vec3(WEATHER_MR, WEATHER_MG, WEATHER_MB) / 255.0, 1.0) * WEATHER_MI;
 const vec4 weatherSavanna  = vec4(vec3(WEATHER_VR, WEATHER_VG, WEATHER_VB) / 255.0, 1.0) * WEATHER_VI;
 
-#ifdef WEATHER_PERBIOME
+#if defined WEATHER_PERBIOME || defined AURORA_PERBIOME
 uniform float isDesert, isMesa, isCold, isSwamp, isMushroom, isSavanna;
 float weatherWeight = isCold + isDesert + isMesa + isSwamp + isMushroom + isSavanna;
 
