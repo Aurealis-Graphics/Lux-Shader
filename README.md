@@ -13,7 +13,5 @@ Lux is a high fidelity Minecraft Java Edition shader pack based on [Capt Tatsu's
 By default, Lux is meant for mid- to high-end users, however offers a wide range of settings to make the shader truly yours. <br> While trying to be highly compatible across different hardware & software specification, aesthetically pleasing and gameplay-friendly, Lux also incorporates experimental and rarely-seen features.<br>
 It is getting updated frequently and still new to the game, but is accordingly using more modern tech to produce good looking visuals making it a shader pack definitely not to miss out on.
 
-*This shader is currently in its early access state! Small bugs or visual artifacts are to be expected.*
-
 *Make sure to check out the [official project site](https://techdevongithub.github.io/Lux/)!*
 </div>
