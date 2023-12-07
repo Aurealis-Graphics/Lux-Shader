@@ -8,22 +8,18 @@ See AGREEMENT.txt for more information.
 
 vec3 GGXVNDF(vec3 Ve, float roughness, vec2 hash) 
 {
-    vec3 v = normalize(vec3(roughness * Ve.x, roughness * Ve.y, Ve.z));
+    vec3 v = normalize(vec3(roughness * Ve.xy, Ve.z));
 
-    float lensq = dot(v.xy, v.xy);
-    vec3 t1 = lensq > 0.0 ? vec3(-v.y, v.x, 0.0) * inversesqrt(lensq) : vec3(1.0, 0.0, 0.0);
-    vec3 t2 = cross(v, t1);
-    float r = sqrt(hash.x);
-    float phi = TAU * hash.y;
-
-    float p1 = r * cos(phi);
-    float p2 = r * sin(phi);
-    float s = 0.5 * (1.0 + v.z);
-    p2 = mix(sqrt(1.0 - p1 * p1), p2, s);
-
-    vec3 n = p1 * t1 + p2 * t2 + sqrt(max(0.0, 1.0 - p1 * p1 - p2 * p2)) * v;
-
-    return normalize(vec3(roughness * n.x, roughness * n.y, max(0.0, n.z)));
+    float phi      = TAU * hash.x;
+    float z        = (1.0 - hash.x) * (1.0 + v.z) - v.z;    
+    float sinTheta = sqrt(Saturate(1.0 - Pow2(z)));
+    float x        = sinTheta * cos(phi);
+    float y        = sinTheta * sin(phi);
+    
+    vec3 c = vec3(x, y, z);
+    vec3 h = c + v;
+    
+    return normalize(vec3(roughness * h.xy, h.z));
 }
 
 vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
@@ -39,7 +35,7 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 	
 	float lod = sqrt(8.0 * roughness);
 
-	for (int i = 0; i < 6; i++) 
+	for (int i = 0; i < 5; i++) 
 	{
 		vec2 hash = vec2(
 			InterleavedGradientNoise(gl_FragCoord.xy + float(i) * 1.333),
@@ -65,5 +61,5 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 		}
 	}
 
-    return color / 6.0;
+    return color / 5.0;
 }
