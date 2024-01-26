@@ -36,6 +36,7 @@ varying vec4 vTexCoord, vTexCoordAM;
 // Uniforms
 uniform int frameCounter;
 uniform int heldItemId, heldItemId2;
+uniform int heldBlockLightValue, heldBlockLightValue2;
 uniform int isEyeInWater;
 uniform int worldTime;
 
@@ -87,7 +88,7 @@ vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.
 // Common Functions
 float GetHandItem(int id)
 {
-	return float((heldItemId == id && isMainHand > 0.5) || (heldItemId2 == id && isMainHand < 0.5));
+	return float((heldItemId == id) || (heldItemId2 == id));
 }
 
 // Includes
@@ -135,8 +136,10 @@ void main()
 	if (albedo.a > 0.001)
 	{
 		vec2 lightmap = Saturate(lmCoord);
+
+		lightmap.x = max(heldBlockLightValue, heldBlockLightValue2) / 15.0;
 		
-		float emissive = (GetHandItem(50) + GetHandItem(83) + GetHandItem(213)) * 0.1;
+		float emissive = (GetHandItem(50) + GetHandItem(83) + GetHandItem(213));
 
 		vec3 screenPos = vec3(gl_FragCoord.xy / vec2(viewWidth, viewHeight), gl_FragCoord.z + 0.38);
 		#if AA == 2
@@ -213,7 +216,7 @@ void main()
 		vec3 skyEnvAmbientApprox = vec3(0.0);
 		#endif
 
-		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, quarterNdotU, parallaxShadow, emissive, 0.0, skyEnvAmbientApprox);
+		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NdotL, quarterNdotU, parallaxShadow, emissive * EMISSIVE_BRIGHTNESS, 0.0, skyEnvAmbientApprox);
 
 		#ifdef MATERIAL_SUPPORT
 		skymapMod = Smooth3(lightmap.y);
