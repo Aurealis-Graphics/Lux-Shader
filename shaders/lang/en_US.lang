@@ -605,3 +605,5 @@ option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH.comment=Hides visual artifacts in 
 
 option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE=Adaption Response
 option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE.comment=Adjusts response of the adaptive strength.
+
+option.DYNAMIC_HANDLIGHT=Dynamic Handlight
