@@ -295,3 +295,5 @@ const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
 #ifdef END
 #undef LENS_FLARE
 #endif
+
+#define DYNAMIC_HANDLIGHT

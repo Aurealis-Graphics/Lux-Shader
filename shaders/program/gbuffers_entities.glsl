@@ -37,6 +37,11 @@ uniform int frameCounter;
 uniform int isEyeInWater;
 uniform int worldTime;
 
+#ifdef DYNAMIC_HANDLIGHT
+uniform int heldBlockLightValue;
+uniform int heldBlockLightValue2;
+#endif
+
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
@@ -61,9 +66,11 @@ uniform sampler2D specular;
 uniform sampler2D normals;
 #endif
 
-#if AA == 2
+#if AA == 2 || defined(DYNAMIC_HANDLIGHT)
 uniform vec3 cameraPosition;
+#if AA == 2
 uniform vec3 previousCameraPosition;
+#endif
 #endif
 
 // Common Variables
@@ -221,6 +228,18 @@ void main()
 			NdotL *= parallaxShadow;
 		}
 		#endif
+		#endif
+
+		#ifdef DYNAMIC_HANDLIGHT
+		float maxIntensity	= max(float(heldBlockLightValue), float(heldBlockLightValue2));
+		if (maxIntensity > EPS)
+		{
+			float handheldDist	= distance(worldPos.xyz, vec3(0.0));
+			float scaleFactor	= 2.828 / (maxIntensity + 0.5);
+			float attenuation	= (maxIntensity / 15.0) * (1.0 / (Pow2(scaleFactor * handheldDist) + 1.0));
+
+			lightmap.x = SmoothMax(lightmap.x, attenuation, 0.08);
+		}
 		#endif
 		
 		vec3 shadow = vec3(0.0);

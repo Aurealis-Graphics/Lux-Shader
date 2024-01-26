@@ -153,3 +153,18 @@ vec3 Lift(vec3 x, float amount)
 {
 	return (1.0 + amount) * x / (amount * x + 1.0);
 }
+
+float SmoothF(float x, float alpha)
+{
+	return x > 0.0 ? pow(x / (x + pow(x, -1.0 / alpha)), alpha / (1.0 + alpha)) : x;
+}
+
+float SmoothMin(float a, float b, float alpha)
+{
+	return b + 1.0 + SmoothF(a - b + 1.0, alpha);
+}
+
+float SmoothMax(float a, float b, float alpha)
+{
+	return b + 1.0 - SmoothF(1.0 - a + b, alpha);
+}

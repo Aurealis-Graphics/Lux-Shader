@@ -38,6 +38,11 @@ uniform int frameCounter;
 uniform int isEyeInWater;
 uniform int worldTime;
 
+#ifdef DYNAMIC_HANDLIGHT
+uniform int heldBlockLightValue;
+uniform int heldBlockLightValue2;
+#endif
+
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
@@ -70,7 +75,7 @@ uniform mat4 gbufferModelView;
 uniform vec3 previousCameraPosition;
 #endif
 
-#if AA == 2 || (defined(MATERIAL_SUPPORT) && defined(REFLECTION_RAIN))
+#if AA == 2 || (defined(MATERIAL_SUPPORT) && defined(REFLECTION_RAIN)) || defined(DYNAMIC_HANDLIGHT)
 uniform vec3 cameraPosition;
 #endif
 
@@ -223,6 +228,18 @@ void main()
 		}
 		#endif
 
+		#ifdef DYNAMIC_HANDLIGHT
+		float maxIntensity	= max(float(heldBlockLightValue), float(heldBlockLightValue2));
+		if (maxIntensity > EPS)
+		{
+			float handheldDist	= distance(worldPos.xyz, vec3(0.0));
+			float scaleFactor	= 2.828 / (maxIntensity + 0.5);
+			float attenuation	= (maxIntensity / 15.0) * (1.0 / (Pow2(scaleFactor * handheldDist) + 1.0));
+
+			lightmap.x = SmoothMax(lightmap.x, attenuation, 0.08);
+		}
+		#endif
+
 		#ifdef DIRECTIONAL_LIGHTMAP
 		mat3 lightmapTBN = GetLightmapTBN(viewPos);
 		lightmap.x = DirectionalLightmap(lightmap.x, lmCoord.x, newNormal, lightmapTBN);
@@ -300,6 +317,7 @@ void main()
 		}
 		#endif
 		#endif
+
 	}
 	else
 	{
