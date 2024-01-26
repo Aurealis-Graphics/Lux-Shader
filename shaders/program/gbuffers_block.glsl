@@ -153,6 +153,18 @@ void main()
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
+		#ifdef DYNAMIC_HANDLIGHT
+		float maxIntensity	= max(float(heldBlockLightValue), float(heldBlockLightValue2));
+		if (maxIntensity > EPS)
+		{
+			float handheldDist	= distance(worldPos.xyz, vec3(0.0));
+			float scaleFactor	= 2.828 / (maxIntensity + 0.5);
+			float attenuation	= (maxIntensity / 15.0) * (1.0 / (Pow2(scaleFactor * handheldDist) + 1.0));
+
+			lightmap.x = SmoothMax(lightmap.x, attenuation, 0.08);
+		}
+		#endif
+
 		#ifdef MATERIAL_SUPPORT
 		float metalness = 0.0, f0 = 0.0, ao = 1.0;
 		vec3 normalMap = vec3(0.0, 0.0, 1.0);
@@ -209,18 +221,6 @@ void main()
 			NdotL *= parallaxShadow;
 		}
 		#endif
-		#endif
-
-		#ifdef DYNAMIC_HANDLIGHT
-		float maxIntensity	= max(float(heldBlockLightValue), float(heldBlockLightValue2));
-		if (maxIntensity > EPS)
-		{
-			float handheldDist	= distance(worldPos.xyz, vec3(0.0));
-			float scaleFactor	= 2.828 / (maxIntensity + 0.5);
-			float attenuation	= (maxIntensity / 15.0) * (1.0 / (Pow2(scaleFactor * handheldDist) + 1.0));
-
-			lightmap.x = SmoothMax(lightmap.x, attenuation, 0.08);
-		}
 		#endif
 		
 		vec3 shadow = vec3(0.0);
