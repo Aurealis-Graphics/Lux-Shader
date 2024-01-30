@@ -137,7 +137,7 @@ void main()
 	{
 		vec2 lightmap = Saturate(lmCoord);
 
-		lightmap.x = max(lightmap.x, max(heldBlockLightValue, heldBlockLightValue2) / 15.0);
+		lightmap.x = max(lightmap.x, max(float(heldBlockLightValue), float(heldBlockLightValue2)) / 15.0);
 		
 		float emissive = (GetHandItem(50) + GetHandItem(83) + GetHandItem(213));
 
