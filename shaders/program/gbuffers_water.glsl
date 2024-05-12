@@ -583,7 +583,7 @@ void main()
 		}
 
 		#ifdef FOG
-		/*#ifdef OVERWORLD
+		#ifdef OVERWORLD
 		vec3 skyEnvAmbientApproxFog = GetAmbientColor(vec3(0, 1, 0), lightCol);
 		#endif
 
@@ -593,12 +593,12 @@ void main()
 
 		#ifdef NETHER
 		vec3 skyEnvAmbientApproxFog = netherColSqrt.rgb;
-		#endif*/
+		#endif
 
 		float viewDist = length(viewPos);
 		vec3 viewDir = viewPos / viewDist;
 
-		// Fog(albedo.rgb, viewDist, viewDir, skyEnvAmbientApproxFog);
+		Fog(albedo.rgb, viewDist, viewDir, skyEnvAmbientApproxFog);
 
 		if (isEyeInWater == 1) albedo.a = mix(albedo.a, 1.0, min(viewDist / waterFog, 1.0));
 		#endif
