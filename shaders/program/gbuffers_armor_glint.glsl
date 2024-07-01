@@ -78,7 +78,7 @@ void main()
 	#endif
 	
 	#if AA == 2
-	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w, cameraPosition, previousCameraPosition);
+	gl_Position.xy = TAAJitter(gl_Position.xy, gl_Position.w);
 	#endif
 }
 
