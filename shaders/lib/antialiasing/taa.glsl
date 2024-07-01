@@ -66,9 +66,9 @@ vec3 NeighbourhoodClamping(vec3 color, vec3 tempColor, vec2 pixelSize)
 
 	for (int i = 0; i < 8; i++)
 	{
-		vec3 sample = RGBToYCgCo * texture2DLod(colortex1, texCoord + neighbourhoodOffsets[i] * pixelSize, 0.0).rgb;
-		minColor = min(minColor, sample); 
-		maxColor = max(maxColor, sample);
+		vec3 sampleCol1 = RGBToYCgCo * texture2DLod(colortex1, texCoord + neighbourhoodOffsets[i] * pixelSize, 0.0).rgb;
+		minColor = min(minColor, sampleCol1); 
+		maxColor = max(maxColor, sampleCol1);
 	}
 
 	return ClipAABB(tempColor, minColor, maxColor);

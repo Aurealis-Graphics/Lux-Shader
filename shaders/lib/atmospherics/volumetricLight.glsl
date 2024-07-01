@@ -66,27 +66,27 @@ vec3 GetVolumetricLight(float z0, float z1, vec3 color, float dither)
 
 		if (length(shadowPos.xy * 2.0 - 1.0) < 1.0)
 		{
-			vec3 sample = vec3(shadow2D(shadowtex0, shadowPos.xyz).z);
+			vec3 sample0 = vec3(shadow2D(shadowtex0, shadowPos.xyz).z);
 
 			#ifdef SHADOW_COLOR
 			vec3 colSample = vec3(0.0);
 
-			if (sample.r < shadowPos.z)
+			if (sample0.r < shadowPos.z)
 			{
 				float testsample = shadow2D(shadowtex1, shadowPos.xyz).z;
 				if (testsample > shadowPos.z)
 				{
 					colSample = texture2D(shadowcolor0, shadowPos.xy).rgb;
 					colSample = Pow2(colSample / max(colSample.r, max(colSample.g, colSample.b)));
-					sample = colSample * (1.0 - sample) + sample;
+					sample0 = colSample * (1.0 - sample0) + sample0;
 				}
 			}
 			#endif
 
-			if (depth0 < minDist) sample *= color;
-			else if (isEyeInWater == 1.0) sample *= waterCol;
+			if (depth0 < minDist) sample0 *= color;
+			else if (isEyeInWater == 1.0) sample0 *= waterCol;
 
-			vl += sample;
+			vl += sample0;
 		}
 		else
 		{

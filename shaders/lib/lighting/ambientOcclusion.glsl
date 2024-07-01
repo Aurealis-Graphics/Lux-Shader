@@ -56,20 +56,20 @@ float AmbientOcclusion(sampler2D depth, float dither)
 
 		sampleDepth = GetLinearDepth(texture2D(depth, texCoord + offsetRot * aoOffsets[i - 1] * scale).r);
 	
-		float sample = (far - near) * (z - sampleDepth) * 2.0;
+		float sample0 = (far - near) * (z - sampleDepth) * 2.0;
 	
-		if (hand) sample *= 1024.0;
+		if (hand) sample0 *= 1024.0;
 	
-		angle = Saturate(0.5 - sample);
-		dist = Saturate(0.25 * sample - 1.0);
+		angle = Saturate(0.5 - sample0);
+		dist = Saturate(0.25 * sample0 - 1.0);
 
 		sampleDepth = GetLinearDepth(texture2D(depth, texCoord - offsetRot * offset).r);
-		sample = (far - near) * (z - sampleDepth) * 2.0;
+		sample0 = (far - near) * (z - sampleDepth) * 2.0;
 	
-		if (hand) sample *= 1024.0;
+		if (hand) sample0 *= 1024.0;
 	
-		angle += Saturate(0.5 - sample);
-		dist += Saturate(0.25 * sample - 1.0);	
+		angle += Saturate(0.5 - sample0);
+		dist += Saturate(0.25 * sample0 - 1.0);	
 		ao += Saturate(angle + dist);
 	}
 	ao /= samples;

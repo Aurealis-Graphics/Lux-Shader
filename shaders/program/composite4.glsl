@@ -55,8 +55,8 @@ vec3 BloomTile(float lod, vec2 offset)
 				float wg = weight[i + 3] * weight[j + 3];
 				vec2 pixelOffset = vec2(i * pw, j * ph);
 				vec2 bloomCoord = (texCoord - offset + pixelOffset) * scale;
-				vec3 sample = texture2D(colortex0, bloomCoord).rgb;
-				float tapLuminance = GetLuminance(sample);
+				vec3 sample0 = texture2D(colortex0, bloomCoord).rgb;
+				float tapLuminance = GetLuminance(sample0);
 				float lumWeight = 1.0;
 
 				if (isEyeInWater != 1) lumWeight *= min((tapLuminance), 20.0);
@@ -65,7 +65,7 @@ vec3 BloomTile(float lod, vec2 offset)
 				lumWeight = mix(1.0, lumWeight, exp(-linZ * 4.0));
 				#endif
 
-				bloom += sample * wg * lumWeight;
+				bloom += sample0 * wg * lumWeight;
 			}
 		}
 		bloom /= 4096.0;
