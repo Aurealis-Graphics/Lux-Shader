@@ -59,7 +59,7 @@ vec3 BloomTile(float lod, vec2 offset)
 				float tapLuminance = GetLuminance(sample0);
 				float lumWeight = 1.0;
 
-				if (isEyeInWater != 1) lumWeight *= min((tapLuminance), 20.0);
+				if (isEyeInWater != 1) lumWeight *= min(sqrt(tapLuminance), 20.0);
 
 				#ifdef NETHER
 				lumWeight = mix(1.0, lumWeight, exp(-linZ * 4.0));
