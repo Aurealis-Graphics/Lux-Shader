@@ -48,7 +48,7 @@ float AmbientOcclusion(sampler2D depth, float dither)
 	float fovScale = gbufferProjection[1][1] / 1.37;
 	float distScale = max((far - near) * z + near, 6.0);
 	mat2 offsetRot = Rotate(dither * TAU);
-	vec2 scale = 0.32 * vec2(1.0 / aspectRatio, 1.0) * fovScale / distScale;
+	vec2 scale = 0.25 * vec2(1.0 / aspectRatio, 1.0) * fovScale / distScale;
 
 	for (int i = 0; i < samples; i++) 
 	{
@@ -74,5 +74,6 @@ float AmbientOcclusion(sampler2D depth, float dither)
 	}
 	ao /= samples;
 	
-	return pow(ao, AO_STRENGTH * 0.9);
+	// return pow(ao, AO_STRENGTH * 0.9);
+	return ao * 0.9 + 0.1;
 }
