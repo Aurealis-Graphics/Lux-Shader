@@ -25,9 +25,7 @@ vec3 GetFogColor(float viewDist, vec3 viewDir, vec3 ambientCol)
 	float mult = (0.5 * sunVisibility + 0.3) * (1.0 - 0.75 * rainStrength) * top +
 				 0.1 * (1.0 + rainStrength * 1.6 * float(isEyeInWater == 1));
 
-	fogCol *= 1.0 - sqrt(lightmix);
-	fogCol = mix(fogCol, lightCol * sqrt(lightCol), lightmix) * sunVisibility;
-	fogCol += lightNight * lightNight * 0.4;
+	fogCol = lightNight * lightNight * 0.4 + mix(fogCol, lightCol * sqrt(lightCol), lightmix) * sunVisibility;
 
 	vec3 fogWeather = weatherCol.rgb * weatherCol.rgb;
 	fogWeather *= GetLuminance(ambientCol / fogWeather) * 1.2;
@@ -42,8 +40,8 @@ void NormalFog(inout vec3 color, float viewDist, vec3 viewDir, vec3 ambientCol)
 	#ifdef OVERWORLD
 	float fog = viewDist * FOG_DENSITY / 256.0;
 	float clearDay = sunVisibility * (1.0 - rainStrength);
-	fog *= (0.5 * rainStrength + 1.0) / (3.0 * clearDay + 1.0);
-	fog = 1.0 - exp(-2.0 * pow(fog, 0.25 * clearDay + 1.25) * eBS);
+	fog *= (0.5 * rainStrength + 1.0) / (10.0 * (dot(upVec, sunVec) * 0.5 + 0.5) + 1.0);
+	fog = 1.0 - exp(-fog * eBS);
 	vec3 fogColor = GetFogColor(viewDist, viewDir, ambientCol);
 	#endif
 
@@ -57,7 +55,7 @@ void NormalFog(inout vec3 color, float viewDist, vec3 viewDir, vec3 ambientCol)
 	#ifdef END
 	float fog = viewDist * FOG_DENSITY / 128.0;
 	fog = (1.0 - exp(-1.8 * fog * sqrt(fog))) * 0.5;
-	vec3 fogColor = endCol.rgb * 0.016;
+	vec3 fogColor = endCol.rgb * 0.005;
 	#endif
 
 	color = mix(color, fogColor, fog);
