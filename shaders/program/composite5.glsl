@@ -184,6 +184,8 @@ vec3 TonemapTech2022(vec3 color, const float Tl, const float Ts, const float S)
 	return (1.0 - exp(-color / Tl) * Ts) * color / (color + S);
 }
 
+#include "/lib/post/tonemap.glsl"
+
 void ColorSaturation(inout vec3 color)
 {
 	float grayVibrance = (color.r + color.g + color.b) / 3.0;
@@ -275,6 +277,35 @@ vec2 GetLightPos()
 }
 #endif
 
+void ColorGrade_SafeSaturation(inout vec3 color, in float boost)
+{
+    float L = GetLuminance(color);
+    float maxBoost = (L - 1.0) * rcp(L - MaxOf(color));
+    color = mix(vec3(L), color, min(boost, maxBoost));
+}
+
+vec3 CorrectiveSaturation(vec3 color)
+{
+
+    float m = MaxOf(color);
+
+	if (m < 1e-5) return color;
+
+    float t = OpenDRT_TonescalePrism(m, 1.0, 1.0, 1.0, 1); // Invserse Tonescale
+    // float S = pow(rcp(pow2(t) + 1.0), 3.0 / 2.0); // Tonescle Derivative
+    float S = (OpenDRT_TonescalePrism(m      , 1.0, 1.0, 1.0, 0)
+            -  OpenDRT_TonescalePrism(m - EPS, 1.0, 1.0, 1.0, 0))
+            * rcp(EPS);
+
+    // Saturate color by 16.0% to account for tonemap desaturation of mid-tones
+    float saturationBoost_Corrective = 0.1;
+    float saturationBoost_Artistic = 0.0;
+    
+    ColorGrade_SafeSaturation(color, 1.0 + S * (saturationBoost_Corrective + saturationBoost_Artistic));
+
+    return color;
+}
+
 // Program
 void main()
 {
@@ -315,7 +346,13 @@ void main()
 	ColorGrading(color);
 	#endif
 
-    color = TonemapTech2022(color * 2.8 * TONEMAP_EXPOSURE, 0.038, 1.0, 0.6);
+	#if TONEMAP == 1
+    color = TonemapTech2022(color * 2.5 * TONEMAP_EXPOSURE, 0.038, 1.0, 0.6);
+	#elif TONEMAP == 2
+	color *= 2.6 * TONEMAP_EXPOSURE;
+	color = pow(color, vec3(1.15)) * 1.3;
+	color = CorrectiveSaturation(TonemapPrism2024(color));
+	#endif
 
 	#ifdef LENS_FLARE
 	vec2 lightPos = GetLightPos();
