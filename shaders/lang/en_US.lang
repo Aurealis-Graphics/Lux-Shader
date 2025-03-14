@@ -432,6 +432,29 @@ option.AURORA_COLOR_TWO_G=Color Two Green
 option.AURORA_COLOR_ONE_B=Color One Blue
 option.AURORA_COLOR_TWO_B=Color Two Blue
 
+option.AURORA_PROBABILITY=Aurora Probability
+value.AURORA_PROBABILITY.0.0=0%
+value.AURORA_PROBABILITY.0.05=5%
+value.AURORA_PROBABILITY.0.10=10%
+value.AURORA_PROBABILITY.0.15=15%
+value.AURORA_PROBABILITY.0.20=20%
+value.AURORA_PROBABILITY.0.25=25%
+value.AURORA_PROBABILITY.0.30=30%
+value.AURORA_PROBABILITY.0.35=35%
+value.AURORA_PROBABILITY.0.40=40%
+value.AURORA_PROBABILITY.0.45=45%
+value.AURORA_PROBABILITY.0.50=50%
+value.AURORA_PROBABILITY.0.55=55%
+value.AURORA_PROBABILITY.0.60=60%
+value.AURORA_PROBABILITY.0.65=65%
+value.AURORA_PROBABILITY.0.70=70%
+value.AURORA_PROBABILITY.0.75=75%
+value.AURORA_PROBABILITY.0.80=80%
+value.AURORA_PROBABILITY.0.85=85%
+value.AURORA_PROBABILITY.0.90=90%
+value.AURORA_PROBABILITY.0.95=95%
+value.AURORA_PROBABILITY.1.0=100%
+
 option.ROUND_SUN_MOON=Round Sun & Moon
 option.ROUND_SUN_MOON.comment=Enables shader based sun & moon. §e[*]§r Disable vanilla sun & moon in Video Settings > Details > Sun & Moon
 
@@ -607,3 +630,11 @@ option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE=Adaption Response
 option.CHROMATIC_ABBERATION_ADAPTIVE_STRENGTH_RESPONSE.comment=Adjusts response of the adaptive strength.
 
 option.DYNAMIC_HANDLIGHT=Dynamic Handlight
+
+option.MINLIGHT_FACTOR=Minlight Factor
+
+option.GLOWING_ORES=Glowing Ores
+
+option.TONEMAP=Tonemap
+value.TONEMAP.1=Legacy (2022)
+value.TONEMAP.2=Modern

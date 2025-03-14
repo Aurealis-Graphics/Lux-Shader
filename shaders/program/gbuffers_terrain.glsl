@@ -483,6 +483,11 @@ void main()
 		mat = 3.0;
 	}
 
+	if (mc_Entity.x == 10402) 
+	{
+		mat = 5.0;
+	}
+
 	if (mc_Entity.x == 10216 ||
 		mc_Entity.x == 10226 ||
 		mc_Entity.x == 10231 || 
