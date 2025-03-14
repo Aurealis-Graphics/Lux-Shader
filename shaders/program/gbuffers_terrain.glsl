@@ -259,7 +259,7 @@ void main()
 		vec3 skyEnvAmbientApprox = vec3(0.0);
 		#endif
 
-		quarterNdotU *= quarterNdotU * (foliage > 0.5 ? 1.8 : 1.0);
+		quarterNdotU *= quarterNdotU * (foliage > 0.5 ? 1.5 : 1.0);
 
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, color.a, NdotL, quarterNdotU, parallaxShadow, emissive + lava, foliage, skyEnvAmbientApprox);
 
