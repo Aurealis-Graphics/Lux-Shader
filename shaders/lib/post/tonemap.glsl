@@ -1,7 +1,7 @@
 #define rcp(x) (1.0 / (x))
 #define maxEPS(x) max(x, 1e-6)
 
-int maxIdx(vec3 x)
+int MaxIdx(vec3 x)
 {
     float val = MaxOf(x);
     
@@ -9,7 +9,7 @@ int maxIdx(vec3 x)
         if (val == x[i]) return i;
 }
 
-int minIdx(vec3 x)
+int MinIdx(vec3 x)
 {
     float val = MinOf(x);
     
@@ -99,8 +99,8 @@ float CalcSat(vec3 x)
 */
 vec3 TonemapPrism2024(vec3 color)
 {
-    int minIdx = minIdx(color);
-    int maxIdx = maxIdx(color);
+    int minIdx = MinIdx(color);
+    int maxIdx = MaxIdx(color);
     int midIdx = 3 - (maxIdx + minIdx);
 
     /*
@@ -112,7 +112,7 @@ vec3 TonemapPrism2024(vec3 color)
     #elif TONEMAP24_CHROM_ADAPT_MAT == 1
     vec3 tsCol      = LMS_to_sRGB * TonemapPrism2024_Tonescale(sRGB_to_LMS * color);
     #endif
-    
+
     /*
         Calculating saturation before applying the tonescale.
         This will serve as our target saturation after applying the tonescale.
@@ -129,7 +129,12 @@ vec3 TonemapPrism2024(vec3 color)
     float maxC = 0.0;
     float minC = 0.0;
     float midC = 0.0;
+
     #ifdef TONEMAP24_HI_HUE_SHIFT
+    minIdx = MinIdx(tsCol);
+    maxIdx = MaxIdx(tsCol);
+    midIdx = 3 - (maxIdx + minIdx);
+
 	maxC = tsCol[maxIdx], minC = tsCol[minIdx], midC = tsCol[midIdx];
     #else
     maxC = color[maxIdx], minC = color[minIdx], midC = color[midIdx];
@@ -142,7 +147,7 @@ vec3 TonemapPrism2024(vec3 color)
         
         Will later be used to reconstruct the original color hue.
     */
-	float k = (midC - minC) / maxEPS(maxC - minC);
+	float k = maxEPS(midC - minC) / maxEPS(maxC - minC);
 
     //  Applying the tonescale.
 	color = TonemapPrism2024_Tonescale(color);
@@ -183,5 +188,7 @@ vec3 TonemapPrism2024(vec3 color)
     color = mix(vec3(lumPost), color, kDesat);
     #endif
 
+    // return Saturate(vec3(minC < midC));
+    // return Saturate(vec3(minC < midC));
     return Saturate(color);
 }
