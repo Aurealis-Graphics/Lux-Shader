@@ -34,6 +34,7 @@ varying vec4 vTexCoord, vTexCoordAM;
 uniform int frameCounter;
 uniform int isEyeInWater;
 uniform int worldTime;
+uniform int worldDay;
 
 uniform float blindFactor, nightVision;
 uniform float far, near;

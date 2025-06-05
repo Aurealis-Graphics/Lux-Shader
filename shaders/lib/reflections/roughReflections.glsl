@@ -6,20 +6,28 @@ See AGREEMENT.txt for more information.
 ----------------------------------------------------------------
 */ 
 
-vec3 GGXVNDF(vec3 Ve, float roughness, vec2 hash) 
+// Adapted from "Sampling Visible GGX Normals with Spherical Caps"
+// https://arxiv.org/abs/2306.05044
+vec3 SampleVNDF_Hemisphere(vec3 wi, vec2 hash) 
 {
-    vec3 v = normalize(vec3(roughness * Ve.xy, Ve.z));
-
     float phi      = TAU * hash.x;
-    float z        = (1.0 - hash.x) * (1.0 + v.z) - v.z;    
+    float z        = (1.0 - hash.y) * (1.0 + wi.z) - wi.z;    
     float sinTheta = sqrt(Saturate(1.0 - Pow2(z)));
     float x        = sinTheta * cos(phi);
     float y        = sinTheta * sin(phi);
     
     vec3 c = vec3(x, y, z);
-    vec3 h = c + v;
+    vec3 h = c + wi;
     
-    return normalize(vec3(roughness * h.xy, h.z));
+    return h;
+}
+
+vec3 SampleVNDF_GGX(vec3 wi, vec2 hash, float alpha)
+{
+    vec3 wiStd = normalize(vec3(wi.xy * alpha, wi.z));
+    vec3 wmStd = SampleVNDF_Hemisphere(wiStd, hash);
+    vec3 wm    = normalize(vec3(wmStd.xy * alpha, wmStd.z));
+    return wm;
 }
 
 vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
@@ -35,7 +43,7 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 	
 	float lod = sqrt(8.0 * roughness);
 
-	for (int i = 0; i < 5; i++) 
+	for (int i = 0; i < 6; i++) 
 	{
 		vec2 hash = vec2(
 			InterleavedGradientNoise(gl_FragCoord.xy + float(i) * 1.333),
@@ -46,7 +54,7 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 		hash = fract(hash + frameTimeCounter / PHI * 13.333);
 		#endif
 
-		vec3 hsample = tbn * GGXVNDF(-viewDir * tbn, roughness2, hash);
+		vec3 hsample = tbn * SampleVNDF_GGX(-viewDir * tbn, hash, roughness2);
 
 		vec4 pos = Raytrace(depthtex0, viewPos, hsample, dither, 4, 1.0, 0.1, 2.0);
 

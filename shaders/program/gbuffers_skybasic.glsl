@@ -20,6 +20,7 @@ varying vec3 upVec, sunVec;
 // Uniforms
 uniform int isEyeInWater;
 uniform int worldTime;
+uniform int worldDay;
 
 uniform float blindFactor;
 uniform float frameCounter;

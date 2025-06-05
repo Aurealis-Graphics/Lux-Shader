@@ -82,7 +82,9 @@ float GetAuroraNoiseSharpness(in float cosT, in float horizonIntensity)
 
 vec4 DrawAurora(vec3 viewPos, float dither, int iterations)
 {
-	if (1.0 - max(sunVisibility, rainStrength) == 0.0) return vec4(0.0);
+	float probabilityHash = Hash11(worldDay * 239.996322973);
+
+	if (1.0 - max(sunVisibility, rainStrength) == 0.0 || probabilityHash > AURORA_PROBABILITY) return vec4(0.0);
 
 	#ifdef AURORA_PERBIOME
 	if(isCold < 0.005) return vec4(0.0);

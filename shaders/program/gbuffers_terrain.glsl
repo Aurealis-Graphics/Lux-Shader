@@ -160,7 +160,11 @@ void main()
 		float emissive = float(mat > 1.98 && mat < 2.02) * emissiveIntensity;
 		if (mat > 3.98 && mat < 4.02) emissive = 0.25 * emissiveIntensity;
 		float lava     = float(mat > 2.98 && mat < 3.02) * emissiveIntensity;
-		
+
+		#ifdef GLOWING_ORES
+		if (mat > 4.98 && mat < 5.02) emissive = emissiveIntensity * 1.5 * smoothstep(0.0, 0.4, MaxOf(albedo.rgb) - MinOf(albedo.rgb));
+		#endif
+
 		#ifndef SHADOW_SUBSURFACE
 		foliage = 0.0;
 		#endif
@@ -255,7 +259,7 @@ void main()
 		vec3 skyEnvAmbientApprox = vec3(0.0);
 		#endif
 
-		quarterNdotU *= quarterNdotU * (foliage > 0.5 ? 1.8 : 1.0);
+		quarterNdotU *= quarterNdotU * (foliage > 0.5 ? 1.5 : 1.0);
 
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, color.a, NdotL, quarterNdotU, parallaxShadow, emissive + lava, foliage, skyEnvAmbientApprox);
 
@@ -477,6 +481,11 @@ void main()
 	if (mc_Entity.x == 10248) 
 	{
 		mat = 3.0;
+	}
+
+	if (mc_Entity.x == 10402) 
+	{
+		mat = 5.0;
 	}
 
 	if (mc_Entity.x == 10216 ||

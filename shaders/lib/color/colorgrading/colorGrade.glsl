@@ -22,7 +22,7 @@ vec3 ColorGrade(vec3 rgb)
     RotateSaturationAroundHue(hsv, 170.0, 8.0, 0.15, 22.0);
 
     /* Oranges */
-    RotateSaturationAroundHue(hsv, 27.0, 4.0, 0.07, 22.0);
+    // RotateSaturationAroundHue(hsv, 27.0, 4.0, 0.07, 22.0);
 
     hsv.yz = Saturate(hsv.yz);
     rgb = HSVToRGB(hsv);
