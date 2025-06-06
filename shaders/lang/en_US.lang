@@ -5,6 +5,7 @@ profile.LOW=§eLow
 profile.MEDIUM=§aMedium
 profile.HIGH=§bHigh
 profile.ULTRA=§dUltra
+profile.BRICKCRAFT_EDITION=§4B§cr§6i§ec§2k§aC§br§3a§1f§5t
 profile.comment=§eLow§r: low shadows, no extra effects. §aMedium§r: medium shadows, no extra effects. §bHigh§r: medium shadows, AO and light shafts. §dUltra§r: high shadows, AO, and light shafts.
 
 # Screens

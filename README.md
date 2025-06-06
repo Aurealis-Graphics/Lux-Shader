@@ -1,4 +1,4 @@
-<h1 align="center">The Lux Shaders</h1>
+<h1 align="center">The Lux Shaders: BrickCraft Edition</h1>
 
 <div align="center">
 
