@@ -639,4 +639,5 @@ option.GLOWING_ORES=Glowing Ores
 
 option.TONEMAP=Tonemap
 value.TONEMAP.1=Legacy (2022)
-value.TONEMAP.2=Modern
+value.TONEMAP.2=Prism (2025)
+value.TONEMAP.3=Legacy Reviewed (2026)
