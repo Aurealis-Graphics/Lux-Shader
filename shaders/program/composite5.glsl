@@ -352,6 +352,10 @@ void main()
 	color *= 2.6 * TONEMAP_EXPOSURE;
 	color = pow(color, vec3(1.15)) * 1.3;
 	color = CorrectiveSaturation(TonemapPrism2024(color));
+	#elif TONEMAP == 3
+	float m = LinearTosRGB(MaxOf(color * 2.5 * TONEMAP_EXPOSURE));
+	float contrast = 0.033 * (m * sqrt(m) / (m * sqrt(m) + 0.25)) / 0.8 + 0.005;
+	color = LMS_to_sRGB * TonemapTech2022(sRGB_to_LMS * color * 2.5 * TONEMAP_EXPOSURE, contrast, 1.0, 0.6);
 	#endif
 
 	#ifdef LENS_FLARE

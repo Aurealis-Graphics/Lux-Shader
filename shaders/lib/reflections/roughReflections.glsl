@@ -69,5 +69,5 @@ vec4 RoughReflection(vec3 viewPos, vec3 normal, float dither, float smoothness)
 		}
 	}
 
-    return color / 5.0;
+    return color / 6.0;
 }
