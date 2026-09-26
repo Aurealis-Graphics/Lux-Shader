@@ -24,7 +24,7 @@ vec3 RadiationBlackbody(in float T)
 const float starAmount = 0.16;
 void DrawStars(inout vec3 color, vec3 viewPos)
 {
-    float starMultiplier = 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 5.0;
+    float starMultiplier = 1.0 + (1.0 - Pow6(1.0 - moonHeight)) * 50.0;
 
     if (starMultiplier < 1e-3) return;
 
@@ -45,7 +45,7 @@ void DrawStars(inout vec3 color, vec3 viewPos)
 
     vec3 star = vec3(Max0(1.0 - dot(gridCoord, gridCoord) * 4.0));
 
-    starMultiplier *= Pow2(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount))) / starAmount * 4.0;
+    starMultiplier *= Pow4(Max0(texture2D(noisetex, gridID * 100.0).r - (1.0 - starAmount)) / starAmount) * 4.0;
     starMultiplier *= Pow5(Smooth3(1.0 - rainStrength));
     
     star *= starMultiplier;
@@ -108,8 +108,8 @@ vec3 DrawShootingStars(in vec3 viewPos, in float time)
     {
         float rotation = float(i) / float(SHOOTING_STARS_ROTATION_ITERATIONS) * PI;
         float n = Hash11(rotation);
-        result += GetShootingStarLayer(viewPos, time * 0.9 + n * 320.0, rotation + n);
+        result += GetShootingStarLayer(viewPos, time + n * 320.0, rotation + n);
     }
 
-    return result * 2.5;
+    return result * 3.5;
 }
