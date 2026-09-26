@@ -18,28 +18,28 @@ See AGREEMENT.txt for more information.
 #define DESATURATION_FACTOR 1.0                                 // [2.0 1.5 1.0 0.5 0.0]
 #define REFLECTION
 #define REFLECTION_TRANSLUCENT
-#define FORCE_REFLECTION
-#define MATERIAL_SUPPORT
+// #define FORCE_REFLECTION
+// #define MATERIAL_SUPPORT
 // #define WHITE_WORLD
 
 #define MATERIAL_FORMAT 0                                       // [0 1]
 #define REFLECTION_SPECULAR
-#define REFLECTION_RAIN
+// #define REFLECTION_RAIN
 #define REFLECTION_RAIN_TYPE 0                                  // [0 1]
 #define REFLECTION_ROUGH
-#define REFLECTION_PREVIOUS
-#define PARALLAX
+// #define REFLECTION_PREVIOUS
+// #define PARALLAX
 #define PARALLAX_DEPTH 1.00                                     // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
 // #define SELF_SHADOW
 #define SELF_SHADOW_ANGLE 2.0                                   // [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0]
 #define PARALLAX_QUALITY 64                                     // [16 32 64 128 256 512]
 #define PARALLAX_DISTANCE 64                                    // [16 32 48 64 80 96 112 128]
-#define DIRECTIONAL_LIGHTMAP
+// #define DIRECTIONAL_LIGHTMAP
 #define DIRECTIONAL_LIGHTMAP_STRENGTH 1.0                       // [2.0 1.4 1.0 0.7 0.5]
 
 #define CAMERA_FOCUS_MODE 0 			                        // [0 1]
 #define CAMERA_FOCUS_DISTANCE 3.0				                // [0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 6.5 7.0 7.5 8.0 10.0 12.0 14.0 16.0 18.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 120.0 140.0 160.0 180.0 200.0 250.0 300.0]
-#define DOF
+// #define DOF
 #define DOF_TYPE 0							                    // [0 1]
 #define DOF_STRENGTH 3.0                                        // [0.1 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0 7.0 8.0 9.0 10.0 12.0 14.0 16.0 18.0 20.0 30.0 40.0 50.0 60.0 70.0 80.0 90.0 100.0 110.0 120.0]
 #define DOF_SAMPLE_REJECTION
@@ -52,12 +52,10 @@ See AGREEMENT.txt for more information.
 #define LENS_FLARE_STRENGTH 1.00                                // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
 #define AA 2                                                    // [0 1 2]
 #define SHARPEN 2                                               // [0 1 2 3 4 5 6 7 8 9 10]
-#define AUTO_EXPOSURE
-#define SHARPEN 3                                               // [0 1 2 3 4 5 6 7 8 9 10]
-#define AUTO_EXPOSURE
+// #define AUTO_EXPOSURE
 #define VIGNETTE
 #define VIGNETTE_STRENGTH 1.00                                  // [0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
-#define DIRTY_LENS
+// #define DIRTY_LENS
 // #define CHROMATIC_ABBERATION
 #define CHROMATIC_ABBERATION_STRENGTH 1.00                      // [0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00 2.05 2.10 2.15 2.20 2.25 2.30 2.35 2.40 2.45 2.50 2.55 2.60 2.65 2.70 2.75 2.80 2.85 2.90 2.95 3.00 3.05 3.10 3.15 3.20 3.25 3.30 3.35 3.40 3.45 3.50 3.55 3.60 3.65 3.70 3.75 3.80 3.85 3.90 3.95 4.00]
 #define CHROMATIC_ABBERATION_MODE 0                             // [0 1 2]
@@ -68,8 +66,8 @@ See AGREEMENT.txt for more information.
 // #define COLOR_GRADING
 #define TONEMAP 3                                               // [1 2 3]
 #define TONEMAP_EXPOSURE 1.0                                    // [0.2 0.4 0.6 0.8 1.0 1.4 2.0 2.8 4.0 5.6 8.0]
-#define SATURATION 1.10                                         // [0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
-#define VIBRANCE 1.30                                           // [0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
+#define SATURATION 1.00                                         // [0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
+#define VIBRANCE 1.00                                           // [0.00 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.00 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.00]
 
 #define CG_RR 255                                               // [0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
 #define CG_RG 0                                                 // [0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
@@ -265,18 +263,18 @@ const float shadowMapBias = 1.0 - 25.6 / shadowDistance;
 #define NOISE_WAVE_ITERATIONS 4                                 // [0 1 2 3 4 5 6 7 8 9 10]
 
 #define SCENE_AWARE_WAVING
-// #define WAVING_GRASS
-// #define WAVING_CROPS
-// #define WAVING_PLANT
-// #define WAVING_TALL_PLANT
-// #define WAVING_LEAVES
-// #define WAVING_VINES
-// #define WAVING_LILYPAD
-// #define WAVING_FIRE
+#define WAVING_GRASS
+#define WAVING_CROPS
+#define WAVING_PLANT
+#define WAVING_TALL_PLANT
+#define WAVING_LEAVES
+#define WAVING_VINES
+#define WAVING_LILYPAD
+#define WAVING_FIRE
 #define WAVING_WATER
 #define WAVING_LAVA
-// #define WAVING_LANTERN
-// #define WAVING_HANGING_MANGROVE_PROPAGULE
+#define WAVING_LANTERN
+#define WAVING_HANGING_MANGROVE_PROPAGULE
 
 #define EMISSIVE_BRIGHTNESS 1.0                                 // [0.0 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85 0.90 0.95 1.0 1.05 1.10 1.15 1.20 1.25 1.30 1.35 1.40 1.45 1.50 1.55 1.60 1.65 1.70 1.75 1.80 1.85 1.90 1.95 2.0]
 #define WEATHER
