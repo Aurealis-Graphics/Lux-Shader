@@ -23,7 +23,7 @@ uniform int worldTime;
 uniform int worldDay;
 
 uniform float blindFactor;
-uniform float frameCounter;
+uniform int frameCounter;
 uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
